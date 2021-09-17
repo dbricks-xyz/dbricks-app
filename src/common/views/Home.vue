@@ -60,20 +60,13 @@ import SkewedButton from '@/common/components/primitive/SkewedButton.vue';
 import AddBrick from '@/common/views/AddBrick.vue';
 import BrickConfig from '@/common/components/BrickConfig.vue';
 import { getProtocol } from '@/common/protocols';
-import { executeTx, prepareTxs } from '@/common/state';
-
-// interface IRequest {
-//   method: string,
-//   path: string,
-//   payload?: any,
-// }
+import SDK from '@/dbricks-sdk';
 
 interface IBrick {
   id: number,
   fill: string,
   protocolId: number,
   actionId: number,
-  // request?: IRequest,
 }
 
 export default defineComponent({
@@ -98,8 +91,8 @@ export default defineComponent({
         configuredBricks.value = bricks.value.map((b) => b.id);
       });
       stateCollapsed.value = true;
-      const [ixs, signers] = await prepareTxs();
-      await executeTx(ixs, signers);
+      const sdk = new SDK();
+      await sdk.executeTxs();
     };
     const handleCancelModal = () => {
       stateModalActive.value = false;
