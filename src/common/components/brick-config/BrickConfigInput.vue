@@ -1,6 +1,6 @@
 <template>
   <div class="input-holder">
-    <label :for="id">{{ name }}</label>
+    <label class="mr-2" :for="id">{{ name }}</label>
     <slot></slot>
   </div>
 </template>

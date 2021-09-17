@@ -13,5 +13,5 @@ export interface IDEXOrderPlace {
 
 export interface IDEXOrderCancel {
   marketName: string,
-  orderId: BN,
+  orderId: string,
 }

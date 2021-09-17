@@ -57,7 +57,7 @@ a:hover {
 }
 
 input {
-  @apply bg-black border border-solid border-gray-500 ml-2 flex-grow;
+  @apply bg-black border border-solid border-gray-500 flex-grow;
 }
 
 button {

@@ -10,6 +10,9 @@
     <div v-if="brick.protocolId===0 && brick.actionId===0">
       <SerumPlaceSettleOrder :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
+    <div v-else-if="brick.protocolId===0 && brick.actionId===1">
+      <SerumCancelOrder :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
+    </div>
 
   </div>
 </template>
@@ -21,9 +24,11 @@ import SerumPlaceSettleOrder from '@/serum/components/SerumPlaceSettleOrder.vue'
 import GeneralIcon from '@/common/components/icons/GeneralIcon.vue';
 import { getAction, getProtocol } from '@/common/protocols';
 import { removeConfiguredBrick } from '@/common/state';
+import SerumCancelOrder from '@/serum/components/SerumCancelOrder.vue';
 
 export default defineComponent({
   components: {
+    SerumCancelOrder,
     GeneralIcon,
     SerumPlaceSettleOrder,
     ProtocolLogo,
