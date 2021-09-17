@@ -1,8 +1,6 @@
-import { PublicKey } from '@solana/web3.js';
-
 export interface IDEXMarketInit {
-  baseMintPk: PublicKey,
-  quoteMintPk: PublicKey,
+  baseMintPk: string,
+  quoteMintPk: string,
   lotSize: string,
   tickSize: string,
 }

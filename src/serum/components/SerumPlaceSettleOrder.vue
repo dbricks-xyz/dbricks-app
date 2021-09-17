@@ -75,8 +75,8 @@ export default defineComponent({
     const payload = reactive<IDEXOrderPlace>({
       marketName: 'ATLAS/USDC',
       side: 'buy',
-      price: parseFloat('0.2'),
-      size: parseFloat('1'),
+      price: '0.2',
+      size: '1',
       orderType: 'ioc',
     });
     const base = ref<string>(payload.marketName.split('/')[0]);

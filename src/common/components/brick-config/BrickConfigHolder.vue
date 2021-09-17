@@ -13,6 +13,12 @@
     <div v-else-if="brick.protocolId===0 && brick.actionId===1">
       <SerumCancelOrder :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
+    <div v-else-if="brick.protocolId===0 && brick.actionId===2">
+      <SerumInitMarket :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
+    </div>
+        <div v-else-if="brick.protocolId===0 && brick.actionId===3">
+      <SerumSettleMarket :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
+    </div>
 
   </div>
 </template>
@@ -20,14 +26,19 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import ProtocolLogo from '@/common/components/ProtocolLogo.vue';
-import SerumPlaceSettleOrder from '@/serum/components/SerumPlaceSettleOrder.vue';
+import SerumPlaceSettleOrder
+  from '@/serum/components/SerumPlaceSettleOrder.vue';
 import GeneralIcon from '@/common/components/icons/GeneralIcon.vue';
 import { getAction, getProtocol } from '@/common/protocols';
 import { removeConfiguredBrick } from '@/common/state';
 import SerumCancelOrder from '@/serum/components/SerumCancelOrder.vue';
+import SerumInitMarket from '@/serum/components/SerumInitMarket.vue';
+import SerumSettleMarket from '@/serum/components/SerumSettleMarket.vue';
 
 export default defineComponent({
   components: {
+    SerumSettleMarket,
+    SerumInitMarket,
     SerumCancelOrder,
     GeneralIcon,
     SerumPlaceSettleOrder,

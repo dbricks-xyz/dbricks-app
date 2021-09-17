@@ -4,12 +4,9 @@
       <BrickConfigInput id="market" name="Market">
         <input type="text" id="market" v-model="payload.marketName">
       </BrickConfigInput>
-      <BrickConfigInput id="orderId" name="Order ID">
-        <input type="text" id="orderId" v-model="payload.orderId">
-      </BrickConfigInput>
     </template>
     <template v-slot:short>
-      <p>Cancel order {{ payload.orderId }}</p>
+      <p>Settle market {{ payload.marketName }}</p>
     </template>
   </BrickConfigLayout>
 </template>
@@ -17,13 +14,13 @@
 <script lang="ts">
 import { defineComponent, reactive, ref } from 'vue';
 import { Method } from 'axios';
-import { IDEXOrderCancel } from '@/common/interfaces/dex/common.interfaces.dex.order';
 import { addOrModifyConfiguredBrick } from '@/common/state';
 import { getAction } from '@/common/protocols';
 import BrickConfigLayout
   from '@/common/components/brick-config/BrickConfigLayout.vue';
 import BrickConfigInput
   from '@/common/components/brick-config/BrickConfigInput.vue';
+import { IDEXMarketSettle } from '../../common/interfaces/dex/common.interfaces.dex.market';
 
 export default defineComponent({
   components: {
@@ -39,11 +36,9 @@ export default defineComponent({
   },
   emits: ['end-edit'],
   setup(props, context) {
-    const payload = reactive<IDEXOrderCancel>({
+    const payload = reactive<IDEXMarketSettle>({
       marketName: 'ATLAS/USDC',
-      orderId: '36893488147419103231',
     });
-
     const handleEndEdit = () => {
       addOrModifyConfiguredBrick({
         id: props.brick.id,
