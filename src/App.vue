@@ -49,11 +49,19 @@ p, input, label {
 }
 
 a {
-  @apply text-db-pink;
+  @apply text-db-pink cursor-default;
+}
+
+a:hover {
+  @apply cursor-pointer;
 }
 
 input {
-  @apply bg-black border border-solid border-gray-500 p-1;
+  @apply bg-black border border-solid border-gray-500 ml-2 flex-grow;
+}
+
+button {
+  outline: none;
 }
 
 </style>

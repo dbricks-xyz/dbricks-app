@@ -1,7 +1,7 @@
 <template>
   <div class="flex">
-    <a href="#" class="switch flex-grow" :class="{'buy-active': buyActive}" @click="emitBuy">BUY</a>
-    <a href="#" class="switch flex-grow" :class="{'sell-active': !buyActive}" @click="emitSell">SELL</a>
+    <a class="switch flex-grow" :class="{'buy-active': buyActive}" @click="emitBuy">BUY</a>
+    <a class="switch flex-grow" :class="{'sell-active': !buyActive}" @click="emitSell">SELL</a>
   </div>
 </template>
 
@@ -42,4 +42,5 @@ export default defineComponent({
 .sell-active {
   @apply bg-db-purple text-white;
 }
+
 </style>

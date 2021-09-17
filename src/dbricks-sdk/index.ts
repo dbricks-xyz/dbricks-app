@@ -53,16 +53,18 @@ export default class SDK {
   async _requestIxsFromServer() {
     const requests: AxiosPromise[] = [];
     getConfiguredBricks.value.forEach((b) => {
-      const r = axios({
-        baseURL: SERVER_BASE_URL,
-        method: b.method,
-        url: b.path,
-        data: {
-          ...b.payload,
-          ownerPk: (this.wallet.publicKey as PublicKey).toBase58(),
-        },
+      b.req.forEach((r) => {
+        const req = axios({
+          baseURL: SERVER_BASE_URL,
+          method: r.method,
+          url: r.path,
+          data: {
+            ...r.payload,
+            ownerPk: (this.wallet.publicKey as PublicKey).toBase58(),
+          },
+        });
+        requests.push(req);
       });
-      requests.push(r);
     });
     const responses = await axios.all(requests);
 

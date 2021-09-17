@@ -34,6 +34,9 @@ const protocols: IProtocol[] = ([
       {
         id: 2, name: 'Initialize market', path: '/serum/markets', method: 'POST',
       },
+      {
+        id: 3, name: 'Settle market', path: '/serum/markets/settle', method: 'POST',
+      },
     ],
   },
   {

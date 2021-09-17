@@ -8,7 +8,7 @@
     </div>
 
     <div v-if="brick.protocolId===0 && brick.actionId===0">
-      <SerumConfig :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
+      <SerumPlaceSettleOrder :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
 
   </div>
@@ -17,7 +17,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import ProtocolLogo from '@/common/components/ProtocolLogo.vue';
-import SerumConfig from '@/serum/components/SerumPlaceOrder.vue';
+import SerumPlaceSettleOrder from '@/serum/components/SerumPlaceSettleOrder.vue';
 import GeneralIcon from '@/common/components/icons/GeneralIcon.vue';
 import { getAction, getProtocol } from '@/common/protocols';
 import { removeConfiguredBrick } from '@/common/state';
@@ -25,7 +25,7 @@ import { removeConfiguredBrick } from '@/common/state';
 export default defineComponent({
   components: {
     GeneralIcon,
-    SerumConfig,
+    SerumPlaceSettleOrder,
     ProtocolLogo,
   },
   props: {
