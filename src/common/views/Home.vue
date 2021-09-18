@@ -60,7 +60,7 @@ import SkewedButton from '@/common/components/primitive/SkewedButton.vue';
 import AddBrick from '@/common/views/AddBrick.vue';
 import BrickConfigHolder from '@/common/components/brick-config/BrickConfigHolder.vue';
 import { getProtocol } from '@/common/protocols';
-import SDK from '@/dbricks-sdk';
+import SDK from '@/dbricks-sdk/sdk.index';
 
 interface IBrick {
   id: number,

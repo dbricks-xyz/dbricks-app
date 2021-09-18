@@ -2,25 +2,25 @@
   <BrickConfigLayout :show-full="showFull" @end-edit="handleEndEdit">
     <template v-slot:full>
       <BrickConfigInput id="market" name="Market">
-        <input type="text" id="market" v-model="payload.marketName">
+        <input type="text" id="market" v-model="payload.marketPk">
       </BrickConfigInput>
     </template>
     <template v-slot:short>
-      <p>Settle market {{ payload.marketName }}</p>
+      <p>Settle market {{ payload.marketPk }}</p>
     </template>
   </BrickConfigLayout>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue';
+import { defineComponent, reactive } from 'vue';
 import { Method } from 'axios';
+import { IDEXMarketSettle } from 'dbricks-lib';
 import { addOrModifyConfiguredBrick } from '@/common/state';
 import { getAction } from '@/common/protocols';
 import BrickConfigLayout
   from '@/common/components/brick-config/BrickConfigLayout.vue';
 import BrickConfigInput
   from '@/common/components/brick-config/BrickConfigInput.vue';
-import { IDEXMarketSettle } from '../../common/interfaces/dex/common.interfaces.dex.market';
 
 export default defineComponent({
   components: {
@@ -37,7 +37,8 @@ export default defineComponent({
   emits: ['end-edit'],
   setup(props, context) {
     const payload = reactive<IDEXMarketSettle>({
-      marketName: 'ATLAS/USDC',
+      marketPk: 'Di66GTLsV64JgCCYGVcY21RZ173BHkjJVgPyezNN7P1K',
+      ownerPk: '', // filled in during signing
     });
     const handleEndEdit = () => {
       addOrModifyConfiguredBrick({

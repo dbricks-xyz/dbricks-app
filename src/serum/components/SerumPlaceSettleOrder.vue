@@ -3,7 +3,7 @@
     <template v-slot:full>
       <BuySell @emit-change="handleChangeSide"/>
       <BrickConfigInput id="market" name="Market">
-        <input type="text" id="market" v-model="payload.marketName">
+        <input type="text" id="market" v-model="payload.marketPk">
       </BrickConfigInput>
       <BrickConfigInput id="price" name="Price">
         <input type="text" id="price" v-model="payload.price">
@@ -38,22 +38,24 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue';
-import { Method } from 'axios';
-import BuySell from '@/common/components/BuySell.vue';
 import {
-  IDEXOrderPlace,
-} from '@/common/interfaces/dex/common.interfaces.dex.order';
+  defineComponent, reactive, ref, watch,
+} from 'vue';
+import { Method } from 'axios';
+import { IDEXMarketSettle, IDEXOrderPlace } from 'dbricks-lib';
+import BuySell from '@/common/components/BuySell.vue';
 import { addOrModifyConfiguredBrick } from '@/common/state';
 import { getAction } from '@/common/protocols';
-import { IDEXMarketSettle } from '@/common/interfaces/dex/common.interfaces.dex.market';
 import { IConfiguredRequest } from '@/common/interfaces/common.interfaces';
-import BrickConfigLayout from '@/common/components/brick-config/BrickConfigLayout.vue';
-import BrickConfigInput from '@/common/components/brick-config/BrickConfigInput.vue';
+import BrickConfigLayout
+  from '@/common/components/brick-config/BrickConfigLayout.vue';
+import BrickConfigInput
+  from '@/common/components/brick-config/BrickConfigInput.vue';
 import BrickConfigRadio
   from '@/common/components/brick-config/BrickConfigRadio.vue';
 import BrickConfigCheckbox
   from '@/common/components/brick-config/BrickConfigCheckbox.vue';
+import SDK from '@/dbricks-sdk/sdk.index';
 
 export default defineComponent({
   components: {
@@ -73,14 +75,22 @@ export default defineComponent({
   emits: ['end-edit'],
   setup(props, context) {
     const payload = reactive<IDEXOrderPlace>({
-      marketName: 'ATLAS/USDC',
+      marketPk: 'Di66GTLsV64JgCCYGVcY21RZ173BHkjJVgPyezNN7P1K',
       side: 'buy',
       price: '0.2',
       size: '1',
       orderType: 'ioc',
+      ownerPk: '', // filled in during signing
     });
-    const base = ref<string>(payload.marketName.split('/')[0]);
-    const quote = ref<string>(payload.marketName.split('/')[1]);
+    const base = ref<string>('');
+    const quote = ref<string>('');
+
+    const updateBaseQuote = async () => {
+      [base.value, quote.value] = await (new SDK()).getBaseQuote(payload.marketPk);
+    };
+    updateBaseQuote();
+    watch(payload, updateBaseQuote);
+
     const trySettle = ref<boolean>(true);
 
     const handleChangeSide = (newSide) => {
@@ -98,7 +108,8 @@ export default defineComponent({
           method: getAction(props.brick.protocolId, 3).method as Method,
           path: getAction(props.brick.protocolId, 3).path,
           payload: {
-            marketName: payload.marketName,
+            marketPk: payload.marketPk,
+            ownerPk: '', // filled in during signing
           } as IDEXMarketSettle,
         });
       }

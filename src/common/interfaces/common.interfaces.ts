@@ -1,9 +1,7 @@
 import { Method } from 'axios';
-import { IDEXOrderPlace, IDEXOrderCancel } from '@/common/interfaces/dex/common.interfaces.dex.order';
 import {
-  IDEXMarketInit,
-  IDEXMarketSettle,
-} from '@/common/interfaces/dex/common.interfaces.dex.market';
+  IDEXMarketInit, IDEXMarketSettle, IDEXOrderCancel, IDEXOrderPlace,
+} from 'dbricks-lib';
 
 export type BrickPayload =
   IDEXOrderPlace | IDEXOrderCancel |

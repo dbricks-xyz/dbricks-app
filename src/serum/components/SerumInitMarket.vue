@@ -21,15 +21,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue';
+import { defineComponent, reactive } from 'vue';
 import { Method } from 'axios';
+import { IDEXMarketInit } from 'dbricks-lib';
 import { addOrModifyConfiguredBrick } from '@/common/state';
 import { getAction } from '@/common/protocols';
 import BrickConfigLayout
   from '@/common/components/brick-config/BrickConfigLayout.vue';
 import BrickConfigInput
   from '@/common/components/brick-config/BrickConfigInput.vue';
-import { IDEXMarketInit } from '@/common/interfaces/dex/common.interfaces.dex.market';
 
 export default defineComponent({
   components: {
@@ -50,6 +50,7 @@ export default defineComponent({
       quoteMintPk: '2FPyTwcZLUg1MDrwsyoP4D6s1tM7hAkHYRjkNb5w6Pxk',
       lotSize: '1',
       tickSize: '1',
+      ownerPk: '', // filled in during signing
     });
 
     const handleEndEdit = () => {

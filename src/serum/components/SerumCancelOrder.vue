@@ -2,7 +2,7 @@
   <BrickConfigLayout :show-full="showFull" @end-edit="handleEndEdit">
     <template v-slot:full>
       <BrickConfigInput id="market" name="Market">
-        <input type="text" id="market" v-model="payload.marketName">
+        <input type="text" id="market" v-model="payload.marketPk">
       </BrickConfigInput>
       <BrickConfigInput id="orderId" name="Order ID">
         <input type="text" id="orderId" v-model="payload.orderId">
@@ -15,9 +15,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue';
+import { defineComponent, reactive } from 'vue';
 import { Method } from 'axios';
-import { IDEXOrderCancel } from '@/common/interfaces/dex/common.interfaces.dex.order';
+import { IDEXOrderCancel } from 'dbricks-lib';
 import { addOrModifyConfiguredBrick } from '@/common/state';
 import { getAction } from '@/common/protocols';
 import BrickConfigLayout
@@ -40,8 +40,9 @@ export default defineComponent({
   emits: ['end-edit'],
   setup(props, context) {
     const payload = reactive<IDEXOrderCancel>({
-      marketName: 'ATLAS/USDC',
-      orderId: '36893488147419103231',
+      marketPk: 'Di66GTLsV64JgCCYGVcY21RZ173BHkjJVgPyezNN7P1K',
+      orderId: 'affffffffffffffff',
+      ownerPk: '', // filled in during signing
     });
 
     const handleEndEdit = () => {
