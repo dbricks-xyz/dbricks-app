@@ -23,7 +23,7 @@
 <script lang="ts">
 import { defineComponent, reactive } from 'vue';
 import { Method } from 'axios';
-import { IDEXMarketInit } from 'dbricks-lib';
+import { IDEXMarketInitParams } from 'dbricks-lib';
 import { addOrModifyConfiguredBrick } from '@/common/state';
 import { getAction } from '@/common/protocols';
 import BrickConfigLayout
@@ -45,9 +45,9 @@ export default defineComponent({
   },
   emits: ['end-edit'],
   setup(props, context) {
-    const payload = reactive<IDEXMarketInit>({
-      baseMintPk: 'AGFEad2et2ZJif9jaGpdMixQqvW5i81aBdvKe7PHNfz3',
-      quoteMintPk: '2FPyTwcZLUg1MDrwsyoP4D6s1tM7hAkHYRjkNb5w6Pxk',
+    const payload = reactive<IDEXMarketInitParams>({
+      baseMintPk: 'G7gDxt4kgYi4gqjEZueWQXGviD1mJnED2oGk2tLKsjv7',
+      quoteMintPk: '72fQHRenCAmYarsqzpXRgoBrJMAtX8YRtRaRU3sBHbUy',
       lotSize: '1',
       tickSize: '1',
       ownerPk: '', // filled in during signing

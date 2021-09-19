@@ -4,29 +4,38 @@
       <BrickConfigInput id="market" name="Market">
         <input type="text" id="market" v-model="payload.marketPk">
       </BrickConfigInput>
-      <BrickConfigInput id="orderId" name="Order ID">
+      <BrickConfigCheckbox id="box" name="Cancell all orders" >
+        <input id="box" type="checkbox" class="flex-initial m-1" v-model="cancelAll">
+      </BrickConfigCheckbox>
+      <BrickConfigInput v-if="!cancelAll" id="orderId" name="Order ID">
         <input type="text" id="orderId" v-model="payload.orderId">
       </BrickConfigInput>
     </template>
     <template v-slot:short>
-      <p>Cancel order {{ payload.orderId }}</p>
+      <p v-if="cancelAll">Cancel all orders</p>
+      <p v-else>Cancel order {{ payload.orderId }}</p>
     </template>
   </BrickConfigLayout>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from 'vue';
+import {
+  defineComponent, reactive, ref, watch,
+} from 'vue';
 import { Method } from 'axios';
-import { IDEXOrderCancel } from 'dbricks-lib';
+import { IDEXOrderCancelParams } from 'dbricks-lib';
 import { addOrModifyConfiguredBrick } from '@/common/state';
 import { getAction } from '@/common/protocols';
 import BrickConfigLayout
   from '@/common/components/brick-config/BrickConfigLayout.vue';
 import BrickConfigInput
   from '@/common/components/brick-config/BrickConfigInput.vue';
+import BrickConfigCheckbox
+  from '@/common/components/brick-config/BrickConfigCheckbox.vue';
 
 export default defineComponent({
   components: {
+    BrickConfigCheckbox,
     BrickConfigInput,
     BrickConfigLayout,
   },
@@ -39,10 +48,18 @@ export default defineComponent({
   },
   emits: ['end-edit'],
   setup(props, context) {
-    const payload = reactive<IDEXOrderCancel>({
-      marketPk: 'Di66GTLsV64JgCCYGVcY21RZ173BHkjJVgPyezNN7P1K',
+    const payload = reactive<IDEXOrderCancelParams>({
+      marketPk: 'Qj1oaPL5Yeq3goibk726PoL3mRK2dSvhmxaHWo4bxrZ',
       orderId: 'affffffffffffffff',
       ownerPk: '', // filled in during signing
+    });
+    const cancelAll = ref(false);
+
+    watch(cancelAll, (newValue) => {
+      if (newValue) {
+        console.log(newValue);
+        payload.orderId = '';
+      }
     });
 
     const handleEndEdit = () => {
@@ -59,6 +76,7 @@ export default defineComponent({
 
     return {
       payload,
+      cancelAll,
       handleEndEdit,
     };
   },

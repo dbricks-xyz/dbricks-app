@@ -1,12 +1,6 @@
-import {
-  Connection,
-  PublicKey,
-  Signer,
-  Transaction,
-  TransactionInstruction,
-} from '@solana/web3.js';
+import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import axios, { AxiosPromise } from 'axios';
-import { deserializeIxs, deserializeSigners } from 'dbricks-lib';
+import { deserializeIxsAndSigners, ixsAndSigners } from 'dbricks-lib';
 import Wallet from '@project-serum/sol-wallet-adapter';
 import { getConfiguredBricks } from '@/common/state';
 import { CONNECTION_URL, SERVER_BASE_URL, WALLET_PROVIDER_URL } from '@/dbricks-sdk/sdk.config';
@@ -14,9 +8,7 @@ import { CONNECTION_URL, SERVER_BASE_URL, WALLET_PROVIDER_URL } from '@/dbricks-
 export default class SDK {
   connection: Connection;
 
-  ixs: TransactionInstruction[] = [];
-
-  signers: Signer[] = [];
+  ixsAndSigners: ixsAndSigners[] = [];
 
   wallet!: Wallet;
 
@@ -34,20 +26,34 @@ export default class SDK {
     await this.wallet.connect();
   }
 
-  async _prepareAndSendTx(): Promise<void> {
-    let tx = new Transaction().add(...this.ixs);
+  async _processSingleTx(ixAndSigners: ixsAndSigners): Promise<void> {
+    let tx = new Transaction().add(...ixAndSigners.ixs);
     const { blockhash } = await this.connection.getRecentBlockhash();
     tx.recentBlockhash = blockhash;
     tx.feePayer = this.wallet.publicKey as PublicKey;
 
     // sign - first with passed signers, then finally with the wallet
-    if (this.signers.length > 0) {
-      tx.sign(...this.signers);
+    if (ixAndSigners.signers.length > 0) {
+      tx.sign(...ixAndSigners.signers);
     }
     tx = await this.wallet.signTransaction(tx);
 
     const sig = await this.connection.sendRawTransaction(tx.serialize());
     console.log('Tx successful,', sig);
+  }
+
+  async _prepareAndSendTx(): Promise<void> {
+    // todo 1 - single req = single tx
+
+    // todo 2 hacky solution - try simulate, if fails, split in 2, then try again, keep doing
+    //  would need a way to keep track of keypairs from the BE
+    //  this means the BE will be sending packs of tx rather than everything mumbo jumboed together
+
+    this.ixsAndSigners.forEach(async (iAndS) => {
+      if (iAndS.ixs.length > 0) {
+        await this._processSingleTx(iAndS);
+      }
+    });
   }
 
   async _requestIxsFromServer(): Promise<void> {
@@ -69,13 +75,9 @@ export default class SDK {
     const responses = await axios.all(requests);
 
     responses.forEach((r) => {
-      const [serIxs, serSigners] = r.data;
-      this.ixs.push(...deserializeIxs(serIxs));
-      this.signers.push(...deserializeSigners(serSigners));
+      this.ixsAndSigners.push(...deserializeIxsAndSigners(r.data));
     });
-
-    console.log('Resultingg instructions', this.ixs);
-    console.log('Resultingg signers', this.signers);
+    console.log('Received ixsAndSigners:', this.ixsAndSigners);
   }
 
   async executeTxs(): Promise<void> {

@@ -1,7 +1,20 @@
 <template>
   <div class="home flex flex-col items-center pt-20">
     <transition name="send">
-      <SkewedButton v-if="bricks.length > 0" @click="sendTx" text="BUILD + SEND"/>
+      <!--<div style="height: 20px;">-->
+      <!--  <div v-if="errorSend" class="bg-db-purple text-white">Please close</div>-->
+      <!--</div>-->
+      <SkewedButton v-if="bricks.length > 0 && !stateCollapsed" @click="sendTx" text="BUILD + SEND"/>
+      <div v-else-if="bricks.length > 0 && stateCollapsed" style="height: 60px" class="flex justify-center align-middle">
+        <Button class="mx-5 flex" size="large" @click="reopenBricks">
+          REDO
+          <GeneralIcon class="ml-2" icon="redo" color="black" stroke="3" size="37"></GeneralIcon>
+        </Button>
+        <Button class="mx-5 flex" size="large" @click="resetBricks">
+          NEW
+          <GeneralIcon icon="new" color="black" stroke="3" size="39"></GeneralIcon>
+        </Button>
+      </div>
       <div v-else style="height: 60px"></div>
     </transition>
 
@@ -12,7 +25,7 @@
       </svg>
     </a>
 
-    <div id="brickHolder" class="flex flex-col items-center" :class="{pulse: stateCollapsed}">
+    <div v-if="!hideBricks" id="brickHolder" class="flex flex-col items-center" :class="{pulse: stateCollapsed}">
       <transition-group name="list">
         <div
           v-for="brick in bricks" :key="brick.id"
@@ -35,6 +48,7 @@
               class="brick-config"
               :class="{'forced-1opacity': configuredBricks.indexOf(brick.id) === -1}"
               :brick="brick"
+              :fresh="fresh"
               @start-edit="handleStartEdit"
               @end-edit="handleEndEdit"
               @remove-brick="handleRemoveBrick"
@@ -58,9 +72,12 @@
 import { defineComponent, ref } from 'vue';
 import SkewedButton from '@/common/components/primitive/SkewedButton.vue';
 import AddBrick from '@/common/views/AddBrick.vue';
-import BrickConfigHolder from '@/common/components/brick-config/BrickConfigHolder.vue';
+import BrickConfigHolder
+  from '@/common/components/brick-config/BrickConfigHolder.vue';
 import { getProtocol } from '@/common/protocols';
 import SDK from '@/dbricks-sdk/sdk.index';
+import Button from '@/common/components/primitive/Button.vue';
+import GeneralIcon from '@/common/components/icons/GeneralIcon.vue';
 
 interface IBrick {
   id: number,
@@ -71,6 +88,8 @@ interface IBrick {
 
 export default defineComponent({
   components: {
+    GeneralIcon,
+    Button,
     BrickConfigHolder,
     AddBrick,
     SkewedButton,
@@ -78,6 +97,8 @@ export default defineComponent({
   setup() {
     const stateCollapsed = ref(false);
     const stateModalActive = ref(false);
+    const fresh = ref(true);
+    const hideBricks = ref(false);
 
     const bricks = ref<IBrick[]>([]);
     const configuredBricks = ref<number[]>([]);
@@ -123,12 +144,30 @@ export default defineComponent({
       bricks.value.splice(i, 1);
       handleStartEdit(brick); // this will remove from the other list too
     };
+    const resetBricks = () => {
+      hideBricks.value = true;
+      bricks.value = [];
+      configuredBricks.value = [];
+      stateCollapsed.value = false;
+      setTimeout(() => {
+        hideBricks.value = false;
+      }, 1000);
+    };
+    const reopenBricks = () => {
+      fresh.value = false;
+      stateCollapsed.value = false;
+      setTimeout(() => {
+        fresh.value = true;
+      }, 1000);
+    };
 
     return {
       bricks,
       configuredBricks,
       stateCollapsed,
       stateModalActive,
+      fresh,
+      hideBricks,
       openNewBrickModal,
       sendTx,
       handleCancelModal,
@@ -136,6 +175,8 @@ export default defineComponent({
       handleStartEdit,
       handleEndEdit,
       handleRemoveBrick,
+      resetBricks,
+      reopenBricks,
     };
   },
 });
@@ -174,7 +215,7 @@ svg {
   max-height: 999px !important;
 }
 
-.list-enter-active {
+.list-enter-active, .list-leave-active {
   /*todo https://forum.vuejs.org/t/list-transitions-first-elements-content-showing-up-too-fast/121643*/
   /*in the meantime keep this fast enough to not notice*/
   transition: all .5s ease-in-out;

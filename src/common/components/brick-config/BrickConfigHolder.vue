@@ -49,10 +49,18 @@ export default defineComponent({
       type: Object,
       required: true,
     },
+    fresh: Boolean,
+  },
+  created() {
+    // this ensures that on re-do blocks don't appear open
+    if (this.fresh) {
+      this.showFull = true;
+    }
   },
   emits: ['start-edit', 'end-edit', 'remove-brick'],
   setup(props, context) {
-    const showFull = ref(true);
+    const showFull = ref(false);
+
     const protocol = getProtocol(props.brick.protocolId);
     const action = getAction(protocol.id, props.brick.actionId);
 

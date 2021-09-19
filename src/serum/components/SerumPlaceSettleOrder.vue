@@ -42,7 +42,7 @@ import {
   defineComponent, reactive, ref, watch,
 } from 'vue';
 import { Method } from 'axios';
-import { IDEXMarketSettle, IDEXOrderPlace } from 'dbricks-lib';
+import { IDEXMarketSettleParams, IDEXOrderPlaceParams } from 'dbricks-lib';
 import BuySell from '@/common/components/BuySell.vue';
 import { addOrModifyConfiguredBrick } from '@/common/state';
 import { getAction } from '@/common/protocols';
@@ -74,12 +74,12 @@ export default defineComponent({
   },
   emits: ['end-edit'],
   setup(props, context) {
-    const payload = reactive<IDEXOrderPlace>({
-      marketPk: 'Di66GTLsV64JgCCYGVcY21RZ173BHkjJVgPyezNN7P1K',
+    const payload = reactive<IDEXOrderPlaceParams>({
+      marketPk: 'Qj1oaPL5Yeq3goibk726PoL3mRK2dSvhmxaHWo4bxrZ',
       side: 'buy',
-      price: '0.2',
-      size: '1',
-      orderType: 'ioc',
+      price: '1',
+      size: '10',
+      orderType: 'limit',
       ownerPk: '', // filled in during signing
     });
     const base = ref<string>('');
@@ -98,6 +98,7 @@ export default defineComponent({
     };
 
     const handleEndEdit = () => {
+      console.log(payload);
       const req: IConfiguredRequest[] = [{
         method: getAction(props.brick.protocolId, props.brick.actionId).method as Method,
         path: getAction(props.brick.protocolId, props.brick.actionId).path,
@@ -110,7 +111,7 @@ export default defineComponent({
           payload: {
             marketPk: payload.marketPk,
             ownerPk: '', // filled in during signing
-          } as IDEXMarketSettle,
+          } as IDEXMarketSettleParams,
         });
       }
       addOrModifyConfiguredBrick({
