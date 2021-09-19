@@ -28,10 +28,10 @@
     </template>
     <template v-slot:short>
       <div v-if="payload.side === 'buy'">
-        <p>{{ payload.orderType }} {{ payload.size * payload.price }} {{ quote }} --> {{ payload.size }} {{ base }}</p>
+        <p>{{msgBuy}}</p>
       </div>
       <div v-else>
-        <p>{{ payload.orderType }} {{ payload.size }} {{ base }} --> {{ payload.size * payload.price }} {{ quote }}</p>
+        <p>{{msgSell}}</p>
       </div>
     </template>
   </BrickConfigLayout>
@@ -97,6 +97,9 @@ export default defineComponent({
       payload.side = newSide;
     };
 
+    const msgBuy = ref(`${payload.orderType} ${payload.size * payload.price} ${quote.value} --> ${payload.size} ${base.value}`);
+    const msgSell = ref(`${payload.orderType} ${payload.size} ${base.value} --> ${payload.size * payload.price} ${quote.value}`);
+
     const handleEndEdit = () => {
       console.log(payload);
       const req: IConfiguredRequest[] = [{
@@ -116,6 +119,7 @@ export default defineComponent({
       }
       addOrModifyConfiguredBrick({
         id: props.brick.id,
+        desc: `Place ${trySettle.value ? 'and settle ' : ''}trade: ${payload.side === 'buy' ? msgBuy.value : msgSell.value} on market ${payload.marketPk}`,
         req,
       });
       context.emit('end-edit');
@@ -126,6 +130,8 @@ export default defineComponent({
       base,
       quote,
       trySettle,
+      msgBuy,
+      msgSell,
       handleChangeSide,
       handleEndEdit,
     };

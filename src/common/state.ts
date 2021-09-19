@@ -3,6 +3,7 @@ import { IConfiguredBrick } from '@/common/interfaces/common.interfaces';
 
 const state = reactive({
   configuredBricks: <IConfiguredBrick[]>[],
+  statusLog: <string[]>[],
 });
 
 export const getConfiguredBricks = computed(() => state.configuredBricks);
@@ -23,4 +24,14 @@ export const removeConfiguredBrick = (brickId: number):void => {
     state.configuredBricks.splice(i, 1);
   }
   console.log('State updated', state.configuredBricks);
+};
+
+export const getStatusLog = computed(() => state.statusLog);
+
+export const pushToStatusLog = (newStatus:string):void => {
+  state.statusLog.push(newStatus);
+};
+
+export const resetStatusLog = ():void => {
+  state.statusLog = [];
 };

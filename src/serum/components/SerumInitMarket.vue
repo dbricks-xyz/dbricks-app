@@ -56,6 +56,7 @@ export default defineComponent({
     const handleEndEdit = () => {
       addOrModifyConfiguredBrick({
         id: props.brick.id,
+        desc: `Initialize new market for mints ${payload.baseMintPk} / ${payload.quoteMintPk}`,
         req: [{
           method: getAction(props.brick.protocolId, props.brick.actionId).method as Method,
           path: getAction(props.brick.protocolId, props.brick.actionId).path,

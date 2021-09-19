@@ -65,6 +65,7 @@ export default defineComponent({
     const handleEndEdit = () => {
       addOrModifyConfiguredBrick({
         id: props.brick.id,
+        desc: payload.orderId ? `Cancel order ${payload.orderId}` : 'Cancel all outstanding orders',
         req: [{
           method: getAction(props.brick.protocolId, props.brick.actionId).method as Method,
           path: getAction(props.brick.protocolId, props.brick.actionId).path,

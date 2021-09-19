@@ -2,13 +2,19 @@ import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import axios, { AxiosPromise } from 'axios';
 import { deserializeIxsAndSigners, ixsAndSigners } from 'dbricks-lib';
 import Wallet from '@project-serum/sol-wallet-adapter';
-import { getConfiguredBricks } from '@/common/state';
+import { getConfiguredBricks, pushToStatusLog } from '@/common/state';
 import { CONNECTION_URL, SERVER_BASE_URL, WALLET_PROVIDER_URL } from '@/dbricks-sdk/sdk.config';
+
+type fetchedBrick = {
+  id: number,
+  desc: string,
+  ixAndSigners: ixsAndSigners[],
+}
 
 export default class SDK {
   connection: Connection;
 
-  ixsAndSigners: ixsAndSigners[] = [];
+  fetchedBricks: fetchedBrick[] = [];
 
   wallet!: Wallet;
 
@@ -20,9 +26,9 @@ export default class SDK {
   async _connectWallet(): Promise<void> {
     this.wallet = new Wallet(WALLET_PROVIDER_URL, CONNECTION_URL);
     this.wallet.on('connect', (ownerPk) => {
-      console.log(`Wallet connected to ${ownerPk.toBase58()}`);
+      pushToStatusLog(`Wallet connected to ${ownerPk.toBase58()}`);
     });
-    this.wallet.on('disconnect', () => console.log('Wallet disconnected'));
+    this.wallet.on('Disconnect', () => pushToStatusLog('Wallet disconnected'));
     await this.wallet.connect();
   }
 
@@ -39,7 +45,7 @@ export default class SDK {
     tx = await this.wallet.signTransaction(tx);
 
     const sig = await this.connection.sendRawTransaction(tx.serialize());
-    console.log('Tx successful,', sig);
+    pushToStatusLog(`Tx successful, ${sig}`);
   }
 
   async _prepareAndSendTx(): Promise<void> {
@@ -70,14 +76,20 @@ export default class SDK {
           },
         });
         requests.push(req);
+        this.fetchedBricks.push({
+          id: b.id,
+          desc: b.desc,
+          ixAndSigners: [],
+        });
       });
     });
     const responses = await axios.all(requests);
 
-    responses.forEach((r) => {
-      this.ixsAndSigners.push(...deserializeIxsAndSigners(r.data));
-    });
-    console.log('Received ixsAndSigners:', this.ixsAndSigners);
+    // todo check if responses order matches request order
+    for (let i = 0; i <= responses.length; i++) {
+      this.fetchedBricks[i].ixAndSigners = deserializeIxsAndSigners(responses[i].data);
+    }
+    console.log('Fetched bricks:', this.fetchedBricks);
   }
 
   async executeTxs(): Promise<void> {

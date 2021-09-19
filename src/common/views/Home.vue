@@ -63,6 +63,10 @@
       <path d="M229 258.5L5 131L229 2.5L453 131L229 258.5Z" stroke="black" stroke-width="4"/>
     </svg>
 
+    <div style="width: 700px">
+      <p v-for="status in getStatusLog"  :key="status">{{status}}</p>
+    </div>
+
     <AddBrick v-if="stateModalActive" @cancel-modal="handleCancelModal" @new-brick="handleNewBrick"/>
 
   </div>
@@ -78,6 +82,7 @@ import { getProtocol } from '@/common/protocols';
 import SDK from '@/dbricks-sdk/sdk.index';
 import Button from '@/common/components/primitive/Button.vue';
 import GeneralIcon from '@/common/components/icons/GeneralIcon.vue';
+import { getStatusLog, pushToStatusLog, resetStatusLog } from '@/common/state';
 
 interface IBrick {
   id: number,
@@ -112,6 +117,7 @@ export default defineComponent({
         configuredBricks.value = bricks.value.map((b) => b.id);
       });
       stateCollapsed.value = true;
+      pushToStatusLog('Starting a new transaction.');
       const sdk = new SDK();
       await sdk.executeTxs();
     };
@@ -145,6 +151,7 @@ export default defineComponent({
       handleStartEdit(brick); // this will remove from the other list too
     };
     const resetBricks = () => {
+      resetStatusLog();
       hideBricks.value = true;
       bricks.value = [];
       configuredBricks.value = [];
@@ -154,6 +161,7 @@ export default defineComponent({
       }, 1000);
     };
     const reopenBricks = () => {
+      resetStatusLog();
       fresh.value = false;
       stateCollapsed.value = false;
       setTimeout(() => {
@@ -177,6 +185,7 @@ export default defineComponent({
       handleRemoveBrick,
       resetBricks,
       reopenBricks,
+      getStatusLog,
     };
   },
 });
