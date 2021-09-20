@@ -78,11 +78,16 @@ import SkewedButton from '@/common/components/primitive/SkewedButton.vue';
 import AddBrick from '@/common/views/AddBrick.vue';
 import BrickConfigHolder
   from '@/common/components/brick-config/BrickConfigHolder.vue';
-import { getProtocol } from '@/common/protocols';
-import SDK from '@/dbricks-sdk/sdk.index';
+import { getProtocol } from '@/common/common.protocols';
+import SolClient from '@/common/client/common.client';
 import Button from '@/common/components/primitive/Button.vue';
 import GeneralIcon from '@/common/components/icons/GeneralIcon.vue';
-import { statusLog, pushToStatusLog, resetStatusLog } from '@/common/state';
+import {
+  pushToStatusLog,
+  resetStatusLog,
+  statusLog,
+} from '@/common/common.state';
+import SerumClient from '@/serum/client/serum.client';
 
 interface IBrick {
   id: number,
@@ -117,12 +122,15 @@ export default defineComponent({
         configuredBricks.value = bricks.value.map((b) => b.id);
       });
       stateCollapsed.value = true;
+      const ownerPk = await (new SolClient()).executeAndLogTxs();
+
+      // todo just temporary
+      const orders = await (new SerumClient()).getOrdersForOwner('Qj1oaPL5Yeq3goibk726PoL3mRK2dSvhmxaHWo4bxrZ', ownerPk);
+      const orderIds = orders.map((o) => `${o.orderId}\n`);
       pushToStatusLog({
-        content: 'Starting a new transaction.',
+        content: `User's outstanding Serum orders are: ${orderIds}`,
         color: 'white',
       });
-      const sdk = new SDK();
-      await sdk.executeTxs();
     };
     const handleCancelModal = () => {
       stateModalActive.value = false;
@@ -149,7 +157,8 @@ export default defineComponent({
       }
     };
     const handleRemoveBrick = (brick) => {
-      const i = bricks.value.map((b) => b.id).indexOf(brick.brickId);
+      const i = bricks.value.map((b) => b.id)
+        .indexOf(brick.brickId);
       if (i !== -1) {
         bricks.value.splice(i, 1);
       }

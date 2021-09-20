@@ -39,17 +39,19 @@
 
 <script lang="ts">
 import {
-  computed,
-  defineComponent, reactive, ref, watch,
+  computed, defineComponent, reactive, ref, watch,
 } from 'vue';
 import { Method } from 'axios';
-import { ISerumDEXMarketSettleParams, ISerumDEXOrderPlaceParams } from 'dbricks-lib';
+import {
+  ISerumDEXMarketSettleParams,
+  ISerumDEXOrderPlaceParams,
+} from 'dbricks-lib';
 import BuySell from '@/common/components/BuySell.vue';
 import {
   addOrModifyConfiguredBrick,
   getPayloadsByBrickId,
-} from '@/common/state';
-import { getAction } from '@/common/protocols';
+} from '@/common/common.state';
+import { getAction } from '@/common/common.protocols';
 import { IConfiguredRequest } from '@/common/interfaces/common.interfaces';
 import BrickConfigLayout
   from '@/common/components/brick-config/BrickConfigLayout.vue';
@@ -59,7 +61,7 @@ import BrickConfigRadio
   from '@/common/components/brick-config/BrickConfigRadio.vue';
 import BrickConfigCheckbox
   from '@/common/components/brick-config/BrickConfigCheckbox.vue';
-import SDK from '@/dbricks-sdk/sdk.index';
+import SerumClient from '@/serum/client/serum.client';
 
 export default defineComponent({
   components: {
@@ -95,7 +97,7 @@ export default defineComponent({
     const quote = ref<string>('');
 
     const updateBaseQuote = async () => {
-      [base.value, quote.value] = await (new SDK()).getBaseQuote(payload.marketPk);
+      [base.value, quote.value] = await (new SerumClient()).getBaseQuote(payload.marketPk);
     };
     updateBaseQuote();
     watch(payload, updateBaseQuote);

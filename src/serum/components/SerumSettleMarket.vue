@@ -21,8 +21,8 @@ import {
 import {
   addOrModifyConfiguredBrick,
   getPayloadsByBrickId,
-} from '@/common/state';
-import { getAction } from '@/common/protocols';
+} from '@/common/common.state';
+import { getAction } from '@/common/common.protocols';
 import BrickConfigLayout
   from '@/common/components/brick-config/BrickConfigLayout.vue';
 import BrickConfigInput

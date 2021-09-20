@@ -39,7 +39,7 @@ import Modal from '@/common/components/primitive/Modal.vue';
 import Button from '@/common/components/primitive/Button.vue';
 import SelectableBox from '@/common/components/primitive/SelectableBox.vue';
 import ProtocolLogo from '@/common/components/ProtocolLogo.vue';
-import { listProtocols, getProtocol } from '@/common/protocols';
+import { listProtocols, getProtocol } from '@/common/common.protocols';
 
 export default defineComponent({
   components: {

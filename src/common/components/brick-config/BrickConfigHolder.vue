@@ -29,8 +29,8 @@ import ProtocolLogo from '@/common/components/ProtocolLogo.vue';
 import SerumPlaceSettleOrder
   from '@/serum/components/SerumPlaceSettleOrder.vue';
 import GeneralIcon from '@/common/components/icons/GeneralIcon.vue';
-import { getAction, getProtocol } from '@/common/protocols';
-import { removeConfiguredBrick } from '@/common/state';
+import { getAction, getProtocol } from '@/common/common.protocols';
+import { removeConfiguredBrick } from '@/common/common.state';
 import SerumCancelOrder from '@/serum/components/SerumCancelOrder.vue';
 import SerumInitMarket from '@/serum/components/SerumInitMarket.vue';
 import SerumSettleMarket from '@/serum/components/SerumSettleMarket.vue';
