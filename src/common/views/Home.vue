@@ -82,7 +82,7 @@ import { getProtocol } from '@/common/protocols';
 import SDK from '@/dbricks-sdk/sdk.index';
 import Button from '@/common/components/primitive/Button.vue';
 import GeneralIcon from '@/common/components/icons/GeneralIcon.vue';
-import { getStatusLog, pushToStatusLog, resetStatusLog } from '@/common/state';
+import { statusLog, pushToStatusLog, resetStatusLog } from '@/common/state';
 
 interface IBrick {
   id: number,
@@ -190,7 +190,7 @@ export default defineComponent({
       handleRemoveBrick,
       resetBricks,
       reopenBricks,
-      getStatusLog,
+      getStatusLog: statusLog,
     };
   },
 });

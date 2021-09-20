@@ -24,7 +24,10 @@ import {
 } from 'vue';
 import { Method } from 'axios';
 import { ISerumDEXOrderCancelParams } from 'dbricks-lib';
-import { addOrModifyConfiguredBrick } from '@/common/state';
+import {
+  addOrModifyConfiguredBrick,
+  getPayloadsByBrickId,
+} from '@/common/state';
 import { getAction } from '@/common/protocols';
 import BrickConfigLayout
   from '@/common/components/brick-config/BrickConfigLayout.vue';
@@ -48,13 +51,16 @@ export default defineComponent({
   },
   emits: ['end-edit'],
   setup(props, context) {
-    const payload = reactive<ISerumDEXOrderCancelParams>({
-      marketPk: 'Qj1oaPL5Yeq3goibk726PoL3mRK2dSvhmxaHWo4bxrZ',
-      orderId: 'affffffffffffffff',
-      ownerPk: '', // filled in during signing
-    });
-    const cancelAll = ref(false);
+    const existingPayload = getPayloadsByBrickId(props.brick.id)[0];
+    const payload = reactive<ISerumDEXOrderCancelParams>(existingPayload
+      ? existingPayload.payload as ISerumDEXOrderCancelParams
+      : {
+        marketPk: 'Qj1oaPL5Yeq3goibk726PoL3mRK2dSvhmxaHWo4bxrZ',
+        orderId: 'affffffffffffffff',
+        ownerPk: '', // filled in during signing
+      });
 
+    const cancelAll = ref(false);
     watch(cancelAll, (newValue) => {
       if (newValue) {
         console.log(newValue);

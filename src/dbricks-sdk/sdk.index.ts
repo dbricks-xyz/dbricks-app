@@ -4,7 +4,7 @@ import {
 import axios, { AxiosPromise } from 'axios';
 import { deserializeIxsAndSigners, ixsAndSigners } from 'dbricks-lib';
 import Wallet from '@project-serum/sol-wallet-adapter';
-import { getConfiguredBricks, pushToStatusLog } from '@/common/state';
+import { configuredBricks, pushToStatusLog } from '@/common/state';
 import { CONNECTION_URL, SERVER_BASE_URL, WALLET_PROVIDER_URL } from '@/dbricks-sdk/sdk.config';
 import { isLast } from '@/common/util';
 
@@ -94,7 +94,7 @@ export default class SDK {
 
   async _requestIxsFromServer(): Promise<void> {
     const requests: AxiosPromise[] = [];
-    getConfiguredBricks.value.forEach((b) => {
+    configuredBricks.value.forEach((b) => {
       b.req.forEach((r) => {
         const req = axios({
           baseURL: SERVER_BASE_URL,

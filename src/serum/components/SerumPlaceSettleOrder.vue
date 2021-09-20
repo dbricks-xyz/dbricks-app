@@ -45,7 +45,10 @@ import {
 import { Method } from 'axios';
 import { ISerumDEXMarketSettleParams, ISerumDEXOrderPlaceParams } from 'dbricks-lib';
 import BuySell from '@/common/components/BuySell.vue';
-import { addOrModifyConfiguredBrick } from '@/common/state';
+import {
+  addOrModifyConfiguredBrick,
+  getPayloadsByBrickId,
+} from '@/common/state';
 import { getAction } from '@/common/protocols';
 import { IConfiguredRequest } from '@/common/interfaces/common.interfaces';
 import BrickConfigLayout
@@ -75,14 +78,19 @@ export default defineComponent({
   },
   emits: ['end-edit'],
   setup(props, context) {
-    const payload = reactive<ISerumDEXOrderPlaceParams>({
-      marketPk: 'Qj1oaPL5Yeq3goibk726PoL3mRK2dSvhmxaHWo4bxrZ',
-      side: 'buy',
-      price: '1',
-      size: '10',
-      orderType: 'limit',
-      ownerPk: '', // filled in during signing
-    });
+    // note there's also a 2nd element inside the array (settle order),
+    // but we don't need it as it updates automatically
+    const existingPayload = getPayloadsByBrickId(props.brick.id)[0];
+    const payload = reactive<ISerumDEXOrderPlaceParams>(existingPayload
+      ? existingPayload.payload as ISerumDEXOrderPlaceParams
+      : {
+        marketPk: 'Qj1oaPL5Yeq3goibk726PoL3mRK2dSvhmxaHWo4bxrZ',
+        side: 'buy',
+        price: '1',
+        size: '10',
+        orderType: 'limit',
+        ownerPk: '', // filled in during signing
+      });
     const base = ref<string>('');
     const quote = ref<string>('');
 

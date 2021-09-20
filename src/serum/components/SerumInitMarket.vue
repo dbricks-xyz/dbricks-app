@@ -24,7 +24,10 @@
 import { defineComponent, reactive } from 'vue';
 import { Method } from 'axios';
 import { ISerumDEXMarketInitParams } from 'dbricks-lib';
-import { addOrModifyConfiguredBrick } from '@/common/state';
+import {
+  addOrModifyConfiguredBrick,
+  getPayloadsByBrickId,
+} from '@/common/state';
 import { getAction } from '@/common/protocols';
 import BrickConfigLayout
   from '@/common/components/brick-config/BrickConfigLayout.vue';
@@ -45,13 +48,16 @@ export default defineComponent({
   },
   emits: ['end-edit'],
   setup(props, context) {
-    const payload = reactive<ISerumDEXMarketInitParams>({
-      baseMintPk: 'G7gDxt4kgYi4gqjEZueWQXGviD1mJnED2oGk2tLKsjv7',
-      quoteMintPk: '72fQHRenCAmYarsqzpXRgoBrJMAtX8YRtRaRU3sBHbUy',
-      lotSize: '1',
-      tickSize: '1',
-      ownerPk: '', // filled in during signing
-    });
+    const existingPayload = getPayloadsByBrickId(props.brick.id)[0];
+    const payload = reactive<ISerumDEXMarketInitParams>(existingPayload
+      ? existingPayload.payload as ISerumDEXMarketInitParams
+      : {
+        baseMintPk: 'G7gDxt4kgYi4gqjEZueWQXGviD1mJnED2oGk2tLKsjv7',
+        quoteMintPk: '72fQHRenCAmYarsqzpXRgoBrJMAtX8YRtRaRU3sBHbUy',
+        lotSize: '1',
+        tickSize: '1',
+        ownerPk: '', // filled in during signing
+      });
 
     const handleEndEdit = () => {
       addOrModifyConfiguredBrick({
