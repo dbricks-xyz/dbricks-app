@@ -8,7 +8,7 @@ import { CONNECTION_URL, SERVER_BASE_URL, WALLET_PROVIDER_URL } from '@/dbricks-
 type fetchedBrick = {
   id: number,
   desc: string,
-  ixAndSigners: ixsAndSigners[],
+  ixsAndSigners: ixsAndSigners[],
 }
 
 export default class SDK {
@@ -26,40 +26,41 @@ export default class SDK {
   async _connectWallet(): Promise<void> {
     this.wallet = new Wallet(WALLET_PROVIDER_URL, CONNECTION_URL);
     this.wallet.on('connect', (ownerPk) => {
-      pushToStatusLog(`Wallet connected to ${ownerPk.toBase58()}`);
+      pushToStatusLog(`Wallet connected to ${ownerPk.toBase58()}.`);
     });
-    this.wallet.on('Disconnect', () => pushToStatusLog('Wallet disconnected'));
+    this.wallet.on('Disconnect', () => pushToStatusLog('Wallet disconnected.'));
     await this.wallet.connect();
   }
 
-  async _processSingleTx(ixAndSigners: ixsAndSigners): Promise<void> {
-    let tx = new Transaction().add(...ixAndSigners.ixs);
+  async _processSingleTx(ixsAndSigners: ixsAndSigners): Promise<void> {
+    let tx = new Transaction().add(...ixsAndSigners.ixs);
     const { blockhash } = await this.connection.getRecentBlockhash();
     tx.recentBlockhash = blockhash;
     tx.feePayer = this.wallet.publicKey as PublicKey;
 
     // sign - first with passed signers, then finally with the wallet
-    if (ixAndSigners.signers.length > 0) {
-      tx.sign(...ixAndSigners.signers);
+    if (ixsAndSigners.signers.length > 0) {
+      tx.sign(...ixsAndSigners.signers);
     }
     tx = await this.wallet.signTransaction(tx);
-
     const sig = await this.connection.sendRawTransaction(tx.serialize());
     pushToStatusLog(`Tx successful, ${sig}`);
+    console.log(`Tx successful, ${sig}`);
   }
 
   async _prepareAndSendTx(): Promise<void> {
-    // todo 1 - single req = single tx
+    // Simple solution - single req = single tx
+    this.fetchedBricks.forEach(async (brick) => {
+      await brick.ixsAndSigners.forEach(async (iAndS) => {
+        if (iAndS.ixs.length > 0) {
+          await this._processSingleTx(iAndS);
+        }
+      });
+    });
 
-    // todo 2 hacky solution - try simulate, if fails, split in 2, then try again, keep doing
+    // todo Hacky solution - try simulate, if fails, split in 2, then try again, keep doing
     //  would need a way to keep track of keypairs from the BE
     //  this means the BE will be sending packs of tx rather than everything mumbo jumboed together
-
-    this.ixsAndSigners.forEach(async (iAndS) => {
-      if (iAndS.ixs.length > 0) {
-        await this._processSingleTx(iAndS);
-      }
-    });
   }
 
   async _requestIxsFromServer(): Promise<void> {
@@ -79,17 +80,16 @@ export default class SDK {
         this.fetchedBricks.push({
           id: b.id,
           desc: b.desc,
-          ixAndSigners: [],
+          ixsAndSigners: [],
         });
       });
     });
     const responses = await axios.all(requests);
 
-    // todo check if responses order matches request order
-    for (let i = 0; i <= responses.length; i++) {
-      this.fetchedBricks[i].ixAndSigners = deserializeIxsAndSigners(responses[i].data);
+    for (let i = 0; i < responses.length; i += 1) {
+      this.fetchedBricks[i].ixsAndSigners = deserializeIxsAndSigners(responses[i].data);
     }
-    console.log('Fetched bricks:', this.fetchedBricks);
+    console.log('Fetched bricks from server:', this.fetchedBricks);
   }
 
   async executeTxs(): Promise<void> {

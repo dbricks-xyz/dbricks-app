@@ -97,8 +97,8 @@ export default defineComponent({
       payload.side = newSide;
     };
 
-    const msgBuy = ref(`${payload.orderType} ${payload.size * payload.price} ${quote.value} --> ${payload.size} ${base.value}`);
-    const msgSell = ref(`${payload.orderType} ${payload.size} ${base.value} --> ${payload.size * payload.price} ${quote.value}`);
+    const msgBuy = ref(`${payload.orderType} ${parseFloat(payload.size) * parseFloat(payload.price)} ${quote.value} --> ${payload.size} ${base.value}`);
+    const msgSell = ref(`${payload.orderType} ${payload.size} ${base.value} --> ${parseFloat(payload.size) * parseFloat(payload.price)} ${quote.value}`);
 
     const handleEndEdit = () => {
       console.log(payload);

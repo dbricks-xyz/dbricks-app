@@ -64,7 +64,7 @@
     </svg>
 
     <div style="width: 700px">
-      <p v-for="status in getStatusLog"  :key="status">{{status}}</p>
+      <p v-for="status in getStatusLog" :key="status">{{ status }}</p>
     </div>
 
     <AddBrick v-if="stateModalActive" @cancel-modal="handleCancelModal" @new-brick="handleNewBrick"/>
@@ -146,8 +146,10 @@ export default defineComponent({
       }
     };
     const handleRemoveBrick = (brick) => {
-      const i = bricks.value.indexOf(brick.brickId);
-      bricks.value.splice(i, 1);
+      const i = bricks.value.map((b) => b.id).indexOf(brick.brickId);
+      if (i !== -1) {
+        bricks.value.splice(i, 1);
+      }
       handleStartEdit(brick); // this will remove from the other list too
     };
     const resetBricks = () => {
