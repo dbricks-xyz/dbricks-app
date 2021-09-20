@@ -1,11 +1,11 @@
 import { Method } from 'axios';
 import {
-  IDEXMarketInitParams, IDEXMarketSettleParams, IDEXOrderCancelParams, IDEXOrderPlaceParams,
+  ISerumDEXMarketInitParams, ISerumDEXMarketSettleParams, ISerumDEXOrderCancelParams, ISerumDEXOrderPlaceParams,
 } from 'dbricks-lib';
 
 export type BrickPayload =
-  IDEXOrderPlaceParams | IDEXOrderCancelParams |
-  IDEXMarketInitParams | IDEXMarketSettleParams;
+  ISerumDEXOrderPlaceParams | ISerumDEXOrderCancelParams |
+  ISerumDEXMarketInitParams | ISerumDEXMarketSettleParams;
 
 export interface IConfiguredRequest {
   method: Method,

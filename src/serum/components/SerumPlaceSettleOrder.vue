@@ -43,7 +43,7 @@ import {
   defineComponent, reactive, ref, watch,
 } from 'vue';
 import { Method } from 'axios';
-import { IDEXMarketSettleParams, IDEXOrderPlaceParams } from 'dbricks-lib';
+import { ISerumDEXMarketSettleParams, ISerumDEXOrderPlaceParams } from 'dbricks-lib';
 import BuySell from '@/common/components/BuySell.vue';
 import { addOrModifyConfiguredBrick } from '@/common/state';
 import { getAction } from '@/common/protocols';
@@ -75,7 +75,7 @@ export default defineComponent({
   },
   emits: ['end-edit'],
   setup(props, context) {
-    const payload = reactive<IDEXOrderPlaceParams>({
+    const payload = reactive<ISerumDEXOrderPlaceParams>({
       marketPk: 'Qj1oaPL5Yeq3goibk726PoL3mRK2dSvhmxaHWo4bxrZ',
       side: 'buy',
       price: '1',
@@ -115,7 +115,7 @@ export default defineComponent({
           payload: {
             marketPk: payload.marketPk,
             ownerPk: '', // filled in during signing
-          } as IDEXMarketSettleParams,
+          } as ISerumDEXMarketSettleParams,
         });
       }
       addOrModifyConfiguredBrick({

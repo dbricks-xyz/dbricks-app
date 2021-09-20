@@ -14,7 +14,7 @@
 <script lang="ts">
 import { defineComponent, reactive } from 'vue';
 import { Method } from 'axios';
-import { IDEXMarketSettleParams } from 'dbricks-lib';
+import { ISerumDEXMarketSettleParams } from 'dbricks-lib';
 import { addOrModifyConfiguredBrick } from '@/common/state';
 import { getAction } from '@/common/protocols';
 import BrickConfigLayout
@@ -36,7 +36,7 @@ export default defineComponent({
   },
   emits: ['end-edit'],
   setup(props, context) {
-    const payload = reactive<IDEXMarketSettleParams>({
+    const payload = reactive<ISerumDEXMarketSettleParams>({
       marketPk: 'Qj1oaPL5Yeq3goibk726PoL3mRK2dSvhmxaHWo4bxrZ',
       ownerPk: '', // filled in during signing
     });

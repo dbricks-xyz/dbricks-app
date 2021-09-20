@@ -23,7 +23,7 @@ import {
   defineComponent, reactive, ref, watch,
 } from 'vue';
 import { Method } from 'axios';
-import { IDEXOrderCancelParams } from 'dbricks-lib';
+import { ISerumDEXOrderCancelParams } from 'dbricks-lib';
 import { addOrModifyConfiguredBrick } from '@/common/state';
 import { getAction } from '@/common/protocols';
 import BrickConfigLayout
@@ -48,7 +48,7 @@ export default defineComponent({
   },
   emits: ['end-edit'],
   setup(props, context) {
-    const payload = reactive<IDEXOrderCancelParams>({
+    const payload = reactive<ISerumDEXOrderCancelParams>({
       marketPk: 'Qj1oaPL5Yeq3goibk726PoL3mRK2dSvhmxaHWo4bxrZ',
       orderId: 'affffffffffffffff',
       ownerPk: '', // filled in during signing
