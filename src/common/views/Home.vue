@@ -64,7 +64,7 @@
     </svg>
 
     <div style="width: 700px">
-      <p v-for="status in getStatusLog" :key="status">{{ status }}</p>
+      <p v-for="entry in getStatusLog" :style="{'color':entry.color}" :key="entry.content">{{ entry.content }}</p>
     </div>
 
     <AddBrick v-if="stateModalActive" @cancel-modal="handleCancelModal" @new-brick="handleNewBrick"/>
@@ -117,7 +117,10 @@ export default defineComponent({
         configuredBricks.value = bricks.value.map((b) => b.id);
       });
       stateCollapsed.value = true;
-      pushToStatusLog('Starting a new transaction.');
+      pushToStatusLog({
+        content: 'Starting a new transaction.',
+        color: 'white',
+      });
       const sdk = new SDK();
       await sdk.executeTxs();
     };

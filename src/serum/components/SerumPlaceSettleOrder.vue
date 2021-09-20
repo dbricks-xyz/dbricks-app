@@ -39,6 +39,7 @@
 
 <script lang="ts">
 import {
+  computed,
   defineComponent, reactive, ref, watch,
 } from 'vue';
 import { Method } from 'axios';
@@ -97,8 +98,8 @@ export default defineComponent({
       payload.side = newSide;
     };
 
-    const msgBuy = ref(`${payload.orderType} ${parseFloat(payload.size) * parseFloat(payload.price)} ${quote.value} --> ${payload.size} ${base.value}`);
-    const msgSell = ref(`${payload.orderType} ${payload.size} ${base.value} --> ${parseFloat(payload.size) * parseFloat(payload.price)} ${quote.value}`);
+    const msgBuy = computed(() => `${payload.orderType} ${parseFloat(payload.size) * parseFloat(payload.price)} ${quote.value} --> ${payload.size} ${base.value}`);
+    const msgSell = computed(() => `${payload.orderType} ${payload.size} ${base.value} --> ${parseFloat(payload.size) * parseFloat(payload.price)} ${quote.value}`);
 
     const handleEndEdit = () => {
       console.log(payload);

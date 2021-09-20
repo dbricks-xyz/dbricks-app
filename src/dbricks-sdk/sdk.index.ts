@@ -1,9 +1,12 @@
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
+import {
+  Connection, PublicKey, Transaction, TransactionSignature,
+} from '@solana/web3.js';
 import axios, { AxiosPromise } from 'axios';
 import { deserializeIxsAndSigners, ixsAndSigners } from 'dbricks-lib';
 import Wallet from '@project-serum/sol-wallet-adapter';
 import { getConfiguredBricks, pushToStatusLog } from '@/common/state';
 import { CONNECTION_URL, SERVER_BASE_URL, WALLET_PROVIDER_URL } from '@/dbricks-sdk/sdk.config';
+import { isLast } from '@/common/util';
 
 type fetchedBrick = {
   id: number,
@@ -26,13 +29,19 @@ export default class SDK {
   async _connectWallet(): Promise<void> {
     this.wallet = new Wallet(WALLET_PROVIDER_URL, CONNECTION_URL);
     this.wallet.on('connect', (ownerPk) => {
-      pushToStatusLog(`Wallet connected to ${ownerPk.toBase58()}.`);
+      pushToStatusLog({
+        content: `Wallet connected to ${ownerPk.toBase58()}.`,
+        color: 'white',
+      });
     });
-    this.wallet.on('Disconnect', () => pushToStatusLog('Wallet disconnected.'));
+    this.wallet.on('Disconnect', () => pushToStatusLog({
+      content: 'Wallet disconnected.',
+      color: 'white',
+    }));
     await this.wallet.connect();
   }
 
-  async _processSingleTx(ixsAndSigners: ixsAndSigners): Promise<void> {
+  async _processSingleTx(ixsAndSigners: ixsAndSigners): Promise<TransactionSignature> {
     let tx = new Transaction().add(...ixsAndSigners.ixs);
     const { blockhash } = await this.connection.getRecentBlockhash();
     tx.recentBlockhash = blockhash;
@@ -43,20 +52,40 @@ export default class SDK {
       tx.sign(...ixsAndSigners.signers);
     }
     tx = await this.wallet.signTransaction(tx);
-    const sig = await this.connection.sendRawTransaction(tx.serialize());
-    pushToStatusLog(`Tx successful, ${sig}`);
-    console.log(`Tx successful, ${sig}`);
+    return this.connection.sendRawTransaction(tx.serialize());
   }
 
   async _prepareAndSendTx(): Promise<void> {
-    // Simple solution - single req = single tx
-    this.fetchedBricks.forEach(async (brick) => {
-      await brick.ixsAndSigners.forEach(async (iAndS) => {
-        if (iAndS.ixs.length > 0) {
-          await this._processSingleTx(iAndS);
-        }
-      });
+    pushToStatusLog({
+      content: 'Please sign the transactions with your wallet.',
+      color: 'yellow',
     });
+    // Simple solution - single req = single tx
+    for (const brick of this.fetchedBricks) {
+      for (const iAndS of brick.ixsAndSigners) {
+        if (iAndS.ixs.length > 0) {
+          this._processSingleTx(iAndS)
+            .then((sig) => {
+              pushToStatusLog({
+                content: `Tx successful, ${sig}`,
+                color: 'green',
+              });
+              if (isLast(iAndS, brick.ixsAndSigners)) {
+                pushToStatusLog({
+                  content: `Done: ${brick.desc}.`,
+                  color: 'white',
+                });
+              }
+            })
+            .catch((e) => {
+              pushToStatusLog({
+                content: `Tx failed, ${e}`,
+                color: 'red',
+              });
+            });
+        }
+      }
+    }
 
     // todo Hacky solution - try simulate, if fails, split in 2, then try again, keep doing
     //  would need a way to keep track of keypairs from the BE
