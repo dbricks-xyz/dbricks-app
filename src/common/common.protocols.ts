@@ -59,6 +59,18 @@ const protocols: IProtocol[] = ([
       {
         id: 0, name: 'Initialize market', path: '/saber/markets', method: 'POST',
       },
+      {
+        id: 1, name: 'Place order', path: '/saber/orders', method: 'POST',
+      },
+      {
+        id: 2, name: 'Cancel order', path: '/saber/orders/cancel', method: 'POST',
+      },
+      {
+        id: 3, name: 'Initialize market', path: '/saber/markets', method: 'POST',
+      },
+      {
+        id: 4, name: 'Settle market', path: '/saber/markets/settle', method: 'POST',
+      },
     ],
   },
 ]);
