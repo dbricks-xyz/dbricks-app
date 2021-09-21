@@ -109,9 +109,15 @@ export default class SolClient extends DBricksSDK {
     });
 
     const flattenedBricks = this.flattenBricks(fetchedBricks);
-    const sizedBricks = await this.findOptimalBrickSize(flattenedBricks, ownerPk);
+    let sizedBricks = await this.findOptimalBrickSize(flattenedBricks, ownerPk);
     pushToStatusLog({
       content: 'Bricks re-composed to minimize required transactions.',
+      color: 'white',
+    });
+
+    sizedBricks = await this.updateBlockhashOnSimilarTxs(sizedBricks);
+    pushToStatusLog({
+      content: 'Transactions with similar blockhashes de-duplicated.',
       color: 'white',
     });
 
