@@ -122,15 +122,15 @@ export default defineComponent({
         configuredBricks.value = bricks.value.map((b) => b.id);
       });
       stateCollapsed.value = true;
-      const ownerPk = await (new SolClient()).executeAndLogTxs();
+      const ownerPk = await (new SolClient()).prepAndExecBricks();
 
       // todo just temporary
-      const orders = await (new SerumClient()).getOrdersForOwner('Qj1oaPL5Yeq3goibk726PoL3mRK2dSvhmxaHWo4bxrZ', ownerPk);
-      const orderIds = orders.map((o) => `${o.orderId}\n`);
-      pushToStatusLog({
-        content: `User's outstanding Serum orders are: ${orderIds}`,
-        color: 'white',
-      });
+      // const orders = await (new SerumClient()).getOrdersForOwner('Qj1oaPL5Yeq3goibk726PoL3mRK2dSvhmxaHWo4bxrZ', ownerPk);
+      // const orderIds = orders.map((o) => `${o.orderId}\n`);
+      // pushToStatusLog({
+      //   content: `User's outstanding Serum orders are: ${orderIds}`,
+      //   color: 'white',
+      // });
     };
     const handleCancelModal = () => {
       stateModalActive.value = false;

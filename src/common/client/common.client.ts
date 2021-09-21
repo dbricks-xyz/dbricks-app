@@ -1,50 +1,145 @@
 import axios, { AxiosPromise } from 'axios';
-import { PublicKey, TransactionSignature } from '@solana/web3.js';
-import { deserializeIxsAndSigners } from 'dbricks-lib';
-import { DbricksSDK, fetchedBrick } from '@/common/sdk';
+import {
+  PublicKey, Signer, Transaction, TransactionSignature,
+} from '@solana/web3.js';
+import { deserializeIxsAndSigners, ixsAndSigners } from 'dbricks-lib';
+import { DbricksSDK } from '@/common/sdk';
 import { configuredBricks, pushToStatusLog } from '@/common/common.state';
-import { isLast } from '@/common/common.util';
 import { SERVER_BASE_URL } from '@/common/sdk/config';
+import { isLast } from '@/common/common.util';
+
+type fetchedBrick = {
+  id: number,
+  desc: string,
+  ixsAndSigners: ixsAndSigners[],
+}
+
+type flattenedBrick = {
+  id: number,
+  desc: string,
+  ixsAndSigners: ixsAndSigners,
+}
+
+type sizedBrick = {
+  id: number,
+  desc: string,
+  tx: Transaction,
+  signers: Signer[],
+}
 
 export default class SolClient extends DbricksSDK {
-  fetchedBricks: fetchedBrick[] = [];
+  async fetchBricksFromServer(ownerPk?: PublicKey): Promise<fetchedBrick[]> {
+    const fetchedBricks: fetchedBrick[] = [];
+    const requests: AxiosPromise[] = [];
+    configuredBricks.value.forEach((b) => {
+      b.req.forEach((r) => {
+        const req = axios({
+          baseURL: SERVER_BASE_URL,
+          method: r.method,
+          url: r.path,
+          data: {
+            ...r.payload,
+            ownerPk: ownerPk ?? (this.wallet.publicKey as PublicKey).toBase58(),
+          },
+        });
+        requests.push(req);
+        fetchedBricks.push({
+          id: b.id,
+          desc: b.desc,
+          ixsAndSigners: [],
+        });
+      });
+    });
+    const responses = await axios.all(requests);
 
-  async executeTxsFromBricks(): Promise<void> {
-    // Simple solution - single req = single tx
-    const promises: Promise<TransactionSignature>[] = [];
+    for (let i = 0; i < responses.length; i += 1) {
+      fetchedBricks[i].ixsAndSigners = deserializeIxsAndSigners(responses[i].data);
+    }
+    console.log('Fetched bricks from server:', fetchedBricks);
+    return fetchedBricks;
+  }
 
-    this.fetchedBricks.forEach((brick) => {
-      brick.ixsAndSigners.forEach((iAndS) => {
-        if (iAndS.ixs.length > 0) {
-          const p = this.signAndSendTx(iAndS);
-          promises.push(p);
-          p
-            .then((sig) => {
-              pushToStatusLog({
-                content: `Tx successful, ${sig}`,
-                color: 'green',
-              });
-              if (isLast(iAndS, brick.ixsAndSigners)) {
-                pushToStatusLog({
-                  content: `Done: ${brick.desc}.`,
-                  color: 'white',
-                });
-              }
-            })
-            .catch((e) => {
-              pushToStatusLog({
-                content: `Tx failed, ${e}`,
-                color: 'red',
-              });
-            });
+  // todo could add dedup logic
+  flattenBricks(fetchedBricks: fetchedBrick[]): flattenedBrick[] {
+    const flattenedBricks: flattenedBrick[] = [];
+    fetchedBricks.forEach((b) => {
+      b.ixsAndSigners.forEach((i) => {
+        if (i.ixs.length > 0) {
+          flattenedBricks.push({
+            id: b.id,
+            desc: b.desc,
+            ixsAndSigners: i,
+          });
         }
       });
     });
+    console.log('Flattened bricks', flattenedBricks);
+    return flattenedBricks;
+  }
 
-    // todo Hacky solution - try simulate, if fails, split in 2, then try again, keep doing
-    //  would need a way to keep track of keypairs from the BE
-    //  this means the BE will be sending packs of tx rather than everything mumbo jumboed together
+  async findOptimalBrickSize(bricks: flattenedBrick[]): Promise<sizedBrick[]> {
+    console.log(`Attempting tx with ${bricks.length} bricks`);
+    const attemptedBrick: sizedBrick = {
+      id: 0,
+      desc: '',
+      tx: new Transaction(),
+      signers: [],
+    };
+    bricks.forEach((i) => {
+      attemptedBrick.id = i.id;
+      attemptedBrick.desc = i.desc;
+      attemptedBrick.tx.add(...i.ixsAndSigners.ixs);
+      attemptedBrick.signers.push(...i.ixsAndSigners.signers);
+    });
+    attemptedBrick.tx.recentBlockhash = (await this.connection.getRecentBlockhash()).blockhash;
+    attemptedBrick.tx.feePayer = this.ownerPk;
+    try {
+      const buf = attemptedBrick.tx.serialize({
+        verifySignatures: false,
+      });
+      console.log(`Tx of size ${buf.length} fits ${bricks.length} bricks just ok`);
+      return [attemptedBrick];
+    } catch (e) {
+      const middle = Math.ceil(bricks.length / 2);
+      console.log(`Tx with ${bricks.length} bricks is too large, breaking into 2 at ${middle}`);
+      const left = bricks.splice(0, middle);
+      const right = bricks.splice(-middle);
+      return [...(await this.findOptimalBrickSize(left)), ...(await this.findOptimalBrickSize(right))];
+    }
+  }
 
+  async executeBricks(sizedBricks: sizedBrick[]): Promise<void> {
+    const toDoTracker = {};
+    const doneTracker = {};
+    sizedBricks.forEach((b) => {
+      toDoTracker[b.id] = (toDoTracker[b.id] + 1) || 1;
+    });
+
+    const promises: Promise<TransactionSignature>[] = [];
+    sizedBricks.forEach((sizedBrick) => {
+      const p = this.signAndSendTx(sizedBrick.tx, sizedBrick.signers);
+      promises.push(p);
+      p
+        .then((sig) => {
+          pushToStatusLog({
+            content: `Tx successful, ${sig}`,
+            color: 'green',
+          });
+          doneTracker[sizedBrick.id] = (doneTracker[sizedBrick.id] + 1) || 1;
+          if (toDoTracker[sizedBrick.id] === doneTracker[sizedBrick.id]) {
+            pushToStatusLog({
+              content: `Brick succeffully executed: ${sizedBrick.desc}.`,
+              color: 'white',
+            });
+          }
+        })
+        .catch((e) => {
+          pushToStatusLog({
+            content: `Tx failed, ${e}`,
+            color: 'red',
+          });
+        });
+    });
     await Promise.all(promises)
       .then(() => {
         pushToStatusLog({
@@ -60,38 +155,9 @@ export default class SolClient extends DbricksSDK {
       });
   }
 
-  async requestTxsFromServer(): Promise<void> {
-    const requests: AxiosPromise[] = [];
-    configuredBricks.value.forEach((b) => {
-      b.req.forEach((r) => {
-        const req = axios({
-          baseURL: SERVER_BASE_URL,
-          method: r.method,
-          url: r.path,
-          data: {
-            ...r.payload,
-            ownerPk: (this.wallet.publicKey as PublicKey).toBase58(),
-          },
-        });
-        requests.push(req);
-        this.fetchedBricks.push({
-          id: b.id,
-          desc: b.desc,
-          ixsAndSigners: [],
-        });
-      });
-    });
-    const responses = await axios.all(requests);
-
-    for (let i = 0; i < responses.length; i += 1) {
-      this.fetchedBricks[i].ixsAndSigners = deserializeIxsAndSigners(responses[i].data);
-    }
-    console.log('Fetched bricks from server:', this.fetchedBricks);
-  }
-
-  async executeAndLogTxs(): Promise<PublicKey> {
+  async prepAndExecBricks(): Promise<PublicKey> {
     pushToStatusLog({
-      content: 'Building new transaction stack.',
+      content: 'Building new brick stack.',
       color: 'white',
     });
 
@@ -101,9 +167,16 @@ export default class SolClient extends DbricksSDK {
       color: 'white',
     });
 
-    await this.requestTxsFromServer();
+    const fetchedBricks = await this.fetchBricksFromServer();
     pushToStatusLog({
-      content: `Instructions and signers for bricks ${this.fetchedBricks.map((b) => b.id)} fetched.`,
+      content: `Instructions and signers for bricks ${fetchedBricks.map((b) => b.id)} fetched.`,
+      color: 'white',
+    });
+
+    const flattenedBricks = this.flattenBricks(fetchedBricks);
+    const sizedBricks = await this.findOptimalBrickSize(flattenedBricks);
+    pushToStatusLog({
+      content: 'Bricks re-composed to minimize required transactions.',
       color: 'white',
     });
 
@@ -111,8 +184,7 @@ export default class SolClient extends DbricksSDK {
       content: 'Please sign the transactions with your wallet.',
       color: 'yellow',
     });
-    await this.executeTxsFromBricks();
-
+    await this.executeBricks(sizedBricks);
     return this.ownerPk as PublicKey;
   }
 }
