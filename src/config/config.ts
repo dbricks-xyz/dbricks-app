@@ -1,4 +1,4 @@
-import { PublicKey } from '@solana/web3.js';
+import { Commitment, PublicKey } from '@solana/web3.js';
 
 /*eslint-disable */
 export let NETWORK: string;
@@ -44,3 +44,4 @@ if (NETWORK === 'mainnet') {
 
 export const SERVER_BASE_URL = 'http://localhost:3000';
 export const WALLET_PROVIDER_URL = 'https://www.sollet.io';
+export const COMMITTMENT: Commitment = 'processed';

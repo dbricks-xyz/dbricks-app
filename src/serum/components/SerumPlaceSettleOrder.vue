@@ -62,6 +62,7 @@ import BrickConfigRadio
 import BrickConfigCheckbox
   from '@/common/components/brick-config/BrickConfigCheckbox.vue';
 import SerumClient from '@/serum/client/serum.client';
+import { COMMITTMENT, CONNECTION_URL } from '@/config/config';
 
 export default defineComponent({
   components: {
@@ -97,7 +98,7 @@ export default defineComponent({
     const quote = ref<string>('');
 
     const updateBaseQuote = async () => {
-      [base.value, quote.value] = await (new SerumClient()).getBaseQuote(payload.marketPk);
+      [base.value, quote.value] = await (new SerumClient(CONNECTION_URL, COMMITTMENT)).getBaseQuote(payload.marketPk);
     };
     updateBaseQuote();
     watch(payload, updateBaseQuote);

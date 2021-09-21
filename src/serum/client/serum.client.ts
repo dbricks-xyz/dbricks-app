@@ -3,7 +3,7 @@ import { PublicKey } from '@solana/web3.js';
 import { Market } from '@project-serum/serum';
 import { Order } from '@project-serum/serum/lib/market';
 import SolClient from '@/common/client/common.client';
-import { SERUM_PROG_ID, SERVER_BASE_URL } from '@/common/sdk/config';
+import { SERUM_PROG_ID, SERVER_BASE_URL } from '@/config/config';
 
 export default class SerumClient extends SolClient {
   async getBaseQuote(marketPk: string): Promise<[string, string]> {

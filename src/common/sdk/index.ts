@@ -1,24 +1,29 @@
 import {
+  Commitment,
   Connection, PublicKey, Signer, Transaction, TransactionSignature,
 } from '@solana/web3.js';
 import Wallet from '@project-serum/sol-wallet-adapter';
 import axios, { AxiosPromise } from 'axios';
 import { deserializeIxsAndSigners } from 'dbricks-lib';
-import { CONNECTION_URL, SERVER_BASE_URL, WALLET_PROVIDER_URL } from '@/common/sdk/config';
 import {
   configuredBrick, fetchedBrick, flattenedBrick, sizedBrick,
 } from '@/common/sdk/types';
 
 export class DBricksSDK {
+  connectionUrl: string;
+
   connection: Connection;
 
-  constructor() {
-    this.connection = new Connection(CONNECTION_URL, 'processed');
+  constructor(connectionUrl: string, committment: Commitment) {
+    this.connectionUrl = connectionUrl;
+    this.connection = new Connection(connectionUrl, committment);
     console.log('Initialized dbricks SDK');
   }
 
-  async connectWallet(): Promise<Wallet> {
-    const wallet = new Wallet(WALLET_PROVIDER_URL, CONNECTION_URL);
+  async connectWallet(
+    providerUrl: string,
+  ): Promise<Wallet> {
+    const wallet = new Wallet(providerUrl, this.connectionUrl);
     wallet.on('connect', (ownerPk) => {
       console.log({
         content: `Wallet connected to ${ownerPk.toBase58()}.`,
@@ -49,13 +54,13 @@ export class DBricksSDK {
     return sig;
   }
 
-  async fetchBricksFromServer(configuredBricks: configuredBrick[], ownerPk: PublicKey): Promise<fetchedBrick[]> {
+  async fetchBricksFromServer(baseURL: string, configuredBricks: configuredBrick[], ownerPk: PublicKey): Promise<fetchedBrick[]> {
     const fetchedBricks: fetchedBrick[] = [];
     const requests: AxiosPromise[] = [];
     configuredBricks.forEach((b) => {
       b.req.forEach((r) => {
         const req = axios({
-          baseURL: SERVER_BASE_URL,
+          baseURL,
           method: r.method,
           url: r.path,
           data: {

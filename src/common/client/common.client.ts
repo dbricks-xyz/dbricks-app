@@ -3,6 +3,7 @@ import Wallet from '@project-serum/sol-wallet-adapter';
 import { DBricksSDK } from '@/common/sdk';
 import { configuredBricks, pushToStatusLog } from '@/common/common.state';
 import { sizedBrick } from '@/common/sdk/types';
+import { SERVER_BASE_URL, WALLET_PROVIDER_URL } from '@/config/config';
 
 export default class SolClient extends DBricksSDK {
   async executeBricks(sizedBricks: sizedBrick[], wallet: Wallet): Promise<void> {
@@ -58,20 +59,22 @@ export default class SolClient extends DBricksSDK {
       color: 'white',
     });
 
-    const wallet = await this.connectWallet();
+    const wallet = await this.connectWallet(WALLET_PROVIDER_URL);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const ownerPk = wallet.publicKey!;
     pushToStatusLog({
       content: `Wallet connected to ${wallet.publicKey?.toBase58()}.`,
       color: 'white',
     });
 
-    const fetchedBricks = await this.fetchBricksFromServer(configuredBricks.value, wallet.publicKey!);
+    const fetchedBricks = await this.fetchBricksFromServer(SERVER_BASE_URL, configuredBricks.value, ownerPk);
     pushToStatusLog({
       content: `Instructions and signers for bricks ${fetchedBricks.map((b) => b.id)} fetched.`,
       color: 'white',
     });
 
     const flattenedBricks = this.flattenBricks(fetchedBricks);
-    const sizedBricks = await this.findOptimalBrickSize(flattenedBricks, wallet.publicKey!);
+    const sizedBricks = await this.findOptimalBrickSize(flattenedBricks, ownerPk);
     pushToStatusLog({
       content: 'Bricks re-composed to minimize required transactions.',
       color: 'white',
@@ -82,6 +85,6 @@ export default class SolClient extends DBricksSDK {
       color: 'yellow',
     });
     await this.executeBricks(sizedBricks, wallet);
-    return wallet.publicKey!;
+    return ownerPk;
   }
 }

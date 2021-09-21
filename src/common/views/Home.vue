@@ -88,6 +88,7 @@ import {
   statusLog,
 } from '@/common/common.state';
 import SerumClient from '@/serum/client/serum.client';
+import { COMMITTMENT, CONNECTION_URL } from '@/config/config';
 
 interface IBrick {
   id: number,
@@ -122,10 +123,10 @@ export default defineComponent({
         configuredBricks.value = bricks.value.map((b) => b.id);
       });
       stateCollapsed.value = true;
-      const ownerPk = await (new SolClient()).prepAndExecBricks();
+      const ownerPk = await (new SolClient(CONNECTION_URL, COMMITTMENT)).prepAndExecBricks();
 
       // todo just temporary
-      const orders = await (new SerumClient()).getOrdersForOwner('Qj1oaPL5Yeq3goibk726PoL3mRK2dSvhmxaHWo4bxrZ', ownerPk);
+      const orders = await (new SerumClient(CONNECTION_URL, COMMITTMENT)).getOrdersForOwner('Qj1oaPL5Yeq3goibk726PoL3mRK2dSvhmxaHWo4bxrZ', ownerPk);
       const orderIds = orders.map((o) => `${o.orderId}\n`);
       pushToStatusLog({
         content: `User's outstanding Serum orders are: ${orderIds}`,
