@@ -1,5 +1,5 @@
 import { computed, reactive } from 'vue';
-import { configuredBrick, configuredRequest } from '@/common/sdk/types';
+import { configuredBrick, configuredRequest } from 'dbricks-lib';
 
 export type logEntry = {
   content: string,

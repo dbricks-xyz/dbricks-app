@@ -1,11 +1,46 @@
-import { PublicKey, TransactionSignature } from '@solana/web3.js';
+import {
+  PublicKey, Signer, Transaction, TransactionSignature,
+} from '@solana/web3.js';
 import Wallet from '@project-serum/sol-wallet-adapter';
-import { DBricksSDK } from '@/common/sdk';
+import { DBricksSDK, sizedBrick } from 'dbricks-lib';
 import { configuredBricks, pushToStatusLog } from '@/common/common.state';
-import { sizedBrick } from '@/common/sdk/types';
 import { SERVER_BASE_URL, WALLET_PROVIDER_URL } from '@/config/config';
 
 export default class SolClient extends DBricksSDK {
+  async connectWallet(
+    providerUrl: string,
+  ): Promise<Wallet> {
+    const wallet = new Wallet(providerUrl, this.connectionUrl);
+    wallet.on('connect', (ownerPk) => {
+      console.log({
+        content: `Wallet connected to ${ownerPk.toBase58()}.`,
+        color: 'white',
+      });
+    });
+    wallet.on('Disconnect', () => {
+      console.log({
+        content: 'Wallet disconnected.',
+        color: 'white',
+      });
+    });
+    await wallet.connect();
+    return wallet;
+  }
+
+  async signTxWithWalletAndSend(
+    tx: Transaction,
+    additionalSigners: Signer[],
+    wallet: Wallet,
+  ): Promise<TransactionSignature> {
+    if (additionalSigners.length > 0) {
+      tx.sign(...additionalSigners);
+    }
+    const signedTx = await wallet.signTransaction(tx);
+    const sig = await this.connection.sendRawTransaction(signedTx.serialize());
+    console.log('Tx successful', sig);
+    return sig;
+  }
+
   async executeBricks(sizedBricks: sizedBrick[], wallet: Wallet): Promise<void> {
     const toDoTracker = {};
     const doneTracker = {};

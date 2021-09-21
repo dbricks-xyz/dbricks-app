@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "update": "yarn upgrade dbricks-lib --latest --check-files"
+    "update": "yarn upgrade dbricks-lib --latest --check-files",
+    "linklib": "rm -rf ../node_modules/dbricks-lib"
   },
   "dependencies": {
     "@project-serum/serum": "^0.13.59",

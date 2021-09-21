@@ -43,6 +43,7 @@ import {
 } from 'vue';
 import { Method } from 'axios';
 import {
+  configuredRequest,
   ISerumDEXMarketSettleParams,
   ISerumDEXOrderPlaceParams,
 } from 'dbricks-lib';
@@ -52,7 +53,6 @@ import {
   getPayloadsByBrickId,
 } from '@/common/common.state';
 import { getAction } from '@/common/common.protocols';
-import { configuredRequest } from '@/common/sdk/types';
 import BrickConfigLayout
   from '@/common/components/brick-config/BrickConfigLayout.vue';
 import BrickConfigInput
