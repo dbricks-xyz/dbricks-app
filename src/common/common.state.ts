@@ -1,5 +1,5 @@
 import { computed, reactive } from 'vue';
-import { IConfiguredBrick, IConfiguredRequest } from '@/common/interfaces/common.interfaces';
+import { configuredBrick, configuredRequest } from '@/common/sdk/types';
 
 export type logEntry = {
   content: string,
@@ -7,7 +7,7 @@ export type logEntry = {
 }
 
 const state = reactive({
-  configuredBricks: <IConfiguredBrick[]>[],
+  configuredBricks: <configuredBrick[]>[],
   statusLog: <logEntry[]>[],
 });
 
@@ -15,9 +15,9 @@ const state = reactive({
 
 export const configuredBricks = computed(() => state.configuredBricks);
 
-export const getConfiguredBrickById = (brickId: number): IConfiguredBrick => state.configuredBricks.filter((b) => b.id === brickId)[0];
+export const getConfiguredBrickById = (brickId: number): configuredBrick => state.configuredBricks.filter((b) => b.id === brickId)[0];
 
-export const getPayloadsByBrickId = (brickId: number): IConfiguredRequest[] => {
+export const getPayloadsByBrickId = (brickId: number): configuredRequest[] => {
   const foundBrick = getConfiguredBrickById(brickId);
   if (foundBrick) {
     return foundBrick.req;
@@ -25,7 +25,7 @@ export const getPayloadsByBrickId = (brickId: number): IConfiguredRequest[] => {
   return [];
 };
 
-export const addOrModifyConfiguredBrick = (newOrUpdatedBrick: IConfiguredBrick): void => {
+export const addOrModifyConfiguredBrick = (newOrUpdatedBrick: configuredBrick): void => {
   const i = state.configuredBricks.map((b) => b.id)
     .indexOf(newOrUpdatedBrick.id);
   if (i === -1) {

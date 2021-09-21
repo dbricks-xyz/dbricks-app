@@ -52,7 +52,7 @@ import {
   getPayloadsByBrickId,
 } from '@/common/common.state';
 import { getAction } from '@/common/common.protocols';
-import { IConfiguredRequest } from '@/common/interfaces/common.interfaces';
+import { configuredRequest } from '@/common/sdk/types';
 import BrickConfigLayout
   from '@/common/components/brick-config/BrickConfigLayout.vue';
 import BrickConfigInput
@@ -113,7 +113,7 @@ export default defineComponent({
 
     const handleEndEdit = () => {
       console.log(payload);
-      const req: IConfiguredRequest[] = [{
+      const req: configuredRequest[] = [{
         method: getAction(props.brick.protocolId, props.brick.actionId).method as Method,
         path: getAction(props.brick.protocolId, props.brick.actionId).path,
         payload,
