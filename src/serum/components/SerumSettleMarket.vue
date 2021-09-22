@@ -15,7 +15,6 @@
 import { computed, defineComponent, reactive } from 'vue';
 import { Method } from 'axios';
 import {
-  IMangoDEXMarketSettleParams,
   ISerumDEXMarketSettleParams,
 } from 'dbricks-lib';
 import {
@@ -44,7 +43,7 @@ export default defineComponent({
   setup(props, context) {
     const existingPayload = getPayloadsByBrickId(props.brick.id)[0];
     const payload = reactive<ISerumDEXMarketSettleParams>(existingPayload
-      ? existingPayload.payload as IMangoDEXMarketSettleParams
+      ? existingPayload.payload as ISerumDEXMarketSettleParams
       : {
         marketPk: 'Di66GTLsV64JgCCYGVcY21RZ173BHkjJVgPyezNN7P1K',
         ownerPk: '', // filled in during signing
