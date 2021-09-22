@@ -14,9 +14,7 @@
 <script lang="ts">
 import { computed, defineComponent, reactive } from 'vue';
 import { Method } from 'axios';
-import {
-  ISerumDEXMarketSettleParams,
-} from 'dbricks-lib';
+import { ISerumDEXMarketSettleParams } from 'dbricks-lib';
 import {
   addOrModifyConfiguredBrick,
   getPayloadsByBrickId,
@@ -45,11 +43,11 @@ export default defineComponent({
     const payload = reactive<ISerumDEXMarketSettleParams>(existingPayload
       ? existingPayload.payload as ISerumDEXMarketSettleParams
       : {
-        marketPk: 'Di66GTLsV64JgCCYGVcY21RZ173BHkjJVgPyezNN7P1K',
+        marketPk: '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc',
         ownerPk: '', // filled in during signing
       });
 
-    const desc = computed(() => `Settle market ${payload.marketPk}`);
+    const desc = computed(() => `Settle market ${payload.marketPk.substring(0, 5)}..`);
 
     const handleEndEdit = () => {
       addOrModifyConfiguredBrick({

@@ -75,11 +75,9 @@ export default defineComponent({
   },
   emits: ['end-edit'],
   setup(props, context) {
-    // note there's also a 2nd element inside the array (settle order),
-    // but we don't need it as it updates automatically
-    const existingPayload = getPayloadsByBrickId(props.brick.id)[0];
-    const payload = reactive<ISerumDEXOrderPlaceParams>(existingPayload
-      ? existingPayload.payload as ISerumDEXOrderPlaceParams
+    const [existingPlacePayload, existingSettlePayload] = getPayloadsByBrickId(props.brick.id);
+    const payload = reactive<ISerumDEXOrderPlaceParams>(existingPlacePayload
+      ? existingPlacePayload.payload as ISerumDEXOrderPlaceParams
       : {
         marketPk: '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc',
         side: 'buy',
@@ -91,14 +89,20 @@ export default defineComponent({
 
     const base = ref<string>('');
     const quote = ref<string>('');
-    watch(payload, async () => {
-      [base.value, quote.value] = await getMarketMints(payload.marketPk);
+    watch(() => payload.marketPk, async (newVal) => {
+      // solana PKs ming length of 32 - https://docs.solana.com/cli/transfer-tokens#receive-tokens
+      if (newVal.length >= 32) {
+        [base.value, quote.value] = await getMarketMints(payload.marketPk);
+      }
     });
     getMarketMints(payload.marketPk).then(([b, q]) => {
       [base.value, quote.value] = [b, q];
     });
 
     const trySettle = ref<boolean>(true);
+    if (existingPlacePayload && !existingSettlePayload) {
+      trySettle.value = false;
+    }
 
     const handleChangeSide = (newSide) => {
       payload.side = newSide;

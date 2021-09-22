@@ -55,7 +55,7 @@ export default defineComponent({
       });
 
     const mint = ref<string>('');
-    watch(payload, async () => {
+    watch(() => payload.mintPk, async () => {
       mint.value = await prettifyMint(payload.mintPk);
     });
     prettifyMint(payload.mintPk).then((m) => {
