@@ -15,7 +15,9 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive } from 'vue';
+import {
+  computed, defineComponent, reactive, ref, watch,
+} from 'vue';
 import { Method } from 'axios';
 import { IMangoLenderDepositParams } from 'dbricks-lib';
 import {
@@ -27,7 +29,7 @@ import BrickConfigLayout
   from '@/common/components/brick-config/BrickConfigLayout.vue';
 import BrickConfigInput
   from '@/common/components/brick-config/BrickConfigInput.vue';
-import { shortenPk } from '@/common/common.util';
+import { prettifyMint } from '@/common/common.util';
 
 export default defineComponent({
   components: {
@@ -52,7 +54,15 @@ export default defineComponent({
         ownerPk: '', // filled in during signing
       });
 
-    const desc = computed(() => `Deposit ${payload.quantity} ${shortenPk(payload.mintPk)} into Mango`);
+    const mint = ref<string>('');
+    watch(payload, async () => {
+      mint.value = await prettifyMint(payload.mintPk);
+    });
+    prettifyMint(payload.mintPk).then((m) => {
+      mint.value = m;
+    });
+
+    const desc = computed(() => `Deposit ${payload.quantity} ${mint.value} into Mango`);
 
     const handleEndEdit = () => {
       addOrModifyConfiguredBrick({

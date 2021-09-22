@@ -56,8 +56,7 @@ import BrickConfigRadio
   from '@/common/components/brick-config/BrickConfigRadio.vue';
 import BrickConfigCheckbox
   from '@/common/components/brick-config/BrickConfigCheckbox.vue';
-import SerumClient from '@/serum/client/serum.client';
-import { COMMITTMENT, CONNECTION_URL } from '@/config/config';
+import { getMarketMints } from '@/common/common.util';
 
 export default defineComponent({
   components: {
@@ -82,21 +81,22 @@ export default defineComponent({
     const payload = reactive<ISerumDEXOrderPlaceParams>(existingPayload
       ? existingPayload.payload as ISerumDEXOrderPlaceParams
       : {
-        marketPk: 'Qj1oaPL5Yeq3goibk726PoL3mRK2dSvhmxaHWo4bxrZ',
+        marketPk: 'Di66GTLsV64JgCCYGVcY21RZ173BHkjJVgPyezNN7P1K',
         side: 'buy',
         price: '1',
         size: '10',
         orderType: 'limit',
         ownerPk: '', // filled in during signing
       });
+
     const base = ref<string>('');
     const quote = ref<string>('');
-
-    const updateBaseQuote = async () => {
-      [base.value, quote.value] = await (new SerumClient(CONNECTION_URL, COMMITTMENT)).getBaseQuote(payload.marketPk);
-    };
-    updateBaseQuote();
-    watch(payload, updateBaseQuote);
+    watch(payload, async () => {
+      [base.value, quote.value] = await getMarketMints(payload.marketPk);
+    });
+    getMarketMints(payload.marketPk).then(([b, q]) => {
+      [base.value, quote.value] = [b, q];
+    });
 
     const trySettle = ref<boolean>(true);
 

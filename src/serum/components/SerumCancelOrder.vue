@@ -55,7 +55,7 @@ export default defineComponent({
     const payload = reactive<ISerumDEXOrderCancelParams>(existingPayload
       ? existingPayload.payload as ISerumDEXOrderCancelParams
       : {
-        marketPk: 'Qj1oaPL5Yeq3goibk726PoL3mRK2dSvhmxaHWo4bxrZ',
+        marketPk: 'Di66GTLsV64JgCCYGVcY21RZ173BHkjJVgPyezNN7P1K',
         orderId: 'affffffffffffffff',
         ownerPk: '', // filled in during signing
       });

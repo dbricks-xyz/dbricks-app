@@ -46,7 +46,7 @@ export default defineComponent({
     const payload = reactive<ISerumDEXMarketSettleParams>(existingPayload
       ? existingPayload.payload as IMangoDEXMarketSettleParams
       : {
-        marketPk: 'Qj1oaPL5Yeq3goibk726PoL3mRK2dSvhmxaHWo4bxrZ',
+        marketPk: 'Di66GTLsV64JgCCYGVcY21RZ173BHkjJVgPyezNN7P1K',
         ownerPk: '', // filled in during signing
       });
 

@@ -3,6 +3,7 @@ import {
 } from '@solana/web3.js';
 import Wallet from '@project-serum/sol-wallet-adapter';
 import { DBricksSDK, sizedBrick } from 'dbricks-lib';
+import axios from 'axios';
 import { configuredBricks, pushToStatusLog } from '@/common/common.state';
 import { SERVER_BASE_URL, WALLET_PROVIDER_URL } from '@/config/config';
 
@@ -127,5 +128,19 @@ export default class SolClient extends DBricksSDK {
     });
     await this.executeBricks(sizedBricks, wallet);
     return ownerPk;
+  }
+
+  // --------------------------------------- to be moved to sdk
+
+  async getMintName(mintPk: string): Promise<string | undefined> {
+    const res = await axios({
+      baseURL: SERVER_BASE_URL,
+      method: 'POST',
+      url: '/mintname',
+      data: {
+        mintPk,
+      },
+    });
+    return res.data;
   }
 }

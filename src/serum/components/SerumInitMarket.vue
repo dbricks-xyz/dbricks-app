@@ -33,7 +33,7 @@ import BrickConfigLayout
   from '@/common/components/brick-config/BrickConfigLayout.vue';
 import BrickConfigInput
   from '@/common/components/brick-config/BrickConfigInput.vue';
-import { shortenPk } from '@/common/common.util';
+import { prettifyMint } from '@/common/common.util';
 
 export default defineComponent({
   components: {
@@ -60,7 +60,7 @@ export default defineComponent({
         ownerPk: '', // filled in during signing
       });
 
-    const desc = computed(() => `Init market for ${shortenPk(payload.baseMintPk)} / ${shortenPk(payload.quoteMintPk)}`);
+    const desc = computed(() => `Init market for ${prettifyMint(payload.baseMintPk)} / ${prettifyMint(payload.quoteMintPk)}`);
 
     const handleEndEdit = () => {
       addOrModifyConfiguredBrick({
