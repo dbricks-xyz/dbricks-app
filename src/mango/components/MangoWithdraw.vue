@@ -1,12 +1,18 @@
 <template>
   <BrickConfigLayout :show-full="showFull" @end-edit="handleEndEdit">
     <template v-slot:full>
-      <BrickConfigInput id="market" name="Market">
-        <input type="text" id="market" v-model="payload.marketPk">
+      <BrickConfigInput id="mint" name="Mint">
+        <input type="text" id="mint" v-model="payload.mintPk">
       </BrickConfigInput>
+      <BrickConfigInput id="amount" name="Amount">
+        <input type="text" id="amount" v-model="payload.quantity">
+      </BrickConfigInput>
+      <BrickConfigCheckbox id="box" name="Borrow?">
+        <input class="flex-initial m-1" type="checkbox" id="box" v-model="payload.isBorrow">
+      </BrickConfigCheckbox>
     </template>
     <template v-slot:short>
-      <p>{{desc}}</p>
+      <p>{{ desc }}</p>
     </template>
   </BrickConfigLayout>
 </template>
@@ -14,10 +20,7 @@
 <script lang="ts">
 import { computed, defineComponent, reactive } from 'vue';
 import { Method } from 'axios';
-import {
-  IMangoDEXMarketSettleParams,
-  ISerumDEXMarketSettleParams,
-} from 'dbricks-lib';
+import { IMangoLenderWithdrawParams } from 'dbricks-lib';
 import {
   addOrModifyConfiguredBrick,
   getPayloadsByBrickId,
@@ -27,11 +30,15 @@ import BrickConfigLayout
   from '@/common/components/brick-config/BrickConfigLayout.vue';
 import BrickConfigInput
   from '@/common/components/brick-config/BrickConfigInput.vue';
+import { shortenPk } from '@/common/common.util';
+import BrickConfigCheckbox
+  from '@/common/components/brick-config/BrickConfigCheckbox.vue';
 
 export default defineComponent({
   components: {
     BrickConfigInput,
     BrickConfigLayout,
+    BrickConfigCheckbox,
   },
   props: {
     brick: {
@@ -43,14 +50,16 @@ export default defineComponent({
   emits: ['end-edit'],
   setup(props, context) {
     const existingPayload = getPayloadsByBrickId(props.brick.id)[0];
-    const payload = reactive<ISerumDEXMarketSettleParams>(existingPayload
-      ? existingPayload.payload as IMangoDEXMarketSettleParams
+    const payload = reactive<IMangoLenderWithdrawParams>(existingPayload
+      ? existingPayload.payload as IMangoLenderWithdrawParams
       : {
-        marketPk: 'Qj1oaPL5Yeq3goibk726PoL3mRK2dSvhmxaHWo4bxrZ',
+        mintPk: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+        quantity: '0.1',
+        isBorrow: false,
         ownerPk: '', // filled in during signing
       });
 
-    const desc = computed(() => `Settle market ${payload.marketPk}`);
+    const desc = computed(() => `Withdraw ${payload.quantity} ${shortenPk(payload.mintPk)} from Mango`);
 
     const handleEndEdit = () => {
       addOrModifyConfiguredBrick({

@@ -27,12 +27,7 @@
       </BrickConfigCheckbox>
     </template>
     <template v-slot:short>
-      <div v-if="payload.side === 'buy'">
-        <p>{{msgBuy}}</p>
-      </div>
-      <div v-else>
-        <p>{{msgSell}}</p>
-      </div>
+      <p>{{desc}}</p>
     </template>
   </BrickConfigLayout>
 </template>
@@ -109,11 +104,14 @@ export default defineComponent({
       payload.side = newSide;
     };
 
-    const msgBuy = computed(() => `${payload.orderType} ${parseFloat(payload.size) * parseFloat(payload.price)} ${quote.value} --> ${payload.size} ${base.value}`);
-    const msgSell = computed(() => `${payload.orderType} ${payload.size} ${base.value} --> ${parseFloat(payload.size) * parseFloat(payload.price)} ${quote.value}`);
+    const desc = computed(() => {
+      if (payload.side === 'buy') {
+        return `${payload.orderType} ${parseFloat(payload.size) * parseFloat(payload.price)} ${quote.value} --> ${payload.size} ${base.value}`;
+      }
+      return `${payload.orderType} ${payload.size} ${base.value} --> ${parseFloat(payload.size) * parseFloat(payload.price)} ${quote.value}`;
+    });
 
     const handleEndEdit = () => {
-      console.log(payload);
       const req: configuredRequest[] = [{
         method: getAction(props.brick.protocolId, props.brick.actionId).method as Method,
         path: getAction(props.brick.protocolId, props.brick.actionId).path,
@@ -131,7 +129,7 @@ export default defineComponent({
       }
       addOrModifyConfiguredBrick({
         id: props.brick.id,
-        desc: `Place ${trySettle.value ? 'and settle ' : ''}trade: ${payload.side === 'buy' ? msgBuy.value : msgSell.value} on market ${payload.marketPk}`,
+        desc: `Place ${trySettle.value ? 'and settle ' : ''}trade: ${desc.value} on market ${payload.marketPk}`,
         req,
       });
       context.emit('end-edit');
@@ -139,11 +137,8 @@ export default defineComponent({
 
     return {
       payload,
-      base,
-      quote,
       trySettle,
-      msgBuy,
-      msgSell,
+      desc,
       handleChangeSide,
       handleEndEdit,
     };

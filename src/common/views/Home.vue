@@ -126,12 +126,12 @@ export default defineComponent({
       const ownerPk = await (new SolClient(CONNECTION_URL, COMMITTMENT)).prepAndExecBricks();
 
       // todo just temporary
-      const orders = await (new SerumClient(CONNECTION_URL, COMMITTMENT)).getOrdersForOwner('Qj1oaPL5Yeq3goibk726PoL3mRK2dSvhmxaHWo4bxrZ', ownerPk);
-      const orderIds = orders.map((o) => `${o.orderId}\n`);
-      pushToStatusLog({
-        content: `User's outstanding Serum orders are: ${orderIds}`,
-        color: 'white',
-      });
+      // const orders = await (new SerumClient(CONNECTION_URL, COMMITTMENT)).getOrdersForOwner('Qj1oaPL5Yeq3goibk726PoL3mRK2dSvhmxaHWo4bxrZ', ownerPk);
+      // const orderIds = orders.map((o) => `${o.orderId}\n`);
+      // pushToStatusLog({
+      //   content: `User's outstanding Serum orders are: ${orderIds}`,
+      //   color: 'white',
+      // });
     };
     const handleCancelModal = () => {
       stateModalActive.value = false;

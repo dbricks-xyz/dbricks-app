@@ -7,6 +7,7 @@
       <GeneralIcon icon="trash" color="white" @click="emitRemoveBrick"/>
     </div>
 
+    <!--serum-->
     <div v-if="brick.protocolId===0 && brick.actionId===0">
       <SerumPlaceSettleOrder :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
@@ -16,8 +17,16 @@
     <div v-else-if="brick.protocolId===0 && brick.actionId===2">
       <SerumInitMarket :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
-        <div v-else-if="brick.protocolId===0 && brick.actionId===3">
+    <div v-else-if="brick.protocolId===0 && brick.actionId===3">
       <SerumSettleMarket :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
+    </div>
+
+    <!--mango-->
+    <div v-else-if="brick.protocolId===1 && brick.actionId===0">
+      <MangoDeposit :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
+    </div>
+    <div v-else-if="brick.protocolId===1 && brick.actionId===1">
+      <MangoWithdraw :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
 
   </div>
@@ -34,9 +43,13 @@ import { removeConfiguredBrick } from '@/common/common.state';
 import SerumCancelOrder from '@/serum/components/SerumCancelOrder.vue';
 import SerumInitMarket from '@/serum/components/SerumInitMarket.vue';
 import SerumSettleMarket from '@/serum/components/SerumSettleMarket.vue';
+import MangoDeposit from '@/mango/components/MangoDeposit.vue';
+import MangoWithdraw from '@/mango/components/MangoWithdraw.vue';
 
 export default defineComponent({
   components: {
+    MangoWithdraw,
+    MangoDeposit,
     SerumSettleMarket,
     SerumInitMarket,
     SerumCancelOrder,

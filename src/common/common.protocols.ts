@@ -26,16 +26,28 @@ const protocols: IProtocol[] = ([
     logo: '@/assets/protocols/serumlogo.svg',
     actions: [
       {
-        id: 0, name: 'Place order', path: '/serum/orders', method: 'POST',
+        id: 0,
+        name: 'Place order',
+        path: '/serum/orders',
+        method: 'POST',
       },
       {
-        id: 1, name: 'Cancel order', path: '/serum/orders/cancel', method: 'POST',
+        id: 1,
+        name: 'Cancel order',
+        path: '/serum/orders/cancel',
+        method: 'POST',
       },
       {
-        id: 2, name: 'Initialize market', path: '/serum/markets', method: 'POST',
+        id: 2,
+        name: 'Initialize market',
+        path: '/serum/markets',
+        method: 'POST',
       },
       {
-        id: 3, name: 'Settle market', path: '/serum/markets/settle', method: 'POST',
+        id: 3,
+        name: 'Settle market',
+        path: '/serum/markets/settle',
+        method: 'POST',
       },
     ],
   },
@@ -46,7 +58,16 @@ const protocols: IProtocol[] = ([
     logo: '@/assets/protocols/mangologo.svg',
     actions: [
       {
-        id: 0, name: 'Initialize market', path: '/mango/markets', method: 'POST',
+        id: 0,
+        name: 'Deposit',
+        path: '/mango/deposit',
+        method: 'POST',
+      },
+      {
+        id: 1,
+        name: 'Withdraw',
+        path: '/mango/withdraw',
+        method: 'POST',
       },
     ],
   },
@@ -57,7 +78,10 @@ const protocols: IProtocol[] = ([
     logo: '@/assets/protocols/saberlogo.jpeg',
     actions: [
       {
-        id: 0, name: 'Initialize market', path: '/saber/markets', method: 'POST',
+        id: 0,
+        name: 'Initialize market',
+        path: '/saber/markets',
+        method: 'POST',
       },
     ],
   },

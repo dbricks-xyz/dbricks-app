@@ -15,13 +15,13 @@
       </BrickConfigInput>
     </template>
     <template v-slot:short>
-      <p>Init market for {{payload.baseMintPk.substring(0,5)}}.. / {{payload.quoteMintPk.substring(0,5)}}..</p>
+      <p>{{desc}}</p>
     </template>
   </BrickConfigLayout>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from 'vue';
+import { computed, defineComponent, reactive } from 'vue';
 import { Method } from 'axios';
 import { ISerumDEXMarketInitParams } from 'dbricks-lib';
 import {
@@ -33,6 +33,7 @@ import BrickConfigLayout
   from '@/common/components/brick-config/BrickConfigLayout.vue';
 import BrickConfigInput
   from '@/common/components/brick-config/BrickConfigInput.vue';
+import { shortenPk } from '@/common/common.util';
 
 export default defineComponent({
   components: {
@@ -59,10 +60,12 @@ export default defineComponent({
         ownerPk: '', // filled in during signing
       });
 
+    const desc = computed(() => `Init market for ${shortenPk(payload.baseMintPk)} / ${shortenPk(payload.quoteMintPk)}`);
+
     const handleEndEdit = () => {
       addOrModifyConfiguredBrick({
         id: props.brick.id,
-        desc: `Initialize new market for mints ${payload.baseMintPk} / ${payload.quoteMintPk}`,
+        desc: desc.value,
         req: [{
           method: getAction(props.brick.protocolId, props.brick.actionId).method as Method,
           path: getAction(props.brick.protocolId, props.brick.actionId).path,
@@ -74,6 +77,7 @@ export default defineComponent({
 
     return {
       payload,
+      desc,
       handleEndEdit,
     };
   },

@@ -12,14 +12,14 @@
       </BrickConfigInput>
     </template>
     <template v-slot:short>
-      <p v-if="cancelAll">Cancel all orders</p>
-      <p v-else>Cancel order {{ payload.orderId }}</p>
+      <p>{{desc}}</p>
     </template>
   </BrickConfigLayout>
 </template>
 
 <script lang="ts">
 import {
+  computed,
   defineComponent, reactive, ref, watch,
 } from 'vue';
 import { Method } from 'axios';
@@ -68,10 +68,12 @@ export default defineComponent({
       }
     });
 
+    const desc = computed(() => (payload.orderId ? `Cancel order ${payload.orderId}` : 'Cancel all orders'));
+
     const handleEndEdit = () => {
       addOrModifyConfiguredBrick({
         id: props.brick.id,
-        desc: payload.orderId ? `Cancel order ${payload.orderId}` : 'Cancel all outstanding orders',
+        desc: desc.value,
         req: [{
           method: getAction(props.brick.protocolId, props.brick.actionId).method as Method,
           path: getAction(props.brick.protocolId, props.brick.actionId).path,
@@ -84,6 +86,7 @@ export default defineComponent({
     return {
       payload,
       cancelAll,
+      desc,
       handleEndEdit,
     };
   },
