@@ -15,7 +15,7 @@ export async function prettifyMint(mintPk: string): Promise<string> {
 
 export async function getMarketMints(marketPk: string): Promise<[string, string]> {
   console.log(marketPk);
-  const [base, quote] = await (new SerumClient(CONNECTION_URL, COMMITTMENT)).getBaseQuote(marketPk);
+  const [base, quote] = await (new SerumClient(CONNECTION_URL, COMMITTMENT)).getMarketMints(marketPk);
   if (base.length > 20 && quote.length > 20) {
     return [await prettifyMint(base), await prettifyMint(quote)];
   }

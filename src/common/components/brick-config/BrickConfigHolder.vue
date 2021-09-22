@@ -31,8 +31,20 @@
     <div v-else-if="brick.protocolId===1 && brick.actionId===2">
       <SerumPlaceSettleOrder :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
+    <div v-else-if="brick.protocolId===1 && brick.actionId===3">
+      <SerumCancelOrder :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
+    </div>
+    <div v-else-if="brick.protocolId===1 && brick.actionId===4">
+      <SerumSettleMarket :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
+    </div>
     <div v-else-if="brick.protocolId===1 && brick.actionId===5">
       <SerumPlaceSettleOrder :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
+    </div>
+    <div v-else-if="brick.protocolId===1 && brick.actionId===6">
+      <SerumCancelOrder :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
+    </div>
+    <div v-else-if="brick.protocolId===1 && brick.actionId===7">
+      <SerumSettleMarket :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
 
   </div>

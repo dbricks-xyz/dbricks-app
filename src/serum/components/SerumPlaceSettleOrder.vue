@@ -111,6 +111,17 @@ export default defineComponent({
       return `${payload.orderType} ${payload.size} ${base.value} --> ${parseFloat(payload.size) * parseFloat(payload.price)} ${quote.value}`;
     });
 
+    let settleActionId;
+    if (props.brick.protocolId === 0) { // serum
+      settleActionId = 3;
+    } else if (props.brick.protocolId === 1 && props.brick.actionId === 2) { // mango spot
+      settleActionId = 4;
+    } else if (props.brick.protocolId === 1 && props.brick.actionId === 5) { // mango perp
+      settleActionId = 7;
+    } else {
+      throw new Error('unknown protocol used for placing order');
+    }
+
     const handleEndEdit = () => {
       const req: configuredRequest[] = [{
         method: getAction(props.brick.protocolId, props.brick.actionId).method as Method,
@@ -119,8 +130,8 @@ export default defineComponent({
       }];
       if (trySettle.value) {
         req.push({
-          method: getAction(props.brick.protocolId, 3).method as Method,
-          path: getAction(props.brick.protocolId, 3).path,
+          method: getAction(props.brick.protocolId, settleActionId).method as Method,
+          path: getAction(props.brick.protocolId, settleActionId).path,
           payload: {
             marketPk: payload.marketPk,
             ownerPk: '', // filled in during signing

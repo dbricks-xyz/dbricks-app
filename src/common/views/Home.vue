@@ -82,13 +82,10 @@ import { getProtocol } from '@/common/common.protocols';
 import SolClient from '@/common/client/common.client';
 import Button from '@/common/components/primitive/Button.vue';
 import GeneralIcon from '@/common/components/icons/GeneralIcon.vue';
-import {
-  pushToStatusLog,
-  resetStatusLog,
-  statusLog,
-} from '@/common/common.state';
+import { resetStatusLog, statusLog } from '@/common/common.state';
 import SerumClient from '@/serum/client/serum.client';
 import { COMMITTMENT, CONNECTION_URL } from '@/config/config';
+import MangoClient from '@/mango/client/mango.client';
 
 interface IBrick {
   id: number,
@@ -125,14 +122,32 @@ export default defineComponent({
       stateCollapsed.value = true;
       const ownerPk = await (new SolClient(CONNECTION_URL, COMMITTMENT)).prepAndExecBricks();
 
-      // todo just temporary
-      // const orders = await (new SerumClient(CONNECTION_URL, COMMITTMENT)).getOrdersForOwner('Qj1oaPL5Yeq3goibk726PoL3mRK2dSvhmxaHWo4bxrZ', ownerPk);
-      // const orderIds = orders.map((o) => `${o.orderId}\n`);
-      // pushToStatusLog({
-      //   content: `User's outstanding Serum orders are: ${orderIds}`,
-      //   color: 'white',
-      // });
+      // todo temp serum
+      try {
+        await (new SerumClient(CONNECTION_URL, COMMITTMENT)).printSerumOrdersForOwner(
+          '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc', ownerPk,
+        );
+      } catch (e) {
+        console.log('failed to get serum orders');
+      }
+
+      // todo temp mango
+      try {
+        await (new MangoClient(CONNECTION_URL, COMMITTMENT)).printMangoOrdersForOwner(
+          '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc', ownerPk,
+        );
+      } catch (e) {
+        console.log('failed to get mango orders');
+      }
+      try {
+        await (new MangoClient(CONNECTION_URL, COMMITTMENT)).printMangoPerpOrdersForOwner(
+          'DtEcjPLyD4YtTBB4q8xwFZ9q49W89xZCZtJyrGebi5t8', ownerPk,
+        );
+      } catch (e) {
+        console.log('failed to get mango orders');
+      }
     };
+
     const handleCancelModal = () => {
       stateModalActive.value = false;
     };

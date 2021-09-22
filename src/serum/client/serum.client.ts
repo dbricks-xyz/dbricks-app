@@ -4,9 +4,10 @@ import { Market } from '@project-serum/serum';
 import { Order } from '@project-serum/serum/lib/market';
 import SolClient from '@/common/client/common.client';
 import { SERUM_PROG_ID, SERVER_BASE_URL } from '@/config/config';
+import { pushToStatusLog } from '@/common/common.state';
 
 export default class SerumClient extends SolClient {
-  async getBaseQuote(marketPk: string): Promise<[string, string]> {
+  async getMarketMints(marketPk: string): Promise<[string, string]> {
     const res = await axios({
       baseURL: SERVER_BASE_URL,
       method: 'POST',
@@ -18,7 +19,7 @@ export default class SerumClient extends SolClient {
     return res.data;
   }
 
-  async getOrdersForOwner(
+  async getSerumOrdersForOwner(
     marketPk: PublicKey | string,
     ownerPk: PublicKey,
   ): Promise<Order[]> {
@@ -35,5 +36,17 @@ export default class SerumClient extends SolClient {
       this.connection,
       ownerPk,
     );
+  }
+
+  async printSerumOrdersForOwner(
+    marketPk: PublicKey | string,
+    ownerPk: PublicKey,
+  ): Promise<void> {
+    const orders = await this.getSerumOrdersForOwner(marketPk, ownerPk);
+    const orderIds = orders.map((o) => `${o.orderId}\n`);
+    pushToStatusLog({
+      content: `User's outstanding Serum orders are: ${orderIds}`,
+      color: 'white',
+    });
   }
 }
