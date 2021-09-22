@@ -28,6 +28,12 @@
     <div v-else-if="brick.protocolId===1 && brick.actionId===1">
       <MangoWithdraw :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
+    <div v-else-if="brick.protocolId===1 && brick.actionId===2">
+      <SerumPlaceSettleOrder :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
+    </div>
+    <div v-else-if="brick.protocolId===1 && brick.actionId===5">
+      <SerumPlaceSettleOrder :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
+    </div>
 
   </div>
 </template>

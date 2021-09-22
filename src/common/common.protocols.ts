@@ -69,6 +69,42 @@ const protocols: IProtocol[] = ([
         path: '/mango/withdraw',
         method: 'POST',
       },
+      {
+        id: 2,
+        name: 'Place spot order',
+        path: '/mango/spot/place',
+        method: 'POST',
+      },
+      {
+        id: 3,
+        name: 'Cancel spot order',
+        path: '/mango/spot/cancel',
+        method: 'POST',
+      },
+      {
+        id: 4,
+        name: 'Settle spot market',
+        path: '/mango/spot/settle',
+        method: 'POST',
+      },
+      {
+        id: 5,
+        name: 'Place perp order',
+        path: '/mango/perp/place',
+        method: 'POST',
+      },
+      {
+        id: 6,
+        name: 'Cancel perp order',
+        path: '/mango/perp/cancel',
+        method: 'POST',
+      },
+      {
+        id: 7,
+        name: 'Settle perp market',
+        path: '/mango/perp/settle',
+        method: 'POST',
+      },
     ],
   },
   {

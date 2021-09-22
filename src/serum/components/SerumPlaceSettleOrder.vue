@@ -81,10 +81,10 @@ export default defineComponent({
     const payload = reactive<ISerumDEXOrderPlaceParams>(existingPayload
       ? existingPayload.payload as ISerumDEXOrderPlaceParams
       : {
-        marketPk: 'Di66GTLsV64JgCCYGVcY21RZ173BHkjJVgPyezNN7P1K',
+        marketPk: '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc',
         side: 'buy',
-        price: '1',
-        size: '10',
+        price: '0.5',
+        size: '1',
         orderType: 'limit',
         ownerPk: '', // filled in during signing
       });
