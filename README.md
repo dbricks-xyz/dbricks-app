@@ -9,7 +9,8 @@ yarn install
 ```
 1. create a .env file
 2. add `VUE_APP_NETWORK=localnet` to it
-3. yarn serve
+3. yarn update (this pulls teh latest dbricks-lib)
+4. yarn serve
 ```
 
 ### Compiles and minifies for production
