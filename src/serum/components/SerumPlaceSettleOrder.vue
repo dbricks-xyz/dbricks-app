@@ -1,7 +1,7 @@
 <template>
   <BrickConfigLayout :show-full="showFull" @end-edit="handleEndEdit">
     <template v-slot:full>
-      <BuySell @emit-change="handleChangeSide"/>
+      <BuySell :side="payload.side" @emit-change="handleChangeSide"/>
       <BrickConfigInput id="market" name="Market">
         <input type="text" id="market" v-model="payload.marketPk">
       </BrickConfigInput>
@@ -10,6 +10,9 @@
       </BrickConfigInput>
       <BrickConfigInput id="size" name="Size">
         <input type="text" id="size" v-model="payload.size">
+      </BrickConfigInput>
+      <BrickConfigInput v-if="brick.protocolId === 1" id="mangoAccNr" name="Mango account">
+        <input type="number" id="mangoAccNr" v-model="payload.mangoAccNr">
       </BrickConfigInput>
       <BrickConfigRadio options="IOC,Limit,Post only">
         <template v-slot:IOC>
@@ -39,7 +42,7 @@ import {
 import { Method } from 'axios';
 import {
   configuredRequest,
-  ISerumDEXMarketSettleParams,
+  IMangoDEXOrderPlaceParams,
   ISerumDEXOrderPlaceParams,
 } from 'dbricks-lib';
 import BuySell from '@/common/components/BuySell.vue';
@@ -57,6 +60,9 @@ import BrickConfigRadio
 import BrickConfigCheckbox
   from '@/common/components/brick-config/BrickConfigCheckbox.vue';
 import { getMarketMints } from '@/common/common.util';
+import { SettleParams } from '@/serum/components/SerumSettleMarket.vue';
+
+type PlaceParams = ISerumDEXOrderPlaceParams | IMangoDEXOrderPlaceParams;
 
 export default defineComponent({
   components: {
@@ -76,8 +82,8 @@ export default defineComponent({
   emits: ['end-edit'],
   setup(props, context) {
     const [existingPlacePayload, existingSettlePayload] = getPayloadsByBrickId(props.brick.id);
-    const payload = reactive<ISerumDEXOrderPlaceParams>(existingPlacePayload
-      ? existingPlacePayload.payload as ISerumDEXOrderPlaceParams
+    const payload = reactive<PlaceParams>(existingPlacePayload
+      ? existingPlacePayload.payload as PlaceParams
       : {
         marketPk: '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc',
         side: 'buy',
@@ -85,7 +91,8 @@ export default defineComponent({
         size: '1',
         orderType: 'limit',
         ownerPk: '', // filled in during signing
-      });
+        mangoAccNr: 0, // optional
+      } as PlaceParams);
 
     const base = ref<string>('');
     const quote = ref<string>('');
@@ -139,7 +146,7 @@ export default defineComponent({
           payload: {
             marketPk: payload.marketPk,
             ownerPk: '', // filled in during signing
-          } as ISerumDEXMarketSettleParams,
+          } as SettleParams,
         });
       }
       addOrModifyConfiguredBrick({

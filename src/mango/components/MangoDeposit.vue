@@ -7,9 +7,12 @@
       <BrickConfigInput id="amount" name="Amount">
         <input type="text" id="amount" v-model="payload.quantity">
       </BrickConfigInput>
+      <BrickConfigInput id="mangoAccNr" name="Mango account">
+        <input type="number" id="mangoAccNr" v-model="payload.mangoAccNr">
+      </BrickConfigInput>
     </template>
     <template v-slot:short>
-      <p>{{desc}}</p>
+      <p>{{ desc }}</p>
     </template>
   </BrickConfigLayout>
 </template>
@@ -52,15 +55,20 @@ export default defineComponent({
         mintPk: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
         quantity: '0.1',
         ownerPk: '', // filled in during signing
-      });
+        mangoAccNr: 0,
+      } as IMangoLenderDepositParams);
 
+    // todo factor out https://stackoverflow.com/questions/69295518/vue3-how-to-factor-out-a-watch-statement-in-composition-api
     const mint = ref<string>('');
-    watch(() => payload.mintPk, async () => {
-      mint.value = await prettifyMint(payload.mintPk);
+    watch(() => payload.mintPk, async (newVal) => {
+      if (newVal.length >= 32) {
+        mint.value = await prettifyMint(payload.mintPk);
+      }
     });
-    prettifyMint(payload.mintPk).then((m) => {
-      mint.value = m;
-    });
+    prettifyMint(payload.mintPk)
+      .then((m) => {
+        mint.value = m;
+      });
 
     const desc = computed(() => `Deposit ${payload.quantity} ${mint.value} into Mango`);
 

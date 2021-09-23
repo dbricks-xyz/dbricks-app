@@ -4,26 +4,27 @@
       <BrickConfigInput id="market" name="Market">
         <input type="text" id="market" v-model="payload.marketPk">
       </BrickConfigInput>
-      <BrickConfigCheckbox id="box" name="Cancell all orders" >
+      <BrickConfigCheckbox id="box" name="Cancell all orders">
         <input id="box" type="checkbox" class="flex-initial m-1" v-model="cancelAll">
       </BrickConfigCheckbox>
       <BrickConfigInput v-if="!cancelAll" id="orderId" name="Order ID">
         <input type="text" id="orderId" v-model="payload.orderId">
       </BrickConfigInput>
+      <BrickConfigInput v-if="brick.protocolId === 1 && !cancelAll" id="mangoAccNr" name="Mango account">
+        <input type="number" id="mangoAccNr" v-model="payload.mangoAccNr">
+      </BrickConfigInput>
     </template>
     <template v-slot:short>
-      <p>{{desc}}</p>
+      <p>{{ desc }}</p>
     </template>
   </BrickConfigLayout>
 </template>
 
 <script lang="ts">
 import {
-  computed,
-  defineComponent, reactive, ref, watch,
+  computed, defineComponent, reactive, ref, watch,
 } from 'vue';
 import { Method } from 'axios';
-import { ISerumDEXOrderCancelParams } from 'dbricks-lib';
 import {
   addOrModifyConfiguredBrick,
   getPayloadsByBrickId,
@@ -35,6 +36,12 @@ import BrickConfigInput
   from '@/common/components/brick-config/BrickConfigInput.vue';
 import BrickConfigCheckbox
   from '@/common/components/brick-config/BrickConfigCheckbox.vue';
+import {
+  IMangoDEXOrderCancelParams,
+  ISerumDEXOrderCancelParams,
+} from '../../../../dbricks-lib';
+
+type CancelParams = ISerumDEXOrderCancelParams | IMangoDEXOrderCancelParams;
 
 export default defineComponent({
   components: {
@@ -52,13 +59,14 @@ export default defineComponent({
   emits: ['end-edit'],
   setup(props, context) {
     const existingPayload = getPayloadsByBrickId(props.brick.id)[0];
-    const payload = reactive<ISerumDEXOrderCancelParams>(existingPayload
-      ? existingPayload.payload as ISerumDEXOrderCancelParams
+    const payload = reactive<CancelParams>(existingPayload
+      ? existingPayload.payload as CancelParams
       : {
         marketPk: '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc',
         orderId: 'affffffffffffffff',
         ownerPk: '', // filled in during signing
-      });
+        mangoAccNr: 0,
+      } as CancelParams);
 
     const cancelAll = ref(false);
     watch(cancelAll, (newValue) => {

@@ -9,9 +9,15 @@
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
+  props: {
+    side: String,
+  },
   emits: ['emit-change'],
   setup(props, ctx) {
     const buyActive = ref<boolean>(true);
+    if (props.side === 'sell') {
+      buyActive.value = false;
+    }
 
     const emitBuy = () => {
       buyActive.value = true;

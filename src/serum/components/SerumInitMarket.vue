@@ -23,7 +23,6 @@
 <script lang="ts">
 import { computed, defineComponent, reactive } from 'vue';
 import { Method } from 'axios';
-import { ISerumDEXMarketInitParams } from 'dbricks-lib';
 import {
   addOrModifyConfiguredBrick,
   getPayloadsByBrickId,
@@ -34,6 +33,12 @@ import BrickConfigLayout
 import BrickConfigInput
   from '@/common/components/brick-config/BrickConfigInput.vue';
 import { prettifyMint } from '@/common/common.util';
+import {
+  IMangoDEXMarketInitParams,
+  ISerumDEXMarketInitParams,
+} from '../../../../dbricks-lib';
+
+type InitParams = ISerumDEXMarketInitParams | IMangoDEXMarketInitParams;
 
 export default defineComponent({
   components: {
@@ -50,15 +55,15 @@ export default defineComponent({
   emits: ['end-edit'],
   setup(props, context) {
     const existingPayload = getPayloadsByBrickId(props.brick.id)[0];
-    const payload = reactive<ISerumDEXMarketInitParams>(existingPayload
-      ? existingPayload.payload as ISerumDEXMarketInitParams
+    const payload = reactive<InitParams>(existingPayload
+      ? existingPayload.payload as InitParams
       : {
         baseMintPk: 'G7gDxt4kgYi4gqjEZueWQXGviD1mJnED2oGk2tLKsjv7',
         quoteMintPk: '72fQHRenCAmYarsqzpXRgoBrJMAtX8YRtRaRU3sBHbUy',
         lotSize: '1',
         tickSize: '1',
         ownerPk: '', // filled in during signing
-      });
+      } as InitParams);
 
     const desc = computed(() => `Init market for ${prettifyMint(payload.baseMintPk)} / ${prettifyMint(payload.quoteMintPk)}`);
 
