@@ -11,7 +11,7 @@
         <input class="flex-initial m-1" type="checkbox" id="box" v-model="payload.isBorrow">
       </BrickConfigCheckbox>
       <BrickConfigInput id="mangoAccNr" name="Mango account">
-        <input type="number" id="mangoAccNr" v-model="payload.mangoAccNr">
+        <input type="text" id="mangoAccNr" v-model="payload.mangoAccNr">
       </BrickConfigInput>
     </template>
     <template v-slot:short>
@@ -62,7 +62,7 @@ export default defineComponent({
         quantity: '0.1',
         isBorrow: false,
         ownerPk: '', // filled in during signing
-        mangoAccNr: 0,
+        mangoAccNr: '0',
       } as IMangoLenderWithdrawParams);
 
     // todo factor out https://stackoverflow.com/questions/69295518/vue3-how-to-factor-out-a-watch-statement-in-composition-api
@@ -77,7 +77,7 @@ export default defineComponent({
         mint.value = m;
       });
 
-    const desc = computed(() => `Withdraw ${payload.quantity} ${mint.value} from Mango`);
+    const desc = computed(() => `Withdraw ${payload.quantity} ${mint.value} from Mango ${payload.mangoAccNr}`);
 
     const handleEndEdit = () => {
       addOrModifyConfiguredBrick({

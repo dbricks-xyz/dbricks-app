@@ -5,7 +5,7 @@
         <input type="text" id="market" v-model="payload.marketPk">
       </BrickConfigInput>
       <BrickConfigInput v-if="brick.protocolId === 1" id="mangoAccNr" name="Mango account">
-        <input type="number" id="mangoAccNr" v-model="payload.mangoAccNr">
+        <input type="text" id="mangoAccNr" v-model="payload.mangoAccNr">
       </BrickConfigInput>
     </template>
     <template v-slot:short>
@@ -53,7 +53,7 @@ export default defineComponent({
       : {
         marketPk: '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc',
         ownerPk: '', // filled in during signing
-        mangoAccNr: 0,
+        mangoAccNr: '0',
       } as SettleParams);
 
     const desc = computed(() => `Settle market ${payload.marketPk.substring(0, 5)}..`);

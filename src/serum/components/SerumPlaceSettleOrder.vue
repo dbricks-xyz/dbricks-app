@@ -12,7 +12,7 @@
         <input type="text" id="size" v-model="payload.size">
       </BrickConfigInput>
       <BrickConfigInput v-if="brick.protocolId === 1" id="mangoAccNr" name="Mango account">
-        <input type="number" id="mangoAccNr" v-model="payload.mangoAccNr">
+        <input type="text" id="mangoAccNr" v-model="payload.mangoAccNr">
       </BrickConfigInput>
       <BrickConfigRadio options="IOC,Limit,Post only">
         <template v-slot:IOC>
@@ -91,7 +91,7 @@ export default defineComponent({
         size: '1',
         orderType: 'limit',
         ownerPk: '', // filled in during signing
-        mangoAccNr: 0, // optional
+        mangoAccNr: '0', // optional
       } as PlaceParams);
 
     const base = ref<string>('');

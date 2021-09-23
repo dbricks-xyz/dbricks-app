@@ -11,7 +11,7 @@
         <input type="text" id="orderId" v-model="payload.orderId">
       </BrickConfigInput>
       <BrickConfigInput v-if="brick.protocolId === 1 && !cancelAll" id="mangoAccNr" name="Mango account">
-        <input type="number" id="mangoAccNr" v-model="payload.mangoAccNr">
+        <input type="text" id="mangoAccNr" v-model="payload.mangoAccNr">
       </BrickConfigInput>
     </template>
     <template v-slot:short>
@@ -65,7 +65,7 @@ export default defineComponent({
         marketPk: '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc',
         orderId: 'affffffffffffffff',
         ownerPk: '', // filled in during signing
-        mangoAccNr: 0,
+        mangoAccNr: '0',
       } as CancelParams);
 
     const cancelAll = ref(false);
