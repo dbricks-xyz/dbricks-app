@@ -18,6 +18,10 @@
 import { computed, defineComponent, reactive } from 'vue';
 import { Method } from 'axios';
 import {
+  IMangoDEXMarketSettleParams,
+  ISerumDEXMarketSettleParams,
+} from 'dbricks-lib';
+import {
   addOrModifyConfiguredBrick,
   getPayloadsByBrickId,
 } from '@/common/common.state';
@@ -26,10 +30,6 @@ import BrickConfigLayout
   from '@/common/components/brick-config/BrickConfigLayout.vue';
 import BrickConfigInput
   from '@/common/components/brick-config/BrickConfigInput.vue';
-import {
-  IMangoDEXMarketSettleParams,
-  ISerumDEXMarketSettleParams,
-} from '../../../../dbricks-lib';
 
 export type SettleParams = ISerumDEXMarketSettleParams | IMangoDEXMarketSettleParams;
 

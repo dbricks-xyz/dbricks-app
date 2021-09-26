@@ -24,6 +24,10 @@
 import { computed, defineComponent, reactive } from 'vue';
 import { Method } from 'axios';
 import {
+  IMangoDEXMarketInitParams,
+  ISerumDEXMarketInitParams,
+} from 'dbricks-lib';
+import {
   addOrModifyConfiguredBrick,
   getPayloadsByBrickId,
 } from '@/common/common.state';
@@ -33,10 +37,6 @@ import BrickConfigLayout
 import BrickConfigInput
   from '@/common/components/brick-config/BrickConfigInput.vue';
 import { prettifyMint } from '@/common/common.util';
-import {
-  IMangoDEXMarketInitParams,
-  ISerumDEXMarketInitParams,
-} from '../../../../dbricks-lib';
 
 type InitParams = ISerumDEXMarketInitParams | IMangoDEXMarketInitParams;
 

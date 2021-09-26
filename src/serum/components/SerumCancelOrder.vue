@@ -26,6 +26,10 @@ import {
 } from 'vue';
 import { Method } from 'axios';
 import {
+  IMangoDEXOrderCancelParams,
+  ISerumDEXOrderCancelParams,
+} from 'dbricks-lib';
+import {
   addOrModifyConfiguredBrick,
   getPayloadsByBrickId,
 } from '@/common/common.state';
@@ -36,10 +40,6 @@ import BrickConfigInput
   from '@/common/components/brick-config/BrickConfigInput.vue';
 import BrickConfigCheckbox
   from '@/common/components/brick-config/BrickConfigCheckbox.vue';
-import {
-  IMangoDEXOrderCancelParams,
-  ISerumDEXOrderCancelParams,
-} from '../../../../dbricks-lib';
 
 type CancelParams = ISerumDEXOrderCancelParams | IMangoDEXOrderCancelParams;
 
