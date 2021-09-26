@@ -119,6 +119,12 @@ const protocols: IProtocol[] = ([
         path: '/saber/markets',
         method: 'POST',
       },
+      {
+        id: 1,
+        name: 'Place order',
+        path: '/saber/orders',
+        method: 'POST',
+      },
     ],
   },
 ]);
