@@ -47,6 +47,11 @@
       <SerumSettleMarket :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
 
+    <!--saber-->
+    <div v-if="brick.protocolId===2 && brick.actionId===1">
+      <!-- <div>hola</div> -->
+      <SaberPlaceOrder :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
+    </div>
   </div>
 </template>
 
@@ -55,6 +60,8 @@ import { defineComponent, ref } from 'vue';
 import ProtocolLogo from '@/common/components/ProtocolLogo.vue';
 import SerumPlaceSettleOrder
   from '@/serum/components/SerumPlaceSettleOrder.vue';
+import SaberPlaceOrder
+  from '@/saber/components/SaberPlaceOrder.vue';
 import GeneralIcon from '@/common/components/icons/GeneralIcon.vue';
 import { getAction, getProtocol } from '@/common/common.protocols';
 import { removeConfiguredBrick } from '@/common/common.state';
@@ -74,6 +81,7 @@ export default defineComponent({
     GeneralIcon,
     SerumPlaceSettleOrder,
     ProtocolLogo,
+    SaberPlaceOrder,
   },
   props: {
     brick: {

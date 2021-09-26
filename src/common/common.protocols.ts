@@ -121,7 +121,7 @@ const protocols: IProtocol[] = ([
       },
       {
         id: 1,
-        name: 'Place order',
+        name: 'Place saber order',
         path: '/saber/orders',
         method: 'POST',
       },
