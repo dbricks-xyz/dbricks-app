@@ -29,7 +29,7 @@ import BrickConfigInput
 import {
   IMangoDEXMarketSettleParams,
   ISerumDEXMarketSettleParams,
-} from '../../../../dbricks-lib';
+} from 'dbricks-lib';
 
 export type SettleParams = ISerumDEXMarketSettleParams | IMangoDEXMarketSettleParams;
 

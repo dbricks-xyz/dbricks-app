@@ -39,7 +39,7 @@ import BrickConfigCheckbox
 import {
   IMangoDEXOrderCancelParams,
   ISerumDEXOrderCancelParams,
-} from '../../../../dbricks-lib';
+} from 'dbricks-lib';
 
 type CancelParams = ISerumDEXOrderCancelParams | IMangoDEXOrderCancelParams;
 
