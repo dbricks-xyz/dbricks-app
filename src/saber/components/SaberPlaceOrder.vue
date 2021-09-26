@@ -1,57 +1,22 @@
 <template>
   <BrickConfigLayout :show-full="showFull" @end-edit="handleEndEdit">
     <template v-slot:full>
-      <BuySell :side="payload.side" @emit-change="handleChangeSide" />
-      <BrickConfigInput id="market" name="Market">
+      <!-- <BuySell :side="payload.side" @emit-change="handleChangeSide" /> -->
+      <!-- <BrickConfigInput id="market" name="Market">
         <input type="text" id="market" v-model="payload.marketPk" />
+      </BrickConfigInput> -->
+      <BrickConfigInput id="buyAsset" name="Buy Asset">
+        <input type="text" id="buyAsset" v-model="payload.buyAsset" />
       </BrickConfigInput>
-      <BrickConfigInput id="price" name="Price">
+      <BrickConfigInput id="sellAsset" name="Sell Asset">
+        <input type="text" id="sellAsset" v-model="payload.sellAsset" />
+      </BrickConfigInput>
+      <BrickConfigInput id="price" name="Price (denom in sell asset)">
         <input type="text" id="price" v-model="payload.price" />
       </BrickConfigInput>
       <BrickConfigInput id="size" name="Size">
         <input type="text" id="size" v-model="payload.size" />
       </BrickConfigInput>
-      <BrickConfigInput
-        v-if="brick.protocolId === 1"
-        id="mangoAccNr"
-        name="Mango account"
-      >
-        <input type="text" id="mangoAccNr" v-model="payload.mangoAccNr" />
-      </BrickConfigInput>
-      <BrickConfigRadio options="IOC,Limit,Post only">
-        <template v-slot:IOC>
-          <input
-            type="radio"
-            id="IOC"
-            value="ioc"
-            v-model="payload.orderType"
-          />
-        </template>
-        <template v-slot:Limit>
-          <input
-            type="radio"
-            id="Limit"
-            value="limit"
-            v-model="payload.orderType"
-          />
-        </template>
-        <template v-slot:Postonly>
-          <input
-            type="radio"
-            id="Postonly"
-            value="postOnly"
-            v-model="payload.orderType"
-          />
-        </template>
-      </BrickConfigRadio>
-      <BrickConfigCheckbox id="box" name="Attempt to settle">
-        <input
-          class="flex-initial m-1"
-          type="checkbox"
-          id="box"
-          v-model="trySettle"
-        />
-      </BrickConfigCheckbox>
     </template>
     <template v-slot:short>
       <p>{{ desc }}</p>
@@ -97,14 +62,15 @@ export default defineComponent({
       size: "1",
       orderType: "limit",
       ownerPk: "", // filled in during signing
-      mangoAccNr: "0", // optional
+      sellAsset: 'USDC',
+      buyAsset: 'SOL',
     } as PlaceParams;
 
     // TODO:
     return {
       payload,
       desc: true,
-      trySettle: true,
+      // trySettle: true,
       handleChangeSide: () => null,
       handleEndEdit: () => null,
     };
