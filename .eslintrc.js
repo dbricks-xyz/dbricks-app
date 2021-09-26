@@ -28,6 +28,7 @@ module.exports = {
         "no-underscore-dangle": "off",
         "max-len": "off",
         "no-restricted-syntax": "off",
+        "quotes": "off",
       }
     }
   ]
