@@ -3,7 +3,7 @@
     <template v-slot:full>
       <BuySell :side="payload.side" @emit-change="handleChangeSide"/>
       <BrickConfigInput id="market" name="Market">
-        <input type="text" id="market" v-model="payload.marketPk">
+        <input type="text" id="market" v-model="payload.marketPubkey">
       </BrickConfigInput>
       <BrickConfigInput id="price" name="Price">
         <input type="text" id="price" v-model="payload.price">
@@ -11,8 +11,8 @@
       <BrickConfigInput id="size" name="Size">
         <input type="text" id="size" v-model="payload.size">
       </BrickConfigInput>
-      <BrickConfigInput v-if="brick.protocolId === 1" id="mangoAccNr" name="Mango account">
-        <input type="text" id="mangoAccNr" v-model="payload.mangoAccNr">
+      <BrickConfigInput v-if="brick.protocolId === 1" id="mangoAccountNumber" name="Mango account">
+        <input type="text" id="mangoAccountNumber" v-model="payload.mangoAccountNumber">
       </BrickConfigInput>
       <BrickConfigRadio options="IOC,Limit,Post only">
         <template v-slot:IOC>
@@ -30,7 +30,7 @@
       </BrickConfigCheckbox>
     </template>
     <template v-slot:short>
-      <p>{{desc}}</p>
+      <p>{{description}}</p>
     </template>
   </BrickConfigLayout>
 </template>
@@ -85,24 +85,24 @@ export default defineComponent({
     const payload = reactive<PlaceParams>(existingPlacePayload
       ? existingPlacePayload.payload as PlaceParams
       : {
-        marketPk: '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc',
+        marketPubkey: '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc',
         side: 'buy',
         price: '0.5',
         size: '1',
         orderType: 'limit',
-        ownerPk: '', // filled in during signing
-        mangoAccNr: '0', // optional
+        ownerPubkey: '', // filled in during signing
+        mangoAccountNumber: '0', // optional
       } as PlaceParams);
 
     const base = ref<string>('');
     const quote = ref<string>('');
-    watch(() => payload.marketPk, async (newVal) => {
-      // solana PKs ming length of 32 - https://docs.solana.com/cli/transfer-tokens#receive-tokens
+    watch(() => payload.marketPubkey, async (newVal) => {
+      // solana Pubkeys have min length of 32 - https://docs.solana.com/cli/transfer-tokens#receive-tokens
       if (newVal.length >= 32) {
-        [base.value, quote.value] = await getMarketMints(payload.marketPk);
+        [base.value, quote.value] = await getMarketMints(payload.marketPubkey);
       }
     });
-    getMarketMints(payload.marketPk).then(([b, q]) => {
+    getMarketMints(payload.marketPubkey).then(([b, q]) => {
       [base.value, quote.value] = [b, q];
     });
 
@@ -115,7 +115,7 @@ export default defineComponent({
       payload.side = newSide;
     };
 
-    const desc = computed(() => {
+    const description = computed(() => {
       if (payload.side === 'buy') {
         return `${payload.orderType} ${parseFloat(payload.size) * parseFloat(payload.price)} ${quote.value} --> ${payload.size} ${base.value}`;
       }
@@ -134,25 +134,25 @@ export default defineComponent({
     }
 
     const handleEndEdit = () => {
-      const req: configuredRequest[] = [{
+      const request: configuredRequest[] = [{
         method: getAction(props.brick.protocolId, props.brick.actionId).method as Method,
         path: getAction(props.brick.protocolId, props.brick.actionId).path,
         payload,
       }];
       if (trySettle.value) {
-        req.push({
+        request.push({
           method: getAction(props.brick.protocolId, settleActionId).method as Method,
           path: getAction(props.brick.protocolId, settleActionId).path,
           payload: {
-            marketPk: payload.marketPk,
-            ownerPk: '', // filled in during signing
+            marketPubkey: payload.marketPubkey,
+            ownerPubkey: '', // filled in during signing
           } as SettleParams,
         });
       }
       addOrModifyConfiguredBrick({
         id: props.brick.id,
-        desc: `Place ${trySettle.value ? 'and settle ' : ''}trade: ${desc.value} on market ${payload.marketPk}`,
-        req,
+        description: `Place ${trySettle.value ? 'and settle ' : ''}trade: ${description.value} on market ${payload.marketPubkey}`,
+        request,
       });
       context.emit('end-edit');
     };
@@ -160,7 +160,7 @@ export default defineComponent({
     return {
       payload,
       trySettle,
-      desc,
+      description,
       handleChangeSide,
       handleEndEdit,
     };

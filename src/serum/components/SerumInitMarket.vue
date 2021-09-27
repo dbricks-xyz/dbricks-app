@@ -2,10 +2,10 @@
   <BrickConfigLayout :show-full="showFull" @end-edit="handleEndEdit">
     <template v-slot:full>
       <BrickConfigInput id="base" name="Base mint">
-        <input type="text" id="base" v-model="payload.baseMintPk">
+        <input type="text" id="base" v-model="payload.baseMintPubkey">
       </BrickConfigInput>
       <BrickConfigInput id="quote" name="Quote mint">
-        <input type="text" id="quote" v-model="payload.quoteMintPk">
+        <input type="text" id="quote" v-model="payload.quoteMintPubkey">
       </BrickConfigInput>
       <BrickConfigInput id="lotSize" name="Lot size">
         <input type="text" id="lotSize" v-model="payload.lotSize">
@@ -15,7 +15,7 @@
       </BrickConfigInput>
     </template>
     <template v-slot:short>
-      <p>{{desc}}</p>
+      <p>{{description}}</p>
     </template>
   </BrickConfigLayout>
 </template>
@@ -58,20 +58,20 @@ export default defineComponent({
     const payload = reactive<InitParams>(existingPayload
       ? existingPayload.payload as InitParams
       : {
-        baseMintPk: 'G7gDxt4kgYi4gqjEZueWQXGviD1mJnED2oGk2tLKsjv7',
-        quoteMintPk: '72fQHRenCAmYarsqzpXRgoBrJMAtX8YRtRaRU3sBHbUy',
+        baseMintPubkey: 'G7gDxt4kgYi4gqjEZueWQXGviD1mJnED2oGk2tLKsjv7',
+        quoteMintPubkey: '72fQHRenCAmYarsqzpXRgoBrJMAtX8YRtRaRU3sBHbUy',
         lotSize: '1',
         tickSize: '1',
-        ownerPk: '', // filled in during signing
+        ownerPubkey: '', // filled in during signing
       } as InitParams);
 
-    const desc = computed(() => `Init market for ${prettifyMint(payload.baseMintPk)} / ${prettifyMint(payload.quoteMintPk)}`);
+    const description = computed(() => `Init market for ${prettifyMint(payload.baseMintPubkey)} / ${prettifyMint(payload.quoteMintPubkey)}`);
 
     const handleEndEdit = () => {
       addOrModifyConfiguredBrick({
         id: props.brick.id,
-        desc: desc.value,
-        req: [{
+        description: description.value,
+        request: [{
           method: getAction(props.brick.protocolId, props.brick.actionId).method as Method,
           path: getAction(props.brick.protocolId, props.brick.actionId).path,
           payload,
@@ -82,7 +82,7 @@ export default defineComponent({
 
     return {
       payload,
-      desc,
+      description,
       handleEndEdit,
     };
   },

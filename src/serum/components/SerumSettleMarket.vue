@@ -2,14 +2,14 @@
   <BrickConfigLayout :show-full="showFull" @end-edit="handleEndEdit">
     <template v-slot:full>
       <BrickConfigInput id="market" name="Market">
-        <input type="text" id="market" v-model="payload.marketPk">
+        <input type="text" id="market" v-model="payload.marketPubkey">
       </BrickConfigInput>
-      <BrickConfigInput v-if="brick.protocolId === 1" id="mangoAccNr" name="Mango account">
-        <input type="text" id="mangoAccNr" v-model="payload.mangoAccNr">
+      <BrickConfigInput v-if="brick.protocolId === 1" id="mangoAccountNumber" name="Mango account">
+        <input type="text" id="mangoAccountNumber" v-model="payload.mangoAccountNumber">
       </BrickConfigInput>
     </template>
     <template v-slot:short>
-      <p>{{ desc }}</p>
+      <p>{{ description }}</p>
     </template>
   </BrickConfigLayout>
 </template>
@@ -51,18 +51,18 @@ export default defineComponent({
     const payload = reactive<SettleParams>(existingPayload
       ? existingPayload.payload as SettleParams
       : {
-        marketPk: '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc',
-        ownerPk: '', // filled in during signing
-        mangoAccNr: '0',
+        marketPubkey: '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc',
+        ownerPubkey: '', // filled in during signing
+        mangoAccountNumber: '0',
       } as SettleParams);
 
-    const desc = computed(() => `Settle market ${payload.marketPk.substring(0, 5)}..`);
+    const description = computed(() => `Settle market ${payload.marketPubkey.substring(0, 5)}..`);
 
     const handleEndEdit = () => {
       addOrModifyConfiguredBrick({
         id: props.brick.id,
-        desc: desc.value,
-        req: [{
+        description: description.value,
+        request: [{
           method: getAction(props.brick.protocolId, props.brick.actionId).method as Method,
           path: getAction(props.brick.protocolId, props.brick.actionId).path,
           payload,
@@ -73,7 +73,7 @@ export default defineComponent({
 
     return {
       payload,
-      desc,
+      description,
       handleEndEdit,
     };
   },

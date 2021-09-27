@@ -19,7 +19,7 @@
     "bn.js": "^5.2.0",
     "borsh": "^0.6.0",
     "core-js": "^3.6.5",
-    "dbricks-lib": "^0.1.37",
+    "dbricks-lib": "^0.1.51",
     "dotenv": "^10.0.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@2.1.4",
     "vue": "^3.0.0",

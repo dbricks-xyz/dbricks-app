@@ -4,7 +4,7 @@
       <!--<div style="height: 20px;">-->
       <!--  <div v-if="errorSend" class="bg-db-purple text-white">Please close</div>-->
       <!--</div>-->
-      <SkewedButton v-if="bricks.length > 0 && !stateCollapsed" @click="sendTx" text="BUILD + SEND"/>
+      <SkewedButton v-if="bricks.length > 0 && !stateCollapsed" @click="sendTransaction" text="BUILD + SEND"/>
       <div v-else-if="bricks.length > 0 && stateCollapsed" style="height: 60px" class="flex justify-center align-middle">
         <Button class="mx-5 flex" size="large" @click="reopenBricks">
           REDO
@@ -114,18 +114,18 @@ export default defineComponent({
     const openNewBrickModal = () => {
       stateModalActive.value = true;
     };
-    const sendTx = async () => {
+    const sendTransaction = async () => {
       bricks.value.forEach(() => {
         // this makes sure all configs are closed
         configuredBricks.value = bricks.value.map((b) => b.id);
       });
       stateCollapsed.value = true;
-      const ownerPk = await (new SolClient(CONNECTION_URL, COMMITTMENT)).prepAndExecBricks();
+      const ownerPubkey = await (new SolClient(CONNECTION_URL, COMMITTMENT)).prepAndExecBricks();
 
       // todo temp serum
       try {
         await (new SerumClient(CONNECTION_URL, COMMITTMENT)).printSerumOrdersForOwner(
-          '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc', ownerPk,
+          '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc', ownerPubkey,
         );
       } catch (e) {
         console.log('failed to get serum orders');
@@ -134,14 +134,14 @@ export default defineComponent({
       // todo temp mango
       try {
         await (new MangoClient(CONNECTION_URL, COMMITTMENT)).printMangoOrdersForOwner(
-          '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc', ownerPk,
+          '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc', ownerPubkey,
         );
       } catch (e) {
         console.log('failed to get mango orders');
       }
       try {
         await (new MangoClient(CONNECTION_URL, COMMITTMENT)).printMangoPerpOrdersForOwner(
-          'DtEcjPLyD4YtTBB4q8xwFZ9q49W89xZCZtJyrGebi5t8', ownerPk,
+          'DtEcjPLyD4YtTBB4q8xwFZ9q49W89xZCZtJyrGebi5t8', ownerPubkey,
         );
       } catch (e) {
         console.log('failed to get mango orders');
@@ -207,7 +207,7 @@ export default defineComponent({
       fresh,
       hideBricks,
       openNewBrickModal,
-      sendTx,
+      sendTransaction,
       handleCancelModal,
       handleNewBrick,
       handleStartEdit,

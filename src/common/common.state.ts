@@ -20,7 +20,7 @@ export const getConfiguredBrickById = (brickId: number): configuredBrick => stat
 export const getPayloadsByBrickId = (brickId: number): configuredRequest[] => {
   const foundBrick = getConfiguredBrickById(brickId);
   if (foundBrick) {
-    return foundBrick.req;
+    return foundBrick.request;
   }
   return [];
 };

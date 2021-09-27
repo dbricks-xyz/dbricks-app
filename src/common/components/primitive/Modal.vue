@@ -20,9 +20,9 @@ export default defineComponent({
   props: {
     title: String,
   },
-  setup(props, ctx) {
+  setup(props, context) {
     const handleClick = () => {
-      ctx.emit('cancel-modal');
+      context.emit('cancel-modal');
     };
     return {
       handleClick,

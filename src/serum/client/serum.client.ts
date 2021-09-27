@@ -7,25 +7,25 @@ import { SERUM_PROG_ID, SERVER_BASE_URL } from '@/config/config';
 import { pushToStatusLog } from '@/common/common.state';
 
 export default class SerumClient extends SolClient {
-  async getMarketMints(marketPk: string): Promise<[string, string]> {
-    const res = await axios({
+  async getMarketMints(marketPubkey: string): Promise<[string, string]> {
+    const response = await axios({
       baseURL: SERVER_BASE_URL,
       method: 'POST',
       url: '/serum/markets/basequote',
       data: {
-        marketPk,
+        marketPubkey,
       },
     });
-    return res.data;
+    return response.data;
   }
 
   async getSerumOrdersForOwner(
-    marketPk: PublicKey | string,
-    ownerPk: PublicKey,
+    marketPubkey: PublicKey | string,
+    ownerPubkey: PublicKey,
   ): Promise<Order[]> {
     const market = await Market.load(
       this.connection,
-      typeof (marketPk) === 'string' ? new PublicKey(marketPk) : marketPk,
+      typeof (marketPubkey) === 'string' ? new PublicKey(marketPubkey) : marketPubkey,
       {
         skipPreflight: true,
         commitment: 'processed',
@@ -34,15 +34,15 @@ export default class SerumClient extends SolClient {
     );
     return market.loadOrdersForOwner(
       this.connection,
-      ownerPk,
+      ownerPubkey,
     );
   }
 
   async printSerumOrdersForOwner(
-    marketPk: PublicKey | string,
-    ownerPk: PublicKey,
+    marketPubkey: PublicKey | string,
+    ownerPubkey: PublicKey,
   ): Promise<void> {
-    const orders = await this.getSerumOrdersForOwner(marketPk, ownerPk);
+    const orders = await this.getSerumOrdersForOwner(marketPubkey, ownerPubkey);
     const orderIds = orders.map((o) => `${o.orderId}\n`);
     pushToStatusLog({
       content: `User's outstanding Serum orders are: ${orderIds}`,

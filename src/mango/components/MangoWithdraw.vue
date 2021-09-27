@@ -2,7 +2,7 @@
   <BrickConfigLayout :show-full="showFull" @end-edit="handleEndEdit">
     <template v-slot:full>
       <BrickConfigInput id="mint" name="Mint">
-        <input type="text" id="mint" v-model="payload.mintPk">
+        <input type="text" id="mint" v-model="payload.mintPubkey">
       </BrickConfigInput>
       <BrickConfigInput id="amount" name="Amount">
         <input type="text" id="amount" v-model="payload.quantity">
@@ -10,12 +10,12 @@
       <BrickConfigCheckbox id="box" name="Borrow?">
         <input class="flex-initial m-1" type="checkbox" id="box" v-model="payload.isBorrow">
       </BrickConfigCheckbox>
-      <BrickConfigInput id="mangoAccNr" name="Mango account">
-        <input type="text" id="mangoAccNr" v-model="payload.mangoAccNr">
+      <BrickConfigInput id="mangoAccountNumber" name="Mango account">
+        <input type="text" id="mangoAccountNumber" v-model="payload.mangoAccountNumber">
       </BrickConfigInput>
     </template>
     <template v-slot:short>
-      <p>{{ desc }}</p>
+      <p>{{ description }}</p>
     </template>
   </BrickConfigLayout>
 </template>
@@ -58,32 +58,32 @@ export default defineComponent({
     const payload = reactive<IMangoLenderWithdrawParams>(existingPayload
       ? existingPayload.payload as IMangoLenderWithdrawParams
       : {
-        mintPk: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+        mintPubkey: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
         quantity: '0.1',
         isBorrow: false,
-        ownerPk: '', // filled in during signing
-        mangoAccNr: '0',
+        ownerPubkey: '', // filled in during signing
+        mangoAccountNumber: '0',
       } as IMangoLenderWithdrawParams);
 
     // todo factor out https://stackoverflow.com/questions/69295518/vue3-how-to-factor-out-a-watch-statement-in-composition-api
     const mint = ref<string>('');
-    watch(() => payload.mintPk, async (newVal) => {
+    watch(() => payload.mintPubkey, async (newVal) => {
       if (newVal.length >= 32) {
-        mint.value = await prettifyMint(payload.mintPk);
+        mint.value = await prettifyMint(payload.mintPubkey);
       }
     });
-    prettifyMint(payload.mintPk)
+    prettifyMint(payload.mintPubkey)
       .then((m) => {
         mint.value = m;
       });
 
-    const desc = computed(() => `Withdraw ${payload.quantity} ${mint.value} from Mango ${payload.mangoAccNr}`);
+    const description = computed(() => `Withdraw ${payload.quantity} ${mint.value} from Mango ${payload.mangoAccountNumber}`);
 
     const handleEndEdit = () => {
       addOrModifyConfiguredBrick({
         id: props.brick.id,
-        desc: desc.value,
-        req: [{
+        description: description.value,
+        request: [{
           method: getAction(props.brick.protocolId, props.brick.actionId).method as Method,
           path: getAction(props.brick.protocolId, props.brick.actionId).path,
           payload,
@@ -94,7 +94,7 @@ export default defineComponent({
 
     return {
       payload,
-      desc,
+      description,
       handleEndEdit,
     };
   },

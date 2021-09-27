@@ -35,14 +35,14 @@ export default class MangoClient extends SolClient {
   }
 
   async loadGroup(): Promise<void> {
-    const groupPk = IDS.groups.find(
+    const groupPubkey = IDS.groups.find(
       (group) => group.name === this.groupName,
     )?.publicKey;
-    if (!groupPk) {
+    if (!groupPubkey) {
       throw new Error('Error finding Mango group');
     }
     const mangoGroup = await this.nativeClient.getMangoGroup(
-      new PublicKey(groupPk),
+      new PublicKey(groupPubkey),
     );
     await mangoGroup.loadRootBanks(this.connection);
     await Promise.all(
@@ -51,13 +51,13 @@ export default class MangoClient extends SolClient {
     this.group = mangoGroup;
   }
 
-  async loadMangoAccForOwner(
-    ownerPk: PublicKey,
+  async loadMangoAccountForOwner(
+    ownerPubkey: PublicKey,
   ): Promise<MangoAccount> {
-    const loadedMangoAcc = (await this.nativeClient.getMangoAccountsForOwner(
-      this.group, ownerPk, true,
+    const loadedMangoAccount = (await this.nativeClient.getMangoAccountsForOwner(
+      this.group, ownerPubkey, true,
     ))[0];
-    return this.nativeClient.getMangoAccount(loadedMangoAcc.publicKey, SERUM_PROG_ID);
+    return this.nativeClient.getMangoAccount(loadedMangoAccount.publicKey, SERUM_PROG_ID);
   }
 
   getMangoGroupConfig(): GroupConfig {
@@ -72,13 +72,13 @@ export default class MangoClient extends SolClient {
     return mangoGroupConfig;
   }
 
-  async loadPerpMarket(marketPk: PublicKey): Promise<PerpMarket> {
+  async loadPerpMarket(marketPubkey: PublicKey): Promise<PerpMarket> {
     const mangoGroupConfig = this.getMangoGroupConfig();
     const perpMarketConfig = mangoGroupConfig.perpMarkets.find(
-      (p) => p.publicKey.toBase58() === marketPk.toBase58(),
+      (p) => p.publicKey.toBase58() === marketPubkey.toBase58(),
     );
     if (!perpMarketConfig) {
-      throw new Error(`Could not find perp market ${marketPk.toBase58()}`);
+      throw new Error(`Could not find perp market ${marketPubkey.toBase58()}`);
     }
     return this.nativeClient.getPerpMarket(
       perpMarketConfig.publicKey,
@@ -90,22 +90,22 @@ export default class MangoClient extends SolClient {
   // --------------------------------------- print spot oo
 
   async getMangoOrdersForOwner(
-    marketPk: PublicKey,
-    ownerPk: PublicKey,
+    marketPubkey: PublicKey,
+    ownerPubkey: PublicKey,
   ): Promise<OpenOrders | undefined> {
     await this.loadGroup();
-    const mangoAcc = await this.loadMangoAccForOwner(ownerPk);
-    return mangoAcc.spotOpenOrdersAccounts.find(
-      (acc) => acc?.market.toBase58() === marketPk.toBase58(),
+    const mangoAccount = await this.loadMangoAccountForOwner(ownerPubkey);
+    return mangoAccount.spotOpenOrdersAccounts.find(
+      (account) => account?.market.toBase58() === marketPubkey.toBase58(),
     ) as unknown as (OpenOrders | undefined);
   }
 
   async printMangoOrdersForOwner(
-    marketPk: PublicKey | string,
-    ownerPk: PublicKey,
+    marketPubkey: PublicKey | string,
+    ownerPubkey: PublicKey,
   ): Promise<void> {
-    const marketPkk = typeof (marketPk) === 'string' ? new PublicKey(marketPk) : marketPk;
-    const orders = await this.getMangoOrdersForOwner(marketPkk, ownerPk);
+    const marketPubkeyk = typeof (marketPubkey) === 'string' ? new PublicKey(marketPubkey) : marketPubkey;
+    const orders = await this.getMangoOrdersForOwner(marketPubkeyk, ownerPubkey);
     const activeOrders = orders?.orders.filter((o) => !o.isZero())
       .map((o) => `${o.toString()}\n`);
     pushToStatusLog({
@@ -117,24 +117,24 @@ export default class MangoClient extends SolClient {
   // --------------------------------------- print perp oo
 
   async getMangoPerpOrderForOwner(
-    marketPk: PublicKey,
-    ownerPk: PublicKey,
+    marketPubkey: PublicKey,
+    ownerPubkey: PublicKey,
   ): Promise<PerpOrder[]> {
     await this.loadGroup();
-    const perpMarket = await this.loadPerpMarket(marketPk);
-    const mangoAcc = await this.loadMangoAccForOwner(ownerPk);
+    const perpMarket = await this.loadPerpMarket(marketPubkey);
+    const mangoAccount = await this.loadMangoAccountForOwner(ownerPubkey);
     return perpMarket.loadOrdersForAccount(
       this.connection,
-      mangoAcc,
+      mangoAccount,
     );
   }
 
   async printMangoPerpOrdersForOwner(
-    marketPk: PublicKey | string,
-    ownerPk: PublicKey,
+    marketPubkey: PublicKey | string,
+    ownerPubkey: PublicKey,
   ): Promise<void> {
-    const marketPkk = typeof (marketPk) === 'string' ? new PublicKey(marketPk) : marketPk;
-    const orders = await this.getMangoPerpOrderForOwner(marketPkk, ownerPk);
+    const marketPubkeyk = typeof (marketPubkey) === 'string' ? new PublicKey(marketPubkey) : marketPubkey;
+    const orders = await this.getMangoPerpOrderForOwner(marketPubkeyk, ownerPubkey);
     const activeOrders = orders.map((o) => `${o.orderId.toString()}\n`);
     pushToStatusLog({
       content: `User's outstanding Perp Mango orders are: ${activeOrders}`,

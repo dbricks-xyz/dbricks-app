@@ -11,9 +11,9 @@ export default class SolClient extends DBricksSDK {
     providerUrl: string,
   ): Promise<Wallet> {
     const wallet = new Wallet(providerUrl, this.connectionUrl);
-    wallet.on('connect', (ownerPk) => {
+    wallet.on('connect', (ownerPubkey) => {
       console.log({
-        content: `Wallet connected to ${ownerPk.toBase58()}.`,
+        content: `Wallet connected to ${ownerPubkey.toBase58()}.`,
         color: 'white',
       });
     });
@@ -27,17 +27,17 @@ export default class SolClient extends DBricksSDK {
     return wallet;
   }
 
-  async signTxWithWalletAndSend(
-    tx: Transaction,
+  async signTransactionWithWalletAndSend(
+    transaction: Transaction,
     additionalSigners: Signer[],
     wallet: Wallet,
   ): Promise<TransactionSignature> {
     if (additionalSigners.length > 0) {
-      tx.sign(...additionalSigners);
+      transaction.sign(...additionalSigners);
     }
-    const signedTx = await wallet.signTransaction(tx);
-    const sig = await this.connection.sendRawTransaction(signedTx.serialize());
-    console.log('Tx successful', sig);
+    const signedTransaction = await wallet.signTransaction(transaction);
+    const sig = await this.connection.sendRawTransaction(signedTransaction.serialize());
+    console.log('Transaction successful', sig);
     return sig;
   }
 
@@ -50,25 +50,25 @@ export default class SolClient extends DBricksSDK {
 
     const promises: Promise<TransactionSignature>[] = [];
     sizedBricks.forEach((sizedBrick) => {
-      const p = this.signTxWithWalletAndSend(sizedBrick.tx, sizedBrick.signers, wallet);
+      const p = this.signTransactionWithWalletAndSend(sizedBrick.transaction, sizedBrick.signers, wallet);
       promises.push(p);
       p
         .then((sig) => {
           pushToStatusLog({
-            content: `Tx successful, ${sig}`,
+            content: `Transaction successful, ${sig}`,
             color: 'green',
           });
           doneTracker[sizedBrick.id] = (doneTracker[sizedBrick.id] + 1) || 1;
           if (toDoTracker[sizedBrick.id] === doneTracker[sizedBrick.id]) {
             pushToStatusLog({
-              content: `Brick succeffully executed: ${sizedBrick.desc}.`,
+              content: `Brick succeffully executed: ${sizedBrick.description}.`,
               color: 'white',
             });
           }
         })
         .catch((e) => {
           pushToStatusLog({
-            content: `Tx failed, ${e}`,
+            content: `Transaction failed, ${e}`,
             color: 'red',
           });
         });
@@ -96,26 +96,26 @@ export default class SolClient extends DBricksSDK {
 
     const wallet = await this.connectWallet(WALLET_PROVIDER_URL);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const ownerPk = wallet.publicKey!;
+    const ownerPubkey = wallet.publicKey!;
     pushToStatusLog({
       content: `Wallet connected to ${wallet.publicKey?.toBase58()}.`,
       color: 'white',
     });
 
-    const fetchedBricks = await this.fetchBricksFromServer(SERVER_BASE_URL, configuredBricks.value, ownerPk);
+    const fetchedBricks = await this.fetchBricksFromServer(SERVER_BASE_URL, configuredBricks.value, ownerPubkey);
     pushToStatusLog({
       content: `Instructions and signers for bricks ${fetchedBricks.map((b) => b.id)} fetched.`,
       color: 'white',
     });
 
     const flattenedBricks = this.flattenBricks(fetchedBricks);
-    let sizedBricks = await this.findOptimalBrickSize(flattenedBricks, ownerPk);
+    let sizedBricks = await this.findOptimalBrickSize(flattenedBricks, ownerPubkey);
     pushToStatusLog({
       content: 'Bricks re-composed to minimize required transactions.',
       color: 'white',
     });
 
-    sizedBricks = await this.updateBlockhashOnSimilarTxs(sizedBricks);
+    sizedBricks = await this.updateBlockhashOnSimilarTransactions(sizedBricks);
     pushToStatusLog({
       content: 'Transactions with similar blockhashes de-duplicated.',
       color: 'white',
@@ -126,7 +126,7 @@ export default class SolClient extends DBricksSDK {
       color: 'yellow',
     });
     await this.executeBricks(sizedBricks, wallet);
-    return ownerPk;
+    return ownerPubkey;
   }
 
   // --------------------------------------- to be moved to sdk

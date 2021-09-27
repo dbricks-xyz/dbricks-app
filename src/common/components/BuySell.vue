@@ -13,7 +13,7 @@ export default defineComponent({
     side: String,
   },
   emits: ['emit-change'],
-  setup(props, ctx) {
+  setup(props, context) {
     const buyActive = ref<boolean>(true);
     if (props.side === 'sell') {
       buyActive.value = false;
@@ -21,12 +21,12 @@ export default defineComponent({
 
     const emitBuy = () => {
       buyActive.value = true;
-      ctx.emit('emit-change', 'buy');
+      context.emit('emit-change', 'buy');
     };
 
     const emitSell = () => {
       buyActive.value = false;
-      ctx.emit('emit-change', 'sell');
+      context.emit('emit-change', 'sell');
     };
 
     return {

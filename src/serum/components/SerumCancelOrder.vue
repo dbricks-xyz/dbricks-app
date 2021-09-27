@@ -2,7 +2,7 @@
   <BrickConfigLayout :show-full="showFull" @end-edit="handleEndEdit">
     <template v-slot:full>
       <BrickConfigInput id="market" name="Market">
-        <input type="text" id="market" v-model="payload.marketPk">
+        <input type="text" id="market" v-model="payload.marketPubkey">
       </BrickConfigInput>
       <BrickConfigCheckbox id="box" name="Cancell all orders">
         <input id="box" type="checkbox" class="flex-initial m-1" v-model="cancelAll">
@@ -10,12 +10,12 @@
       <BrickConfigInput v-if="!cancelAll" id="orderId" name="Order ID">
         <input type="text" id="orderId" v-model="payload.orderId">
       </BrickConfigInput>
-      <BrickConfigInput v-if="brick.protocolId === 1 && !cancelAll" id="mangoAccNr" name="Mango account">
-        <input type="text" id="mangoAccNr" v-model="payload.mangoAccNr">
+      <BrickConfigInput v-if="brick.protocolId === 1 && !cancelAll" id="mangoAccountNumber" name="Mango account">
+        <input type="text" id="mangoAccountNumber" v-model="payload.mangoAccountNumber">
       </BrickConfigInput>
     </template>
     <template v-slot:short>
-      <p>{{ desc }}</p>
+      <p>{{ description }}</p>
     </template>
   </BrickConfigLayout>
 </template>
@@ -62,10 +62,10 @@ export default defineComponent({
     const payload = reactive<CancelParams>(existingPayload
       ? existingPayload.payload as CancelParams
       : {
-        marketPk: '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc',
+        marketPubkey: '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc',
         orderId: 'affffffffffffffff',
-        ownerPk: '', // filled in during signing
-        mangoAccNr: '0',
+        ownerPubkey: '', // filled in during signing
+        mangoAccountNumber: '0',
       } as CancelParams);
 
     const cancelAll = ref(false);
@@ -76,13 +76,13 @@ export default defineComponent({
       }
     });
 
-    const desc = computed(() => (payload.orderId ? `Cancel order ${payload.orderId}` : 'Cancel all orders'));
+    const description = computed(() => (payload.orderId ? `Cancel order ${payload.orderId}` : 'Cancel all orders'));
 
     const handleEndEdit = () => {
       addOrModifyConfiguredBrick({
         id: props.brick.id,
-        desc: desc.value,
-        req: [{
+        description: description.value,
+        request: [{
           method: getAction(props.brick.protocolId, props.brick.actionId).method as Method,
           path: getAction(props.brick.protocolId, props.brick.actionId).path,
           payload,
@@ -94,7 +94,7 @@ export default defineComponent({
     return {
       payload,
       cancelAll,
-      desc,
+      description,
       handleEndEdit,
     };
   },
