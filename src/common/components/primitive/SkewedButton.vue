@@ -32,8 +32,8 @@ export default defineComponent({
 
 <style scoped>
 .text {
-  font-family: 'superman', sans-serif !important;
-  font-size: 30px;
+  font-family: 'ubuntu', sans-serif !important;
+  font-size: 27px;
   font-style: italic;
   color: black !important;
 }

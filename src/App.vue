@@ -10,8 +10,8 @@
 
 <style>
 @font-face {
-  font-family: "superman";
-  src: local("superman"), url('common/assets/superman.otf') format("truetype");
+  font-family: "ubuntu";
+  src: local("ubuntu"), url('common/assets/ubuntu.ttf') format("truetype");
 }
 
 @font-face {
@@ -31,17 +31,21 @@ body {
 
 h1 {
   @apply text-4xl text-white text-center m-5 !important;
-  font-family: 'superman', sans-serif;
+  font-family: 'ubuntu', sans-serif;
+  letter-spacing: 3px;
 }
 
 h2 {
   @apply text-3xl text-white text-center m-5;
-  font-family: 'superman', sans-serif;
+  font-family: 'ubuntu', sans-serif;
+  letter-spacing: 2px;
 }
 
 h3 {
   @apply text-2xl text-white text-center m-5;
-  font-family: 'superman', sans-serif;
+  font-family: 'ubuntu', sans-serif;
+  letter-spacing: 1px;
+
 }
 
 p, input, label {

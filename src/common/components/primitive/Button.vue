@@ -23,7 +23,7 @@ export default defineComponent({
 <style scoped>
 .btn {
   background-color: theme('colors.db.cyan');
-  font-family: 'superman', sans-serif;
+  font-family: 'ubuntu', sans-serif;
   outline: none;
   color: black !important;
 }
@@ -36,18 +36,18 @@ export default defineComponent({
 .large {
   height: 60px;
   padding: 10px 45px;
-  font-size: 30px;
+  font-size: 26px;
 }
 
 .med {
   height: 45px;
   padding: 6px 30px;
-  font-size: 25px;
+  font-size: 22px;
 }
 
 .small {
   height: 35px;
   padding: 4px 20px;
-  font-size: 20px;
+  font-size: 18px;
 }
 </style>
