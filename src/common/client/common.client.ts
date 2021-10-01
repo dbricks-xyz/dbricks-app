@@ -24,7 +24,6 @@ async function connectWallet(): Promise<Wallet> {
 
 async function signTransactionWithWallet(tx: Transaction, wallet: Wallet): Promise<Transaction> {
   await wallet.signTransaction(tx);
-  console.log('signeedddddd');
   return tx;
 }
 
