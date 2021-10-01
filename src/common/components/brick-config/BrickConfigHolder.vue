@@ -1,49 +1,49 @@
 <template>
   <div class="holder">
     <div class="flex justify-center align-middle pb-5">
-      <ProtocolLogo :size="24" :protocol-id="brick.protocolId" class="mr-2"/>
-      <p class="mr-2">{{ protocol.name }} - {{ action.name }}</p>
+      <ProtocolLogo :size="24" :protocol="brick.protocol" class="mr-2"/>
+      <p class="mr-2">{{ brick.protocol }} - {{ brick.action }}</p>
       <GeneralIcon icon="edit" color="white" @click="emitStartEdit" class="mr-2" :disabled="showFull"/>
       <GeneralIcon icon="trash" color="white" @click="emitRemoveBrick"/>
     </div>
 
     <!--serum-->
-    <div v-if="brick.protocolId===0 && brick.actionId===0">
+    <div v-if="brick.protocol===Protocol.Serum && brick.action===Action.Serum.PlaceOrder">
       <SerumPlaceSettleOrder :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
-    <div v-else-if="brick.protocolId===0 && brick.actionId===1">
+    <div v-else-if="brick.protocol===Protocol.Serum && brick.action===Action.Serum.CancelOrder">
       <SerumCancelOrder :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
-    <div v-else-if="brick.protocolId===0 && brick.actionId===2">
+    <div v-else-if="brick.protocol===Protocol.Serum && brick.action===Action.Serum.InitMarket">
       <SerumInitMarket :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
-    <div v-else-if="brick.protocolId===0 && brick.actionId===3">
+    <div v-else-if="brick.protocol===Protocol.Serum && brick.action===Action.Serum.SettleMarket">
       <SerumSettleMarket :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
 
     <!--mango-->
-    <div v-else-if="brick.protocolId===1 && brick.actionId===0">
+    <div v-else-if="brick.protocol===Protocol.Mango && brick.action===Action.Mango.Deposit">
       <MangoDeposit :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
-    <div v-else-if="brick.protocolId===1 && brick.actionId===1">
+    <div v-else-if="brick.protocol===Protocol.Mango && brick.action===Action.Mango.Withdraw">
       <MangoWithdraw :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
-    <div v-else-if="brick.protocolId===1 && brick.actionId===2">
+    <div v-else-if="brick.protocol===Protocol.Mango && brick.action===Action.Mango.PlaceSpotOrder">
       <SerumPlaceSettleOrder :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
-    <div v-else-if="brick.protocolId===1 && brick.actionId===3">
+    <div v-else-if="brick.protocol===Protocol.Mango && brick.action===Action.Mango.CancelSpotOrder">
       <SerumCancelOrder :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
-    <div v-else-if="brick.protocolId===1 && brick.actionId===4">
+    <div v-else-if="brick.protocol===Protocol.Mango && brick.action===Action.Mango.SettleSpotMarket">
       <SerumSettleMarket :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
-    <div v-else-if="brick.protocolId===1 && brick.actionId===5">
+    <div v-else-if="brick.protocol===Protocol.Mango && brick.action===Action.Mango.PlacePerpOrder">
       <SerumPlaceSettleOrder :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
-    <div v-else-if="brick.protocolId===1 && brick.actionId===6">
+    <div v-else-if="brick.protocol===Protocol.Mango && brick.action===Action.Mango.CancelPerpOrder">
       <SerumCancelOrder :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
-    <div v-else-if="brick.protocolId===1 && brick.actionId===7">
+    <div v-else-if="brick.protocol===Protocol.Mango && brick.action===Action.Mango.SettlePerpMarket">
       <SerumSettleMarket :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
 
@@ -52,11 +52,11 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import { Protocol, Action } from '@dbricks/dbricks-ts';
 import ProtocolLogo from '@/common/components/ProtocolLogo.vue';
 import SerumPlaceSettleOrder
   from '@/serum/components/SerumPlaceSettleOrder.vue';
 import GeneralIcon from '@/common/components/icons/GeneralIcon.vue';
-import { getAction, getProtocol } from '@/common/common.protocols';
 import { removeConfiguredBrick } from '@/common/common.state';
 import SerumCancelOrder from '@/serum/components/SerumCancelOrder.vue';
 import SerumInitMarket from '@/serum/components/SerumInitMarket.vue';
@@ -92,9 +92,6 @@ export default defineComponent({
   setup(props, context) {
     const showFull = ref(false);
 
-    const protocol = getProtocol(props.brick.protocolId);
-    const action = getAction(protocol.id, props.brick.actionId);
-
     const emitStartEdit = () => {
       showFull.value = true;
       context.emit('start-edit', {
@@ -118,11 +115,11 @@ export default defineComponent({
 
     return {
       showFull,
-      protocol,
-      action,
       emitStartEdit,
       emitEndEdit,
       emitRemoveBrick,
+      Protocol,
+      Action,
     };
   },
 });

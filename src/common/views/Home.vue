@@ -74,24 +74,24 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import { IAction, Protocol } from '@dbricks/dbricks-ts';
 import SkewedButton from '@/common/components/primitive/SkewedButton.vue';
 import AddBrick from '@/common/views/AddBrick.vue';
 import BrickConfigHolder
   from '@/common/components/brick-config/BrickConfigHolder.vue';
 import { getProtocol } from '@/common/common.protocols';
-import SolClient from '@/common/client/common.client';
+import { buildAndExecute } from '@/common/client/common.client';
 import Button from '@/common/components/primitive/Button.vue';
 import GeneralIcon from '@/common/components/icons/GeneralIcon.vue';
 import { resetStatusLog, statusLog } from '@/common/common.state';
 import SerumClient from '@/serum/client/serum.client';
-import { COMMITTMENT, CONNECTION_URL } from '@/config/config';
 import MangoClient from '@/mango/client/mango.client';
 
 interface IBrick {
   id: number,
   fill: string,
-  protocolId: number,
-  actionId: number,
+  protocol: Protocol,
+  action: IAction,
 }
 
 export default defineComponent({
@@ -120,11 +120,11 @@ export default defineComponent({
         configuredBricks.value = bricks.value.map((b) => b.id);
       });
       stateCollapsed.value = true;
-      const ownerPubkey = await (new SolClient(CONNECTION_URL, COMMITTMENT)).prepAndExecBricks();
+      const ownerPubkey = await buildAndExecute();
 
       // todo temp serum
       try {
-        await (new SerumClient(CONNECTION_URL, COMMITTMENT)).printSerumOrdersForOwner(
+        await (new SerumClient()).printSerumOrdersForOwner(
           '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc', ownerPubkey,
         );
       } catch (e) {
@@ -133,14 +133,15 @@ export default defineComponent({
 
       // todo temp mango
       try {
-        await (new MangoClient(CONNECTION_URL, COMMITTMENT)).printMangoOrdersForOwner(
+        await (new MangoClient()).printMangoOrdersForOwner(
           '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc', ownerPubkey,
         );
       } catch (e) {
         console.log('failed to get mango orders');
       }
+
       try {
-        await (new MangoClient(CONNECTION_URL, COMMITTMENT)).printMangoPerpOrdersForOwner(
+        await (new MangoClient()).printMangoPerpOrdersForOwner(
           'DtEcjPLyD4YtTBB4q8xwFZ9q49W89xZCZtJyrGebi5t8', ownerPubkey,
         );
       } catch (e) {
@@ -155,9 +156,9 @@ export default defineComponent({
       stateModalActive.value = false;
       bricks.value.unshift({
         id: bricks.value.length ? bricks.value[0].id + 1 : 0,
-        fill: getProtocol(newBrick.protocolId).color,
-        protocolId: newBrick.protocolId,
-        actionId: newBrick.actionId,
+        fill: getProtocol(newBrick.protocol).color,
+        protocol: newBrick.protocol,
+        action: newBrick.action,
       });
     };
     const handleStartEdit = (brick) => {

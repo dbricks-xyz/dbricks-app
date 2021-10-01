@@ -1,136 +1,45 @@
 import resolveConfig from 'tailwindcss/resolveConfig.js';
+import { Action, IAction, Protocol } from '@dbricks/dbricks-ts';
 import tailwindConfig from '../../tailwind.config.js';
 
 const fullConfig = resolveConfig(tailwindConfig);
 
-interface IAction {
-  id: number,
-  name: string,
-  path: string,
-  method: string,
-}
-
-interface IProtocol {
-  id: number,
+interface IActiveProtocol {
   name: string,
   color: string,
   logo: string,
   actions: IAction[]
 }
 
-const protocols: IProtocol[] = ([
+const activeProtocols: IActiveProtocol[] = ([
   {
-    id: 0,
-    name: 'Serum',
+    name: Protocol.Serum,
     color: fullConfig.theme.colors.db.serum,
-    logo: '@/assets/protocols/serumlogo.svg',
-    actions: [
-      {
-        id: 0,
-        name: 'Place order',
-        path: '/serum/orders',
-        method: 'POST',
-      },
-      {
-        id: 1,
-        name: 'Cancel order',
-        path: '/serum/orders/cancel',
-        method: 'POST',
-      },
-      {
-        id: 2,
-        name: 'Initialize market',
-        path: '/serum/markets',
-        method: 'POST',
-      },
-      {
-        id: 3,
-        name: 'Settle market',
-        path: '/serum/markets/settle',
-        method: 'POST',
-      },
-    ],
+    logo: '@/assets/activeProtocols/serumlogo.svg',
+    actions: Object.values(Action.Serum), // todo do I even need this?
   },
   {
-    id: 1,
-    name: 'Mango',
+    name: Protocol.Mango,
     color: fullConfig.theme.colors.db.mango,
-    logo: '@/assets/protocols/mangologo.svg',
-    actions: [
-      {
-        id: 0,
-        name: 'Deposit',
-        path: '/mango/deposit',
-        method: 'POST',
-      },
-      {
-        id: 1,
-        name: 'Withdraw',
-        path: '/mango/withdraw',
-        method: 'POST',
-      },
-      {
-        id: 2,
-        name: 'Place spot order',
-        path: '/mango/spot/place',
-        method: 'POST',
-      },
-      {
-        id: 3,
-        name: 'Cancel spot order',
-        path: '/mango/spot/cancel',
-        method: 'POST',
-      },
-      {
-        id: 4,
-        name: 'Settle spot market',
-        path: '/mango/spot/settle',
-        method: 'POST',
-      },
-      {
-        id: 5,
-        name: 'Place perp order',
-        path: '/mango/perp/place',
-        method: 'POST',
-      },
-      {
-        id: 6,
-        name: 'Cancel perp order',
-        path: '/mango/perp/cancel',
-        method: 'POST',
-      },
-      {
-        id: 7,
-        name: 'Settle perp market',
-        path: '/mango/perp/settle',
-        method: 'POST',
-      },
-    ],
+    logo: '@/assets/activeProtocols/mangologo.svg',
+    actions: Object.values(Action.Mango),
   },
   {
-    id: 2,
-    name: 'Saber',
+    name: Protocol.Saber,
     color: fullConfig.theme.colors.db.saber,
-    logo: '@/assets/protocols/saberlogo.jpeg',
-    actions: [
-      {
-        id: 0,
-        name: 'Initialize market',
-        path: '/saber/markets',
-        method: 'POST',
-      },
-    ],
+    logo: '@/assets/activeProtocols/saberlogo.jpeg',
+    actions: Object.values(Action.Saber),
   },
 ]);
 
-export function listProtocols(): IProtocol[] {
-  return protocols;
+export function listProtocols(): IActiveProtocol[] {
+  return activeProtocols;
 }
 
-export function getProtocol(protocolId: number): IProtocol {
-  return protocols[protocolId];
+export function getProtocol(protocol: string): IActiveProtocol {
+  return activeProtocols.find((p) => p.name === protocol)!;
 }
 
-export function getAction(protocolId: number, actionId: number): IAction {
-  return protocols[protocolId].actions[actionId];
-}
+// export function getAction(protocolId: number, actionId: number): IAction {
+//   return activeProtocols[protocolId].actions[actionId];
+// }

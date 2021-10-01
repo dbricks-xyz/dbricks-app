@@ -22,23 +22,21 @@
 
 <script lang="ts">
 import { computed, defineComponent, reactive } from 'vue';
-import { Method } from 'axios';
 import {
-  IMangoDEXMarketInitParams,
-  ISerumDEXMarketInitParams,
-} from 'dbricks-lib';
+  IMangoDEXMarketInitArgs,
+  ISerumDEXMarketInitArgs,
+} from '@dbricks/dbricks-ts';
 import {
   addOrModifyConfiguredBrick,
-  getPayloadsByBrickId,
+  getArgsByBrickId,
 } from '@/common/common.state';
-import { getAction } from '@/common/common.protocols';
 import BrickConfigLayout
   from '@/common/components/brick-config/BrickConfigLayout.vue';
 import BrickConfigInput
   from '@/common/components/brick-config/BrickConfigInput.vue';
 import { prettifyMint } from '@/common/common.util';
 
-type InitParams = ISerumDEXMarketInitParams | IMangoDEXMarketInitParams;
+type InitArgs = ISerumDEXMarketInitArgs | IMangoDEXMarketInitArgs;
 
 export default defineComponent({
   components: {
@@ -54,16 +52,15 @@ export default defineComponent({
   },
   emits: ['end-edit'],
   setup(props, context) {
-    const existingPayload = getPayloadsByBrickId(props.brick.id)[0];
-    const payload = reactive<InitParams>(existingPayload
-      ? existingPayload.payload as InitParams
+    const existingPayload = getArgsByBrickId(props.brick.id);
+    const payload = reactive<InitArgs>(existingPayload
+      ? existingPayload as InitArgs
       : {
         baseMintPubkey: 'G7gDxt4kgYi4gqjEZueWQXGviD1mJnED2oGk2tLKsjv7',
         quoteMintPubkey: '72fQHRenCAmYarsqzpXRgoBrJMAtX8YRtRaRU3sBHbUy',
         lotSize: '1',
         tickSize: '1',
-        ownerPubkey: '', // filled in during signing
-      } as InitParams);
+      } as InitArgs);
 
     const description = computed(() => `Init market for ${prettifyMint(payload.baseMintPubkey)} / ${prettifyMint(payload.quoteMintPubkey)}`);
 
@@ -71,11 +68,9 @@ export default defineComponent({
       addOrModifyConfiguredBrick({
         id: props.brick.id,
         description: description.value,
-        request: [{
-          method: getAction(props.brick.protocolId, props.brick.actionId).method as Method,
-          path: getAction(props.brick.protocolId, props.brick.actionId).path,
-          payload,
-        }],
+        protocol: props.brick.protocol,
+        action: props.brick.action,
+        args: payload,
       });
       context.emit('end-edit');
     };

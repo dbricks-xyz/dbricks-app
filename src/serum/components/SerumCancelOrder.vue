@@ -10,7 +10,7 @@
       <BrickConfigInput v-if="!cancelAll" id="orderId" name="Order ID">
         <input type="text" id="orderId" v-model="payload.orderId">
       </BrickConfigInput>
-      <BrickConfigInput v-if="brick.protocolId === 1 && !cancelAll" id="mangoAccountNumber" name="Mango account">
+      <BrickConfigInput v-if="brick.protocol === Protocol.Mango && !cancelAll" id="mangoAccountNumber" name="Mango account">
         <input type="text" id="mangoAccountNumber" v-model="payload.mangoAccountNumber">
       </BrickConfigInput>
     </template>
@@ -24,16 +24,15 @@
 import {
   computed, defineComponent, reactive, ref, watch,
 } from 'vue';
-import { Method } from 'axios';
 import {
-  IMangoDEXOrderCancelParams,
-  ISerumDEXOrderCancelParams,
-} from 'dbricks-lib';
+  IMangoDEXOrderCancelArgs,
+  ISerumDEXOrderCancelArgs,
+  Protocol,
+} from '@dbricks/dbricks-ts';
 import {
   addOrModifyConfiguredBrick,
-  getPayloadsByBrickId,
+  getArgsByBrickId,
 } from '@/common/common.state';
-import { getAction } from '@/common/common.protocols';
 import BrickConfigLayout
   from '@/common/components/brick-config/BrickConfigLayout.vue';
 import BrickConfigInput
@@ -41,7 +40,7 @@ import BrickConfigInput
 import BrickConfigCheckbox
   from '@/common/components/brick-config/BrickConfigCheckbox.vue';
 
-type CancelParams = ISerumDEXOrderCancelParams | IMangoDEXOrderCancelParams;
+type CancelArgs = ISerumDEXOrderCancelArgs | IMangoDEXOrderCancelArgs;
 
 export default defineComponent({
   components: {
@@ -58,15 +57,14 @@ export default defineComponent({
   },
   emits: ['end-edit'],
   setup(props, context) {
-    const existingPayload = getPayloadsByBrickId(props.brick.id)[0];
-    const payload = reactive<CancelParams>(existingPayload
-      ? existingPayload.payload as CancelParams
+    const existingPayload = getArgsByBrickId(props.brick.id);
+    const payload = reactive<CancelArgs>(existingPayload
+      ? existingPayload as CancelArgs
       : {
         marketPubkey: '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc',
         orderId: 'affffffffffffffff',
-        ownerPubkey: '', // filled in during signing
         mangoAccountNumber: '0',
-      } as CancelParams);
+      } as CancelArgs);
 
     const cancelAll = ref(false);
     watch(cancelAll, (newValue) => {
@@ -82,11 +80,9 @@ export default defineComponent({
       addOrModifyConfiguredBrick({
         id: props.brick.id,
         description: description.value,
-        request: [{
-          method: getAction(props.brick.protocolId, props.brick.actionId).method as Method,
-          path: getAction(props.brick.protocolId, props.brick.actionId).path,
-          payload,
-        }],
+        protocol: props.brick.protocol,
+        action: props.brick.action,
+        args: payload,
       });
       context.emit('end-edit');
     };
@@ -96,6 +92,7 @@ export default defineComponent({
       cancelAll,
       description,
       handleEndEdit,
+      Protocol,
     };
   },
 });

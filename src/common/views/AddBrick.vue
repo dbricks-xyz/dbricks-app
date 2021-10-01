@@ -3,14 +3,14 @@
     <p>Pick a protocol:</p>
     <div class="flex flex-row justify-between">
       <SelectableBox
-        v-for="p in listProtocols()" :key="p.id"
+        v-for="p in listProtocols()" :key="p.name"
         class="flex-1"
         :color="p.color"
-        :selected="selectedProtocolId === p.id"
-        @click="selectedProtocolId = p.id"
+        :selected="selectedProtocol === p.name"
+        @click="selectedProtocol = p.name"
       >
         <div class="flex flex-col items-center align-middle p-2">
-          <ProtocolLogo :size="50" :protocol-id="p.id"/>
+          <ProtocolLogo :size="50" :protocol="p.name"/>
           <p class="mt-3">{{ p.name }}</p>
         </div>
       </SelectableBox>
@@ -18,13 +18,13 @@
 
     <p class="mt-10">Pick an action:</p>
     <SelectableBox
-      v-for="a in getProtocol(selectedProtocolId).actions" :key="a.id"
+      v-for="a in getProtocol(selectedProtocol).actions" :key="a"
       class="flex-1"
-      :color="getProtocol(selectedProtocolId).color"
-      :selected="selectedActionId === a.id"
-      @click="selectedActionId = a.id"
+      :color="getProtocol(selectedProtocol).color"
+      :selected="selectedAction === a"
+      @click="selectedAction = a"
     >
-      <p>{{ a.name }}</p>
+      <p>{{ a }}</p>
     </SelectableBox>
 
     <div class="flex flex-col items-center w-full">
@@ -50,19 +50,19 @@ export default defineComponent({
   },
   emits: ['new-brick'],
   setup(props, context) {
-    const selectedProtocolId = ref<number>(0);
-    const selectedActionId = ref<number>(0);
+    const selectedProtocol = ref<string>('Serum');
+    const selectedAction = ref<string>('PlaceOrder');
 
     const emitNewBrick = () => {
       context.emit('new-brick', {
-        protocolId: selectedProtocolId.value,
-        actionId: selectedActionId.value,
+        protocol: selectedProtocol.value,
+        action: selectedAction.value,
       });
     };
 
     return {
-      selectedProtocolId,
-      selectedActionId,
+      selectedProtocol,
+      selectedAction,
       getProtocol,
       listProtocols,
       emitNewBrick,
@@ -70,7 +70,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-
-</style>

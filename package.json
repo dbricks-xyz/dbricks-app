@@ -6,18 +6,17 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "update": "yarn upgrade dbricks-lib --latest --check-files",
-    "linklib": "npm link ../dbricks-lib"
+    "update": "yarn upgrade @dbricks/dbricks-ts --latest --check-files"
   },
   "dependencies": {
     "@blockworks-foundation/mango-client": "^3.0.24",
+    "@dbricks/dbricks-ts": "^0.0.18",
     "@project-serum/serum": "^0.13.59",
     "@project-serum/sol-wallet-adapter": "^0.2.5",
     "@solana/spl-token": "^0.1.8",
     "@solana/web3.js": "^1.27.0",
     "axios": "^0.21.4",
     "bn.js": "^5.2.0",
-    "borsh": "^0.6.0",
     "core-js": "^3.6.5",
     "dbricks-lib": "^0.1.51",
     "dotenv": "^10.0.0",

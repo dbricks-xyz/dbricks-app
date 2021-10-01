@@ -1,13 +1,18 @@
 import { computed, reactive } from 'vue';
-import { configuredBrick, configuredRequest } from 'dbricks-lib';
+import { IBrickArgs, IRawBrick } from '@dbricks/dbricks-ts';
 
 export type logEntry = {
   content: string,
   color: string,
 }
 
+interface IConfiguredBrick extends IRawBrick {
+  id: number,
+  description: string,
+}
+
 const state = reactive({
-  configuredBricks: <configuredBrick[]>[],
+  configuredBricks: <IConfiguredBrick[]>[],
   statusLog: <logEntry[]>[],
 });
 
@@ -15,17 +20,17 @@ const state = reactive({
 
 export const configuredBricks = computed(() => state.configuredBricks);
 
-export const getConfiguredBrickById = (brickId: number): configuredBrick => state.configuredBricks.filter((b) => b.id === brickId)[0];
+export const getConfiguredBrickById = (brickId: number): IConfiguredBrick => state.configuredBricks.filter((b) => b.id === brickId)[0];
 
-export const getPayloadsByBrickId = (brickId: number): configuredRequest[] => {
+// eslint-disable-next-line consistent-return
+export const getArgsByBrickId = (brickId: number): IBrickArgs | undefined => {
   const foundBrick = getConfiguredBrickById(brickId);
   if (foundBrick) {
-    return foundBrick.request;
+    return foundBrick.args;
   }
-  return [];
 };
 
-export const addOrModifyConfiguredBrick = (newOrUpdatedBrick: configuredBrick): void => {
+export const addOrModifyConfiguredBrick = (newOrUpdatedBrick: IConfiguredBrick): void => {
   const i = state.configuredBricks.map((b) => b.id)
     .indexOf(newOrUpdatedBrick.id);
   if (i === -1) {

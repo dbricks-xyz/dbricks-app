@@ -11,7 +11,7 @@
       <BrickConfigInput id="size" name="Size">
         <input type="text" id="size" v-model="payload.size">
       </BrickConfigInput>
-      <BrickConfigInput v-if="brick.protocolId === 1" id="mangoAccountNumber" name="Mango account">
+      <BrickConfigInput v-if="brick.protocol === Protocol.Mango" id="mangoAccountNumber" name="Mango account">
         <input type="text" id="mangoAccountNumber" v-model="payload.mangoAccountNumber">
       </BrickConfigInput>
       <BrickConfigRadio options="IOC,Limit,Post only">
@@ -25,9 +25,9 @@
           <input type="radio" id="Postonly" value="postOnly" v-model="payload.orderType">
         </template>
       </BrickConfigRadio>
-      <BrickConfigCheckbox id="box" name="Attempt to settle">
-        <input class="flex-initial m-1" type="checkbox" id="box" v-model="trySettle">
-      </BrickConfigCheckbox>
+      <!--<BrickConfigCheckbox id="box" name="Attempt to settle">-->
+      <!--  <input class="flex-initial m-1" type="checkbox" id="box" v-model="trySettle">-->
+      <!--</BrickConfigCheckbox>-->
     </template>
     <template v-slot:short>
       <p>{{description}}</p>
@@ -39,18 +39,16 @@
 import {
   computed, defineComponent, reactive, ref, watch,
 } from 'vue';
-import { Method } from 'axios';
 import {
-  configuredRequest,
-  IMangoDEXOrderPlaceParams,
-  ISerumDEXOrderPlaceParams,
-} from 'dbricks-lib';
+  IMangoDEXOrderPlaceArgs,
+  ISerumDEXOrderPlaceArgs,
+  Protocol,
+} from '@dbricks/dbricks-ts';
 import BuySell from '@/common/components/BuySell.vue';
 import {
   addOrModifyConfiguredBrick,
-  getPayloadsByBrickId,
+  getArgsByBrickId,
 } from '@/common/common.state';
-import { getAction } from '@/common/common.protocols';
 import BrickConfigLayout
   from '@/common/components/brick-config/BrickConfigLayout.vue';
 import BrickConfigInput
@@ -60,13 +58,12 @@ import BrickConfigRadio
 import BrickConfigCheckbox
   from '@/common/components/brick-config/BrickConfigCheckbox.vue';
 import { getMarketMints } from '@/common/common.util';
-import { SettleParams } from '@/serum/components/SerumSettleMarket.vue';
 
-type PlaceParams = ISerumDEXOrderPlaceParams | IMangoDEXOrderPlaceParams;
+type PlaceArgs = ISerumDEXOrderPlaceArgs | IMangoDEXOrderPlaceArgs;
 
 export default defineComponent({
   components: {
-    BrickConfigCheckbox,
+    // BrickConfigCheckbox,
     BrickConfigRadio,
     BrickConfigInput,
     BrickConfigLayout,
@@ -81,18 +78,17 @@ export default defineComponent({
   },
   emits: ['end-edit'],
   setup(props, context) {
-    const [existingPlacePayload, existingSettlePayload] = getPayloadsByBrickId(props.brick.id);
-    const payload = reactive<PlaceParams>(existingPlacePayload
-      ? existingPlacePayload.payload as PlaceParams
+    const existingPlacePayload = getArgsByBrickId(props.brick.id);
+    const payload = reactive<PlaceArgs>(existingPlacePayload
+      ? existingPlacePayload as PlaceArgs
       : {
         marketPubkey: '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc',
         side: 'buy',
         price: '0.5',
         size: '1',
         orderType: 'limit',
-        ownerPubkey: '', // filled in during signing
         mangoAccountNumber: '0', // optional
-      } as PlaceParams);
+      } as PlaceArgs);
 
     const base = ref<string>('');
     const quote = ref<string>('');
@@ -106,10 +102,10 @@ export default defineComponent({
       [base.value, quote.value] = [b, q];
     });
 
-    const trySettle = ref<boolean>(true);
-    if (existingPlacePayload && !existingSettlePayload) {
-      trySettle.value = false;
-    }
+    // const trySettle = ref<boolean>(true);
+    // if (existingPlacePayload && !existingSettlePayload) {
+    //   trySettle.value = false;
+    // }
 
     const handleChangeSide = (newSide) => {
       payload.side = newSide;
@@ -122,47 +118,51 @@ export default defineComponent({
       return `${payload.orderType} ${payload.size} ${base.value} --> ${parseFloat(payload.size) * parseFloat(payload.price)} ${quote.value}`;
     });
 
-    let settleActionId;
-    if (props.brick.protocolId === 0) { // serum
-      settleActionId = 3;
-    } else if (props.brick.protocolId === 1 && props.brick.actionId === 2) { // mango spot
-      settleActionId = 4;
-    } else if (props.brick.protocolId === 1 && props.brick.actionId === 5) { // mango perp
-      settleActionId = 7;
-    } else {
-      throw new Error('unknown protocol used for placing order');
-    }
+    // let settleActionId;
+    // if (props.brick.protocolId === 0) { // serum
+    //   settleActionId = 3;
+    // } else if (props.brick.protocolId === 1 && props.brick.actionId === 2) { // mango spot
+    //   settleActionId = 4;
+    // } else if (props.brick.protocolId === 1 && props.brick.actionId === 5) { // mango perp
+    //   settleActionId = 7;
+    // } else {
+    //   throw new Error('unknown protocol used for placing order');
+    // }
 
     const handleEndEdit = () => {
-      const request: configuredRequest[] = [{
-        method: getAction(props.brick.protocolId, props.brick.actionId).method as Method,
-        path: getAction(props.brick.protocolId, props.brick.actionId).path,
-        payload,
-      }];
-      if (trySettle.value) {
-        request.push({
-          method: getAction(props.brick.protocolId, settleActionId).method as Method,
-          path: getAction(props.brick.protocolId, settleActionId).path,
-          payload: {
-            marketPubkey: payload.marketPubkey,
-            ownerPubkey: '', // filled in during signing
-          } as SettleParams,
-        });
-      }
+      // const request: configuredRequest[] = [{
+      //   method: getAction(props.brick.protocolId, props.brick.actionId).method as Method,
+      //   path: getAction(props.brick.protocolId, props.brick.actionId).path,
+      //   payload,
+      // }];
+      // if (trySettle.value) {
+      //   request.push({
+      //     method: getAction(props.brick.protocolId, settleActionId).method as Method,
+      //     path: getAction(props.brick.protocolId, settleActionId).path,
+      //     payload: {
+      //       marketPubkey: payload.marketPubkey,
+      //       ownerPubkey: '', // filled in during signing
+      //     } as SettleArgs,
+      //   });
+      // }
       addOrModifyConfiguredBrick({
         id: props.brick.id,
-        description: `Place ${trySettle.value ? 'and settle ' : ''}trade: ${description.value} on market ${payload.marketPubkey}`,
-        request,
+        // description: `Place ${trySettle.value ? 'and settle ' : ''}trade: ${description.value} on market ${payload.marketPubkey}`,
+        description: `Place trade: ${description.value} on market ${payload.marketPubkey}`,
+        protocol: props.brick.protocol,
+        action: props.brick.action,
+        args: payload,
       });
       context.emit('end-edit');
     };
 
     return {
       payload,
-      trySettle,
+      // trySettle,
       description,
       handleChangeSide,
       handleEndEdit,
+      Protocol,
     };
   },
 });

@@ -1,18 +1,28 @@
 import {
-  Cluster, Config,
-  IDS, MangoAccount,
+  Cluster,
+  Config,
+  IDS,
+  MangoAccount,
   MangoClient as NativeMangoClient,
-  MangoGroup, PerpOrder,
+  MangoGroup,
+  PerpOrder,
 } from '@blockworks-foundation/mango-client';
-import { Commitment, PublicKey } from '@solana/web3.js';
+import { Connection, PublicKey } from '@solana/web3.js';
 import { OpenOrders } from '@project-serum/serum';
 import { GroupConfig } from '@blockworks-foundation/mango-client/lib/src/config';
 import PerpMarket from '@blockworks-foundation/mango-client/lib/src/PerpMarket';
-import SolClient from '@/common/client/common.client';
-import { MANGO_PROG_ID, NETWORK, SERUM_PROG_ID } from '@/config/config';
+import {
+  COMMITTMENT,
+  CONNECTION_URL,
+  MANGO_PROG_ID,
+  NETWORK,
+  SERUM_PROG_ID,
+} from '@/config/config';
 import { pushToStatusLog } from '@/common/common.state';
 
-export default class MangoClient extends SolClient {
+export default class MangoClient {
+  connection: Connection;
+
   nativeClient: NativeMangoClient;
 
   group!: MangoGroup;
@@ -21,8 +31,8 @@ export default class MangoClient extends SolClient {
 
   cluster: Cluster;
 
-  constructor(connnectionUrl: string, committment: Commitment) {
-    super(connnectionUrl, committment);
+  constructor() {
+    this.connection = new Connection(CONNECTION_URL, COMMITTMENT);
     this.nativeClient = new NativeMangoClient(this.connection, MANGO_PROG_ID);
     if (NETWORK === 'mainnet') {
       this.groupName = 'mainnet.1';

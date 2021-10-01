@@ -21,13 +21,11 @@
 import {
   computed, defineComponent, reactive, ref, watch,
 } from 'vue';
-import { Method } from 'axios';
-import { IMangoLenderDepositParams } from 'dbricks-lib';
+import { IMangoLenderDepositArgs } from '@dbricks/dbricks-ts';
 import {
   addOrModifyConfiguredBrick,
-  getPayloadsByBrickId,
+  getArgsByBrickId,
 } from '@/common/common.state';
-import { getAction } from '@/common/common.protocols';
 import BrickConfigLayout
   from '@/common/components/brick-config/BrickConfigLayout.vue';
 import BrickConfigInput
@@ -48,15 +46,14 @@ export default defineComponent({
   },
   emits: ['end-edit'],
   setup(props, context) {
-    const existingPayload = getPayloadsByBrickId(props.brick.id)[0];
-    const payload = reactive<IMangoLenderDepositParams>(existingPayload
-      ? existingPayload.payload as IMangoLenderDepositParams
+    const existingPayload = getArgsByBrickId(props.brick.id);
+    const payload = reactive<IMangoLenderDepositArgs>(existingPayload
+      ? existingPayload as IMangoLenderDepositArgs
       : {
         mintPubkey: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
         quantity: '0.1',
-        ownerPubkey: '', // filled in during signing
         mangoAccountNumber: '0',
-      } as IMangoLenderDepositParams);
+      } as IMangoLenderDepositArgs);
 
     // todo factor out https://stackoverflow.com/questions/69295518/vue3-how-to-factor-out-a-watch-statement-in-composition-api
     const mint = ref<string>('');
@@ -76,11 +73,9 @@ export default defineComponent({
       addOrModifyConfiguredBrick({
         id: props.brick.id,
         description: description.value,
-        request: [{
-          method: getAction(props.brick.protocolId, props.brick.actionId).method as Method,
-          path: getAction(props.brick.protocolId, props.brick.actionId).path,
-          payload,
-        }],
+        protocol: props.brick.protocol,
+        action: props.brick.action,
+        args: payload,
       });
       context.emit('end-edit');
     };

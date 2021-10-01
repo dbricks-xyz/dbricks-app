@@ -4,7 +4,7 @@
       <BrickConfigInput id="market" name="Market">
         <input type="text" id="market" v-model="payload.marketPubkey">
       </BrickConfigInput>
-      <BrickConfigInput v-if="brick.protocolId === 1" id="mangoAccountNumber" name="Mango account">
+      <BrickConfigInput v-if="brick.protocol === Protocol.Mango" id="mangoAccountNumber" name="Mango account">
         <input type="text" id="mangoAccountNumber" v-model="payload.mangoAccountNumber">
       </BrickConfigInput>
     </template>
@@ -16,22 +16,21 @@
 
 <script lang="ts">
 import { computed, defineComponent, reactive } from 'vue';
-import { Method } from 'axios';
 import {
-  IMangoDEXMarketSettleParams,
-  ISerumDEXMarketSettleParams,
-} from 'dbricks-lib';
+  IMangoDEXMarketSettleArgs,
+  ISerumDEXMarketSettleArgs,
+  Protocol,
+} from '@dbricks/dbricks-ts';
 import {
   addOrModifyConfiguredBrick,
-  getPayloadsByBrickId,
+  getArgsByBrickId,
 } from '@/common/common.state';
-import { getAction } from '@/common/common.protocols';
 import BrickConfigLayout
   from '@/common/components/brick-config/BrickConfigLayout.vue';
 import BrickConfigInput
   from '@/common/components/brick-config/BrickConfigInput.vue';
 
-export type SettleParams = ISerumDEXMarketSettleParams | IMangoDEXMarketSettleParams;
+export type SettleArgs = ISerumDEXMarketSettleArgs | IMangoDEXMarketSettleArgs;
 
 export default defineComponent({
   components: {
@@ -47,14 +46,13 @@ export default defineComponent({
   },
   emits: ['end-edit'],
   setup(props, context) {
-    const existingPayload = getPayloadsByBrickId(props.brick.id)[0];
-    const payload = reactive<SettleParams>(existingPayload
-      ? existingPayload.payload as SettleParams
+    const existingPayload = getArgsByBrickId(props.brick.id);
+    const payload = reactive<SettleArgs>(existingPayload
+      ? existingPayload as SettleArgs
       : {
         marketPubkey: '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc',
-        ownerPubkey: '', // filled in during signing
         mangoAccountNumber: '0',
-      } as SettleParams);
+      } as SettleArgs);
 
     const description = computed(() => `Settle market ${payload.marketPubkey.substring(0, 5)}..`);
 
@@ -62,11 +60,9 @@ export default defineComponent({
       addOrModifyConfiguredBrick({
         id: props.brick.id,
         description: description.value,
-        request: [{
-          method: getAction(props.brick.protocolId, props.brick.actionId).method as Method,
-          path: getAction(props.brick.protocolId, props.brick.actionId).path,
-          payload,
-        }],
+        protocol: props.brick.protocol,
+        action: props.brick.action,
+        args: payload,
       });
       context.emit('end-edit');
     };
@@ -75,6 +71,7 @@ export default defineComponent({
       payload,
       description,
       handleEndEdit,
+      Protocol,
     };
   },
 });

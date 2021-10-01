@@ -1,5 +1,5 @@
 module.exports = {
   transpileDependencies: [
-    'dbricks-lib',
+    '@dbricks/dbricks-ts',
   ],
 };
