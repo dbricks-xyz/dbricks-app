@@ -7,7 +7,7 @@
         class="flex-1"
         :color="p.color"
         :selected="selectedProtocol === p.name"
-        @click="selectedProtocol = p.name"
+        @click="changeProtocol(p.name)"
       >
         <div class="flex flex-col items-center align-middle p-2">
           <ProtocolLogo :size="50" :protocol="p.name"/>
@@ -60,12 +60,19 @@ export default defineComponent({
       });
     };
 
+    const changeProtocol = (newProtocol) => {
+      selectedProtocol.value = newProtocol;
+      // eslint-disable-next-line prefer-destructuring
+      selectedAction.value = getProtocol(newProtocol).actions[0];
+    };
+
     return {
       selectedProtocol,
       selectedAction,
       getProtocol,
       listProtocols,
       emitNewBrick,
+      changeProtocol,
     };
   },
 });

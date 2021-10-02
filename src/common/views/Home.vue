@@ -226,7 +226,7 @@ export default defineComponent({
 
 svg {
   stroke: black;
-  stroke-width: 5px;
+  stroke-width: 6px;
   transition: all .2s ease-in-out;
   position: relative;
 }
@@ -256,7 +256,6 @@ svg {
 }
 
 .list-enter-active, .list-leave-active {
-  /*todo https://forum.vuejs.org/t/list-transitions-first-elements-content-showing-up-too-fast/121643*/
   /*in the meantime keep this fast enough to not notice*/
   transition: all .5s ease-in-out;
 }

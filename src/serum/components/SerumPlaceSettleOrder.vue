@@ -55,8 +55,8 @@ import BrickConfigInput
   from '@/common/components/brick-config/BrickConfigInput.vue';
 import BrickConfigRadio
   from '@/common/components/brick-config/BrickConfigRadio.vue';
-import BrickConfigCheckbox
-  from '@/common/components/brick-config/BrickConfigCheckbox.vue';
+// import BrickConfigCheckbox
+//   from '@/common/components/brick-config/BrickConfigCheckbox.vue';
 import { getMarketMints } from '@/common/common.util';
 
 type PlaceArgs = ISerumDEXOrderPlaceArgs | IMangoDEXOrderPlaceArgs;

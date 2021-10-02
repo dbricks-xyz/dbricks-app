@@ -16,7 +16,7 @@ const activeProtocols: IActiveProtocol[] = ([
     name: Protocol.Serum,
     color: fullConfig.theme.colors.db.serum,
     logo: '@/assets/activeProtocols/serumlogo.svg',
-    actions: Object.values(Action.Serum), // todo do I even need this?
+    actions: Object.values(Action.Serum),
   },
   {
     name: Protocol.Mango,
@@ -39,7 +39,3 @@ export function listProtocols(): IActiveProtocol[] {
 export function getProtocol(protocol: string): IActiveProtocol {
   return activeProtocols.find((p) => p.name === protocol)!;
 }
-
-// export function getAction(protocolId: number, actionId: number): IAction {
-//   return activeProtocols[protocolId].actions[actionId];
-// }
