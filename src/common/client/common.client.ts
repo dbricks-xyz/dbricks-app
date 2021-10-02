@@ -35,6 +35,7 @@ export async function buildAndExecute(): Promise<PublicKey> {
 
   const wallet = await connectWallet();
   const builder = new Builder({
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     ownerPubkey: wallet.publicKey!,
     connectionUrl: CONNECTION_URL,
     committment: COMMITTMENT,

@@ -19,11 +19,6 @@
   src: local("roboto"), url('common/assets/roboto.ttf') format("truetype");
 }
 
-@font-face {
-  font-family: "superman";
-  src: local("superman"), url('common/assets/superman.otf') format("truetype");
-}
-
 * {
   font-family: 'roboto', monospace;
   color: white;

@@ -37,5 +37,6 @@ export function listProtocols(): IActiveProtocol[] {
 }
 
 export function getProtocol(protocol: string): IActiveProtocol {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return activeProtocols.find((p) => p.name === protocol)!;
 }

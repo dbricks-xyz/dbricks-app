@@ -22,7 +22,7 @@ module.exports = {
           darkyellow: '#4f4c25',
           darkpink: '#472341',
           darkpurple: '#381f3f',
-          darkgray: '#23272d',
+          cd: '#23272d',
 
           mango: '#F98505',
           serum: '#3FDBF0',
