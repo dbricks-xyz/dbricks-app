@@ -928,16 +928,17 @@
     enabled "2.0.x"
     kuler "^2.0.0"
 
-"@dbricks/dbricks-ts@^0.0.22":
-  version "0.0.22"
-  resolved "https://registry.yarnpkg.com/@dbricks/dbricks-ts/-/dbricks-ts-0.0.22.tgz#39eb5207f6b11e772503bad231355f8c6813a385"
-  integrity sha512-Dju4YlgDy3txwyxng9Z9peaO1ZN1C/iWMUh3czslXSUd2MnIg2ZKKeZGoKfODX+W/3N81SOKvBI0m2jLj/O2Ng==
+"@dbricks/dbricks-ts@^0.0.39":
+  version "0.0.39"
+  resolved "https://registry.yarnpkg.com/@dbricks/dbricks-ts/-/dbricks-ts-0.0.39.tgz#d8a2f3bc9fc1b402fb47206daa9466827dc54611"
+  integrity sha512-Tp0o2CQoInP/IsenRgZfXQR4Vq6zBX83kCS6n72AuI+ZdWry3oUFXtXYLVuD7iG4lryfBC+U2oljivompX/7XA==
   dependencies:
     "@solana/spl-token" "^0.1.8"
     "@solana/web3.js" "^1.29.0"
     axios "^0.21.4"
     bn.js "^5.2.0"
     dotenv "^10.0.0"
+    events "^3.3.0"
     winston "^3.3.3"
 
 "@fullhuman/postcss-purgecss@^3.1.3":
@@ -4374,7 +4375,7 @@ eventemitter3@^4.0.0, eventemitter3@^4.0.7:
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.7.tgz#2de9b68f6528d5644ef5c59526a1b4a07306169f"
   integrity sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==
 
-events@^3.0.0:
+events@^3.0.0, events@^3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/events/-/events-3.3.0.tgz#31a95ad0a924e2d2c419a813aeb2c4e878ea7400"
   integrity sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==
@@ -8544,7 +8545,7 @@ set-value@^2.0.0, set-value@^2.0.1:
     is-plain-object "^2.0.3"
     split-string "^3.0.1"
 
-setimmediate@^1.0.4:
+setimmediate@^1.0.4, setimmediate@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/setimmediate/-/setimmediate-1.0.5.tgz#290cbb232e306942d7d7ea9b83732ab7856f8285"
   integrity sha1-KQy7Iy4waULX1+qbg3Mqt4VvgoU=

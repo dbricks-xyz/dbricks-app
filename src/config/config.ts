@@ -12,6 +12,10 @@ if (process.env.VUE_APP_TESTING_LOCAL) {
 console.log('// ---------------------------------------')
 console.log('LOADED ENV:', NETWORK);
 
+if (process.env.VUE_APP_DEBUG) {
+  console.log('Debug mode on.');
+}
+
 export let SERUM_PROG_ID: PublicKey;
 export let SABER_PROG_ID: PublicKey;
 export let MANGO_PROG_ID: PublicKey;

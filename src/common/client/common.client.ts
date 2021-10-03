@@ -1,6 +1,6 @@
 import { PublicKey, Transaction } from '@solana/web3.js';
 import Wallet from '@project-serum/sol-wallet-adapter';
-import { Builder } from '@dbricks/dbricks-ts';
+import { Builder, builderEmitter } from '@dbricks/dbricks-ts';
 import { configuredBricks, pushToStatusLog } from '@/common/common.state';
 import { COMMITTMENT, CONNECTION_URL, WALLET_PROVIDER_URL } from '@/config/config';
 
@@ -27,7 +27,7 @@ async function signTransactionWithWallet(tx: Transaction, wallet: Wallet): Promi
   return tx;
 }
 
-export async function buildAndExecute(): Promise<PublicKey> {
+export async function buildAndLog(): Promise<PublicKey> {
   pushToStatusLog({
     content: 'Building new brick stack.',
     color: 'white',
@@ -50,35 +50,61 @@ export async function buildAndExecute(): Promise<PublicKey> {
     });
   });
 
-  const parsedBricks = builder.parseBricks(builder.rawBricks);
-  const fetchedBricks = await builder.fetchBricks(parsedBricks);
-  pushToStatusLog({
-    content: 'Instructions and signers for each of the bricks fetched.',
-    color: 'white',
+  builderEmitter.removeAllListeners();
+  builderEmitter.on('fetchBricks', () => {
+    pushToStatusLog({
+      content: 'Instructions and signers fetched.',
+      color: 'white',
+    });
   });
 
-  const flattenedBricks = builder.flattenBricks(fetchedBricks);
-  const sizedBricks = await builder.optimallySizeBricks(flattenedBricks);
-  pushToStatusLog({
-    content: 'Bricks re-composed to minimize required transactions.',
-    color: 'white',
+  builderEmitter.on('optimallySizeBricks', (data) => {
+    pushToStatusLog({
+      content: data,
+      color: 'white',
+    });
   });
 
-  const finalBricks = await builder.updateBlockhashOnSimilarTransactions(sizedBricks);
-  pushToStatusLog({
-    content: 'Transactions with similar blockhashes de-duplicated.',
-    color: 'white',
+  builderEmitter.on('updateBlockhashOnSimilarTransactions', (data) => {
+    pushToStatusLog({
+      content: data,
+      color: 'white',
+    });
   });
 
-  pushToStatusLog({
-    content: 'Please sign the transactions with your wallet.',
-    color: 'yellow',
+  builderEmitter.on('executeBricks', (data) => {
+    pushToStatusLog({
+      content: data,
+      color: 'green',
+    });
   });
-  await builder.executeBricks(finalBricks, signTransactionWithWallet, [wallet]);
-  pushToStatusLog({
-    content: 'Transactions executed.',
-    color: 'green',
+
+  builderEmitter.on('executeBricksError', (data) => {
+    pushToStatusLog({
+      content: data,
+      color: 'red',
+    });
   });
+
+  builderEmitter.on('executeBricksSign', (data) => {
+    pushToStatusLog({
+      content: data,
+      color: 'yellow',
+    });
+  });
+
+  try {
+    await builder.build(signTransactionWithWallet, [wallet]);
+    pushToStatusLog({
+      content: 'All transactions succeeded. 🎉',
+      color: 'green',
+    });
+  } catch (e) {
+    pushToStatusLog({
+      content: 'Some transactions failed. Please re-run or use errors above to debug.',
+      color: 'red',
+    });
+  }
 
   return builder.ownerPubkey;
 }

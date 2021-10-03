@@ -80,7 +80,7 @@ import AddBrick from '@/common/views/AddBrick.vue';
 import BrickConfigHolder
   from '@/common/components/brick-config/BrickConfigHolder.vue';
 import { getProtocol } from '@/common/common.protocols';
-import { buildAndExecute } from '@/common/client/common.client';
+import { buildAndLog } from '@/common/client/common.client';
 import Button from '@/common/components/primitive/Button.vue';
 import GeneralIcon from '@/common/components/icons/GeneralIcon.vue';
 import { resetStatusLog, statusLog } from '@/common/common.state';
@@ -120,7 +120,7 @@ export default defineComponent({
         configuredBricks.value = bricks.value.map((b) => b.id);
       });
       stateCollapsed.value = true;
-      const ownerPubkey = await buildAndExecute();
+      const ownerPubkey = await buildAndLog();
 
       // todo temp serum
       try {
