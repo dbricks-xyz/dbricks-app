@@ -112,6 +112,9 @@ export default defineComponent({
     const configuredBricks = ref<number[]>([]);
 
     const openNewBrickModal = () => {
+      if (stateCollapsed.value) {
+        return;
+      }
       stateModalActive.value = true;
     };
     const sendTransaction = async () => {

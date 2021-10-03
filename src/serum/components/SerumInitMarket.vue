@@ -15,13 +15,15 @@
       </BrickConfigInput>
     </template>
     <template v-slot:short>
-      <p>{{description}}</p>
+      <p>{{ description }}</p>
     </template>
   </BrickConfigLayout>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive } from 'vue';
+import {
+  computed, defineComponent, reactive, ref, watch,
+} from 'vue';
 import {
   IMangoDEXMarketInitArgs,
   ISerumDEXMarketInitArgs,
@@ -62,7 +64,29 @@ export default defineComponent({
         tickSize: '1',
       } as InitArgs);
 
-    const description = computed(() => `Init market for ${prettifyMint(payload.baseMintPubkey)} / ${prettifyMint(payload.quoteMintPubkey)}`);
+    // todo factor out https://stackoverflow.com/questions/69295518/vue3-how-to-factor-out-a-watch-statement-in-composition-api
+    const base = ref<string>('');
+    const quote = ref<string>('');
+    watch(() => payload.baseMintPubkey, async (newVal) => {
+      if (newVal.length >= 32) {
+        base.value = await prettifyMint(payload.baseMintPubkey);
+      }
+    });
+    watch(() => payload.quoteMintPubkey, async (newVal) => {
+      if (newVal.length >= 32) {
+        quote.value = await prettifyMint(payload.quoteMintPubkey);
+      }
+    });
+    prettifyMint(payload.baseMintPubkey)
+      .then((m) => {
+        base.value = m;
+      });
+    prettifyMint(payload.quoteMintPubkey)
+      .then((m) => {
+        quote.value = m;
+      });
+
+    const description = computed(() => `Init market for ${base.value} / ${quote.value}`);
 
     const handleEndEdit = () => {
       addOrModifyConfiguredBrick({
