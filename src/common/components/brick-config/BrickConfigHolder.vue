@@ -47,6 +47,14 @@
       <SerumSettleMarket :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
 
+    <!-- solend -->
+    <div v-else-if="brick.protocol===Protocol.Solend && brick.action===Action.Solend.Deposit">
+      <MangoDeposit :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
+    </div>
+    <div v-else-if="brick.protocol===Protocol.Solend && brick.action===Action.Solend.Withdraw">
+      <MangoWithdraw :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
+    </div>
+
   </div>
 </template>
 

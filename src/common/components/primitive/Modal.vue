@@ -37,7 +37,7 @@ export default defineComponent({
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 700px;
+  width: 900px;
   background-color: black;
   filter: drop-shadow(0px 0px 20px ghostwhite);
   overflow: auto;

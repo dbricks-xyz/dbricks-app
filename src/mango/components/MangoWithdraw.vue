@@ -10,7 +10,7 @@
       <BrickConfigCheckbox id="box" name="Borrow?">
         <input class="flex-initial m-1" type="checkbox" id="box" v-model="payload.isBorrow">
       </BrickConfigCheckbox>
-      <BrickConfigInput id="mangoAccountNumber" name="Mango account">
+      <BrickConfigInput v-if="brick.protocol === Protocol.Mango" id="mangoAccountNumber" name="Mango account">
         <input type="text" id="mangoAccountNumber" v-model="payload.mangoAccountNumber">
       </BrickConfigInput>
     </template>
@@ -24,7 +24,7 @@
 import {
   computed, defineComponent, reactive, ref, watch,
 } from 'vue';
-import { IMangoLenderWithdrawArgs } from '@dbricks/dbricks-ts';
+import { IMangoLenderWithdrawArgs, Protocol } from '@dbricks/dbricks-ts';
 import {
   addOrModifyConfiguredBrick,
   getArgsByBrickId,
@@ -74,7 +74,7 @@ export default defineComponent({
         mint.value = m;
       });
 
-    const description = computed(() => `Withdraw ${payload.quantity} ${mint.value} from Mango ${payload.mangoAccountNumber}`);
+    const description = computed(() => `Withdraw ${payload.quantity} ${mint.value}`);
 
     const handleEndEdit = () => {
       addOrModifyConfiguredBrick({
@@ -91,6 +91,7 @@ export default defineComponent({
       payload,
       description,
       handleEndEdit,
+      Protocol,
     };
   },
 });

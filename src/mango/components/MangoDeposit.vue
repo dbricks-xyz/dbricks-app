@@ -7,7 +7,7 @@
       <BrickConfigInput id="amount" name="Amount">
         <input type="text" id="amount" v-model="payload.quantity">
       </BrickConfigInput>
-      <BrickConfigInput id="mangoAccountNumber" name="Mango account">
+      <BrickConfigInput v-if="brick.protocol === Protocol.Mango" id="mangoAccountNumber" name="Mango account">
         <input type="text" id="mangoAccountNumber" v-model="payload.mangoAccountNumber">
       </BrickConfigInput>
     </template>
@@ -21,7 +21,7 @@
 import {
   computed, defineComponent, reactive, ref, watch,
 } from 'vue';
-import { IMangoLenderDepositArgs } from '@dbricks/dbricks-ts';
+import { IMangoLenderDepositArgs, Protocol } from '@dbricks/dbricks-ts';
 import {
   addOrModifyConfiguredBrick,
   getArgsByBrickId,
@@ -67,7 +67,7 @@ export default defineComponent({
         mint.value = m;
       });
 
-    const description = computed(() => `Deposit ${payload.quantity} ${mint.value} into Mango ${payload.mangoAccountNumber}`);
+    const description = computed(() => `Deposit ${payload.quantity} ${mint.value}`);
 
     const handleEndEdit = () => {
       addOrModifyConfiguredBrick({
@@ -84,6 +84,7 @@ export default defineComponent({
       payload,
       description,
       handleEndEdit,
+      Protocol,
     };
   },
 });

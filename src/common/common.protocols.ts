@@ -7,7 +7,6 @@ const fullConfig = resolveConfig(tailwindConfig);
 interface IActiveProtocol {
   name: string,
   color: string,
-  logo: string,
   actions: IAction[]
 }
 
@@ -15,20 +14,32 @@ const activeProtocols: IActiveProtocol[] = ([
   {
     name: Protocol.Serum,
     color: fullConfig.theme.colors.db.serum,
-    logo: '@/assets/activeProtocols/serumlogo.svg',
     actions: Object.values(Action.Serum),
   },
   {
     name: Protocol.Mango,
     color: fullConfig.theme.colors.db.mango,
-    logo: '@/assets/activeProtocols/mangologo.svg',
     actions: Object.values(Action.Mango),
   },
   {
     name: Protocol.Saber,
     color: fullConfig.theme.colors.db.saber,
-    logo: '@/assets/activeProtocols/saberlogo.jpeg',
     actions: Object.values(Action.Saber),
+  },
+  {
+    name: Protocol.Solend,
+    color: fullConfig.theme.colors.db.solend,
+    actions: Object.values(Action.Solend),
+  },
+  {
+    name: Protocol.Raydium,
+    color: fullConfig.theme.colors.db.raydium,
+    actions: Object.values(Action.Raydium),
+  },
+  {
+    name: Protocol.Wormhole,
+    color: fullConfig.theme.colors.db.wormhole,
+    actions: Object.values(Action.Wormhole),
   },
 ]);
 
