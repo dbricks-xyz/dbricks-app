@@ -41,7 +41,7 @@ export default defineComponent({
   background-color: black;
   filter: drop-shadow(0px 0px 20px ghostwhite);
   overflow: auto;
-  max-height: calc(100vh - 150px);
+  max-height: calc(100vh - 50px);
 }
 .z500 {
   z-index: 500;

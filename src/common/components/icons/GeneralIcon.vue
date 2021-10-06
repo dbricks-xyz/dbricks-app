@@ -6,6 +6,8 @@
       <path v-if="icon==='check'" :stroke="color ? color : 'white'" stroke-linecap="butt" :stroke-width="stroke" d="M5 13l4 4L19 7" />
       <path v-if="icon==='redo'" :stroke="color ? color : 'white'" stroke-linecap="butt" :stroke-width="stroke" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
       <path v-if="icon==='new'" :stroke="color ? color : 'white'" stroke-linecap="butt" :stroke-width="stroke" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+      <path v-if="icon==='left'" :stroke="color ? color : 'white'" stroke-linecap="butt" :stroke-width="stroke" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+      <path v-if="icon==='right'" :stroke="color ? color : 'white'" stroke-linecap="butt" :stroke-width="stroke" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
     </svg>
   </a>
 </template>

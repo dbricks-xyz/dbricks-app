@@ -67,6 +67,11 @@
       <p v-for="entry in getStatusLog" :style="{'color':entry.color}" :key="entry.content">{{ entry.content }}</p>
     </div>
 
+    <div class="tooltip-shower" v-if="hideTooltip">
+      <GeneralIcon class="px-3" icon="right" @click="hideTooltip = false"/>
+    </div>
+    <Tooltip v-else @hide-tooltip="hideTooltip = true"/>
+
     <AddBrick v-if="stateModalActive" @cancel-modal="handleCancelModal" @new-brick="handleNewBrick"/>
 
   </div>
@@ -86,6 +91,7 @@ import GeneralIcon from '@/common/components/icons/GeneralIcon.vue';
 import { resetStatusLog, statusLog } from '@/common/common.state';
 import SerumClient from '@/serum/client/serum.client';
 import MangoClient from '@/mango/client/mango.client';
+import Tooltip from '@/common/components/Tooltip.vue';
 
 interface IBrick {
   id: number,
@@ -96,6 +102,7 @@ interface IBrick {
 
 export default defineComponent({
   components: {
+    Tooltip,
     GeneralIcon,
     Button,
     BrickConfigHolder,
@@ -107,6 +114,7 @@ export default defineComponent({
     const stateModalActive = ref(false);
     const fresh = ref(true);
     const hideBricks = ref(false);
+    const hideTooltip = ref(true);
 
     const bricks = ref<IBrick[]>([]);
     const configuredBricks = ref<number[]>([]);
@@ -207,6 +215,7 @@ export default defineComponent({
       stateModalActive,
       fresh,
       hideBricks,
+      hideTooltip,
       openNewBrickModal,
       sendTransaction,
       handleCancelModal,
@@ -241,6 +250,14 @@ svg {
   opacity: 0.5;
   z-index: 0;
   position: relative;
+}
+
+.tooltip-shower {
+  @apply bg-black flex flex-col justify-center align-middle;
+  height: 60px;
+  position: fixed;
+  left: 0;
+  top: 0;
 }
 
 /* ---------- bricks list ---------- */
