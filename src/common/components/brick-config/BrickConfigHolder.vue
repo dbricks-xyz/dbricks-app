@@ -54,6 +54,12 @@
     <div v-else-if="brick.protocol===Protocol.Solend && brick.action===Action.Solend.Withdraw">
       <MangoWithdraw :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
+    <div v-else-if="brick.protocol===Protocol.Solend && brick.action===Action.Solend.Borrow">
+      <MangoWithdraw :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
+    </div>
+    <div v-else-if="brick.protocol===Protocol.Solend && brick.action===Action.Solend.Repay">
+      <MangoWithdraw :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
+    </div>
 
   </div>
 </template>

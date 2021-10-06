@@ -101,7 +101,7 @@ export async function buildAndLog(): Promise<PublicKey> {
     });
   } catch (e) {
     pushToStatusLog({
-      content: 'Some transactions failed. Please re-run or use errors above to debug.',
+      content: 'Some transactions failed. Please re-run or see browser console to debug.',
       color: 'red',
     });
   }

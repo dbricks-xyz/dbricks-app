@@ -7,7 +7,7 @@
       <BrickConfigInput id="amount" name="Amount">
         <input type="text" id="amount" v-model="payload.quantity">
       </BrickConfigInput>
-      <BrickConfigCheckbox id="box" name="Borrow?">
+      <BrickConfigCheckbox v-if="brick.protocol === Protocol.Mango" id="box" name="Borrow?">
         <input class="flex-initial m-1" type="checkbox" id="box" v-model="payload.isBorrow">
       </BrickConfigCheckbox>
       <BrickConfigInput v-if="brick.protocol === Protocol.Mango" id="mangoAccountNumber" name="Mango account">
@@ -74,7 +74,7 @@ export default defineComponent({
         mint.value = m;
       });
 
-    const description = computed(() => `Withdraw ${payload.quantity} ${mint.value}`);
+    const description = computed(() => `${props.brick.action} ${payload.quantity} ${mint.value}`);
 
     const handleEndEdit = () => {
       addOrModifyConfiguredBrick({

@@ -125,31 +125,28 @@ export default defineComponent({
       stateCollapsed.value = true;
       const ownerPubkey = await buildAndLog();
 
-      // todo temp serum
-      try {
-        await (new SerumClient()).printSerumOrdersForOwner(
-          '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc', ownerPubkey,
-        );
-      } catch (e) {
-        console.log('failed to get serum orders');
-      }
-
-      // todo temp mango
-      try {
-        await (new MangoClient()).printMangoOrdersForOwner(
-          '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc', ownerPubkey,
-        );
-      } catch (e) {
-        console.log('failed to get mango orders');
-      }
-
-      try {
-        await (new MangoClient()).printMangoPerpOrdersForOwner(
-          'DtEcjPLyD4YtTBB4q8xwFZ9q49W89xZCZtJyrGebi5t8', ownerPubkey,
-        );
-      } catch (e) {
-        console.log('failed to get mango orders');
-      }
+      // todo temp serum + mango orders
+      // try {
+      //   await (new SerumClient()).printSerumOrdersForOwner(
+      //     '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc', ownerPubkey,
+      //   );
+      // } catch (e) {
+      //   console.log('failed to get serum orders');
+      // }
+      // try {
+      //   await (new MangoClient()).printMangoOrdersForOwner(
+      //     '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc', ownerPubkey,
+      //   );
+      // } catch (e) {
+      //   console.log('failed to get mango orders');
+      // }
+      // try {
+      //   await (new MangoClient()).printMangoPerpOrdersForOwner(
+      //     'DtEcjPLyD4YtTBB4q8xwFZ9q49W89xZCZtJyrGebi5t8', ownerPubkey,
+      //   );
+      // } catch (e) {
+      //   console.log('failed to get mango orders');
+      // }
     };
 
     const handleCancelModal = () => {
@@ -343,7 +340,6 @@ svg {
   animation-delay: 1s;
 }
 
-/*todo for some reason looks a little staggered*/
 @keyframes pulse_large {
   0% {
     filter: drop-shadow(0px 0px 20px ghostwhite);

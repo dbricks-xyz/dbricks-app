@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@blockworks-foundation/mango-client": "^3.0.24",
-    "@dbricks/dbricks-ts": "^0.0.48",
+    "@dbricks/dbricks-ts": "^0.0.55",
     "@project-serum/serum": "^0.13.59",
     "@project-serum/sol-wallet-adapter": "^0.2.5",
     "@solana/spl-token": "^0.1.8",
