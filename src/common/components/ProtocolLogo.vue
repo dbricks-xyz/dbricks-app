@@ -98,7 +98,7 @@
     </svg>
   </div>
   <div v-else-if="protocol===Protocol.Raydium">
-
+    <img :height="size" :width="size" src="../assets/logos/raydium.png"/>
   </div>
   <div v-else-if="protocol===Protocol.Wormhole">
     <svg :width="size" :height="size" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 620 600" id="svg2" version="1.1">
@@ -405,6 +405,24 @@
         </g>
       </g>
     </svg>
+  </div>
+  <div v-else-if="protocol===Protocol.Sunny">
+    <img :height="size" :width="size" src="../assets/logos/sunny.png"/>
+  </div>
+  <div v-else-if="protocol===Protocol.Orca">
+    <img :height="size" :width="size" src="../assets/logos/orca.png"/>
+  </div>
+  <div v-else-if="protocol===Protocol.Solfarm">
+    <img :height="size" :width="size" src="../assets/logos/solfarm.png"/>
+  </div>
+  <div v-else-if="protocol===Protocol.Parrot">
+    <img :height="size" :width="size" src="../assets/logos/parrot.png"/>
+  </div>
+  <div v-else-if="protocol===Protocol.Marinade">
+    <img :height="size" :width="size" src="../assets/logos/marinade.png"/>
+  </div>
+  <div v-else-if="protocol===Protocol.Mercurial">
+    <img :height="size" :width="size" src="../assets/logos/mercurial.png"/>
   </div>
 </template>
 

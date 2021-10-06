@@ -41,6 +41,36 @@ const activeProtocols: IActiveProtocol[] = ([
     color: fullConfig.theme.colors.db.wormhole,
     actions: Object.values(Action.Wormhole),
   },
+  {
+    name: Protocol.Sunny,
+    color: fullConfig.theme.colors.db.sunny,
+    actions: Object.values(Action.Sunny),
+  },
+  {
+    name: Protocol.Orca,
+    color: fullConfig.theme.colors.db.orca,
+    actions: Object.values(Action.Orca),
+  },
+  {
+    name: Protocol.Solfarm,
+    color: fullConfig.theme.colors.db.solfarm,
+    actions: Object.values(Action.Solfarm),
+  },
+  {
+    name: Protocol.Parrot,
+    color: fullConfig.theme.colors.db.parrot,
+    actions: Object.values(Action.Parrot),
+  },
+  {
+    name: Protocol.Marinade,
+    color: fullConfig.theme.colors.db.marinade,
+    actions: Object.values(Action.Marinade),
+  },
+  {
+    name: Protocol.Mercurial,
+    color: fullConfig.theme.colors.db.mercurial,
+    actions: Object.values(Action.Mercurial),
+  },
 ]);
 
 export function listProtocols(): IActiveProtocol[] {
