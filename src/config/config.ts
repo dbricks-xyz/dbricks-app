@@ -1,26 +1,30 @@
+/* eslint-disable import/no-mutable-exports */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Commitment, PublicKey } from '@solana/web3.js';
 
-/*eslint-disable */
-export let NETWORK: string;
-if (process.env.VUE_APP_TESTING_LOCAL) {
-  NETWORK = 'localnet';
-} else if (process.env.VUE_APP_TESTING_DEV) {
-  NETWORK = 'devnet';
-} else {
-  NETWORK = process.env.VUE_APP_NETWORK as string;
-}
-console.log('// ---------------------------------------')
+// --------------------------------------- network config
+export const NETWORK = process.env.VUE_APP_NETWORK
+  ? process.env.VUE_APP_NETWORK
+  : 'mainnet';
+console.log('// ---------------------------------------');
 console.log('LOADED ENV:', NETWORK);
 
+// --------------------------------------- server url config
+export const SERVER_BASE_URL = process.env.VUE_APP_SERVER_BASE_URL
+  ? process.env.VUE_APP_SERVER_BASE_URL
+  : 'http://localhost:3000';
+console.log('SERVER URL:', SERVER_BASE_URL);
+
+// --------------------------------------- debug config
 if (process.env.VUE_APP_DEBUG) {
   console.log('Debug mode on.');
 }
 
+// --------------------------------------- on-chain connection config
 export let SERUM_PROG_ID: PublicKey;
 export let SABER_PROG_ID: PublicKey;
 export let MANGO_PROG_ID: PublicKey;
 export let CONNECTION_URL: string;
-/* eslint-enable */
 
 if (NETWORK === 'mainnet') {
   SERUM_PROG_ID = new PublicKey('9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin');
@@ -33,17 +37,21 @@ if (NETWORK === 'mainnet') {
   MANGO_PROG_ID = new PublicKey('4skJ85cdxQAFVKbcGgfun8iZPL7BadVYXG3kGEGkufqA');
   CONNECTION_URL = 'https://api.devnet.solana.com';
 } else if (NETWORK === 'localnet') {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  SERUM_PROG_ID = new PublicKey(process.env.VUE_APP_LOCAL_SERUM_PROG_ID!);
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  SABER_PROG_ID = new PublicKey(process.env.VUE_APP_LOCAL_SABER_PROG_ID!);
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  MANGO_PROG_ID = new PublicKey(process.env.VUE_APP_LOCAL_MANGO_PROG_ID!);
+  // if these aren't provided, using random (in this case devnet) keys
+  // this will break localnet, but is needed to avoid compilation errors
+  SERUM_PROG_ID = process.env.VUE_APP_LOCAL_SERUM_PROG_ID
+    ? new PublicKey(process.env.VUE_APP_LOCAL_SERUM_PROG_ID)
+    : new PublicKey('DESVgJVGajEgKGXhb6XmqDHGz3VjdgP7rEVESBgxmroY');
+  SABER_PROG_ID = process.env.VUE_APP_LOCAL_SABER_PROG_ID
+    ? new PublicKey(process.env.VUE_APP_LOCAL_SABER_PROG_ID)
+    : new PublicKey('Crt7UoUR6QgrFrN7j8rmSQpUTNWNSitSwWvsWGf1qZ5t');
+  MANGO_PROG_ID = process.env.VUE_APP_LOCAL_MANGO_PROG_ID
+    ? new PublicKey(process.env.VUE_APP_LOCAL_MANGO_PROG_ID)
+    : new PublicKey('4skJ85cdxQAFVKbcGgfun8iZPL7BadVYXG3kGEGkufqA');
   CONNECTION_URL = 'http://localhost:8899';
 } else {
   throw new Error(`Network unrecognized. Should be mainnet/devnet/localnet. Currently: ${NETWORK}`);
 }
 
-export const SERVER_BASE_URL = 'http://localhost:3000';
 export const WALLET_PROVIDER_URL = 'https://www.sollet.io';
 export const COMMITTMENT: Commitment = 'processed';

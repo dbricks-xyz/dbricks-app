@@ -2,7 +2,35 @@ module.exports = {
   purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   darkMode: false, // or 'media' or 'class'
   theme: {
+    letterSpacing: {
+      normal: '0',
+      wide: '.1em',
+      wider: '.2em',
+      widest: '3em',
+    },
     extend: {
+      minHeight: {
+        onefifty: '150px',
+        twoh: '200px',
+      },
+      minWidth: {
+        onefifty: '150px',
+        twoh: '200px',
+      },
+      height: {
+        onefifty: '150px',
+        twoh: '200px',
+      },
+      width: {
+        onefifty: '150px',
+        twoh: '200px',
+      },
+      screens: {
+        threeh: '321px',
+        fourh: '400px',
+        fiveh: '500px',
+        sixh: '600px',
+      },
       colors: {
         db: {
           cyan: '#0EECDD',
@@ -22,7 +50,7 @@ module.exports = {
           darkyellow: '#4f4c25',
           darkpink: '#472341',
           darkpurple: '#381f3f',
-          cd: '#23272d',
+          darkgray: '#23272d',
 
           mango: '#F98505',
           serum: '#3FDBF0',

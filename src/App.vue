@@ -1,10 +1,4 @@
 <template>
-  <div class="text-center mt-10">
-    <h1>dbricks.xyz</h1>
-  </div>
-  <!--<div id="nav">-->
-  <!--  <router-link to="/">Home</router-link> |-->
-  <!--</div>-->
   <router-view/>
 </template>
 
@@ -67,5 +61,4 @@ input {
 button {
   outline: none;
 }
-
 </style>

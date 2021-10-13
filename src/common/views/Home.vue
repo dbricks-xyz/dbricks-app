@@ -1,355 +1,86 @@
 <template>
-  <div class="home flex flex-col items-center pt-20">
-    <transition name="send">
-      <!--<div style="height: 20px;">-->
-      <!--  <div v-if="errorSend" class="bg-db-purple text-white">Please close</div>-->
-      <!--</div>-->
-      <SkewedButton v-if="bricks.length > 0 && !stateCollapsed" @click="sendTransaction" text="BUILD + SEND"/>
-      <div v-else-if="bricks.length > 0 && stateCollapsed" style="height: 60px" class="flex justify-center align-middle">
-        <Button class="mx-5 flex" size="large" @click="reopenBricks">
-          REDO
-          <GeneralIcon class="ml-2" icon="redo" color="black" stroke="3" size="37"></GeneralIcon>
-        </Button>
-        <Button class="mx-5 flex" size="large" @click="resetBricks">
-          NEW
-          <GeneralIcon icon="new" color="black" stroke="3" size="39"></GeneralIcon>
-        </Button>
-      </div>
-      <div v-else style="height: 60px"></div>
-    </transition>
-
-    <a @click="openNewBrickModal" :class="{hiddenz: stateCollapsed}">
-      <svg class="pulse_small mt-10" id="svg1" width="150" height="150" viewBox="0 0 452 428" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M450 298V134L392 100.785V96.5C392 80.7599 369.167 68 341 68C338.798 68 336.629 68.078 334.5 68.2293L277 35.5V30.5C277 14.7599 254.167 2 226 2C197.833 2 175 14.7599 175 30.5V35L117 68.1952C115.032 68.0663 113.03 68 111 68C82.8335 68 60 80.7599 60 96.5V100L2 134V298L226 425.5L450 298ZM249.5 156H202.5V190.5H168V237.5H202.5V272H249.5V237.5H284V190.5H249.5V156Z" fill="black"/>
-        <path d="M450 134V298L226 425.5M450 134L392 100.785M450 134L284 228.487M392 100.785V96.5M392 100.785V131.5C392 147.24 369.167 160 341 160C312.833 160 290 147.24 290 131.5V96.5M392 100.785L391.502 100.5M392 96.5C392 80.7599 369.167 68 341 68C338.798 68 336.629 68.078 334.5 68.2293M392 96.5C392 97.8576 391.83 99.193 391.502 100.5M334.5 68.2293L277 35.5M334.5 68.2293C309.403 70.0133 290 81.9904 290 96.5M277 35.5V30.5M277 35.5V65.5C277 81.2401 254.167 94 226 94C197.833 94 175 81.2401 175 65.5V35M277 30.5C277 14.7599 254.167 2 226 2C197.833 2 175 14.7599 175 30.5M277 30.5C277 46.2401 254.167 59 226 59C197.833 59 175 46.2401 175 30.5M175 30.5V35M175 35L117 68.1952M117 68.1952C115.032 68.0663 113.03 68 111 68C82.8335 68 60 80.7599 60 96.5M117 68.1952C142.339 69.8546 162 81.8942 162 96.5M60 96.5V100M60 96.5C60 112.24 82.8335 125 111 125C139.167 125 162 112.24 162 96.5M60 100L2 134M60 100V131.5C60 147.24 82.8335 160 111 160C139.167 160 162 147.24 162 131.5V96.5M2 134V298L226 425.5M2 134L168 228.487M226 425.5V272M183.835 237.5L202.5 248.124M268.165 237.5L249.5 248.124M277 160.5C277 171.504 265.84 181.051 249.5 185.801M277 160.5C277 144.76 254.167 132 226 132C197.833 132 175 144.76 175 160.5M277 160.5V190.5M202.5 185.801C186.16 181.051 175 171.504 175 160.5M175 160.5V190.5M391.502 100.5C388.022 114.346 366.737 125 341 125C312.833 125 290 112.24 290 96.5M202.5 156H249.5V190.5H284V237.5H249.5V272H202.5V237.5H168V190.5H202.5V156Z" stroke="black" stroke-width="4"/>
-      </svg>
-    </a>
-
-    <div v-if="!hideBricks" id="brickHolder" class="flex flex-col items-center" :class="{pulse: stateCollapsed}">
-      <transition-group name="list">
-        <div
-          v-for="brick in bricks" :key="brick.id"
-          class="flex flex-row justify-center align-middle dbrick-div"
-          :class="[{collapse: stateCollapsed}, {'standard-height': configuredBricks.indexOf(brick.id) >= 0}]"
-        >
-          <div class="space-filler"></div>
-          <svg
-            class="dbrick mx-20"
-            :class="[{highlight: configuredBricks.indexOf(brick.id) === -1}, {'hover-highlight': !stateCollapsed}]"
-            :style="{'z-index':brick.id}"
-            :fill="brick.fill"
-            viewBox="0 0 452 428" xmlns="http://www.w3.org/2000/svg">
-            <path d="M450 134V298L226 425.5L2 298V134L60 100V96.5C60 80.7599 82.8335 68 111 68C113.03 68 115.032 68.0663 117 68.1952L175 35V30.5C175 14.7599 197.833 2 226 2C254.167 2 277 14.7599 277 30.5V35.5L334.5 68.2293C336.629 68.078 338.798 68 341 68C369.167 68 392 80.7599 392 96.5V100.785L450 134Z"/>
-            <path d="M2 134L226 261.5M2 134V298L226 425.5M2 134L60 100M226 261.5V425.5M226 261.5L450 134M226 425.5L450 298V134M450 134L391.502 100.5M277 35.5L334.5 68.2293M277 160.5C277 176.24 254.167 189 226 189C197.833 189 175 176.24 175 160.5M277 160.5C277 144.76 254.167 132 226 132C197.833 132 175 144.76 175 160.5M277 160.5V195.5C277 211.24 254.167 224 226 224C197.833 224 175 211.24 175 195.5V160.5M162 96.5C162 112.24 139.167 125 111 125C82.8335 125 60 112.24 60 96.5M162 96.5C162 80.7599 139.167 68 111 68C82.8335 68 60 80.7599 60 96.5M162 96.5V131.5C162 147.24 139.167 160 111 160C82.8335 160 60 147.24 60 131.5V96.5M392 96.5C392 112.24 369.167 125 341 125C312.833 125 290 112.24 290 96.5M392 96.5C392 80.7599 369.167 68 341 68C312.833 68 290 80.7599 290 96.5M392 96.5V131.5C392 147.24 369.167 160 341 160C312.833 160 290 147.24 290 131.5V96.5M277 30.5C277 46.2401 254.167 59 226 59C197.833 59 175 46.2401 175 30.5M277 30.5C277 14.7599 254.167 2 226 2C197.833 2 175 14.7599 175 30.5M277 30.5V65.5C277 81.2401 254.167 94 226 94C197.833 94 175 81.2401 175 65.5V30.5M117 68.1952L175 35"/>
-          </svg>
-          <div class="space-filler">
-            <BrickConfigHolder
-              v-if="!stateCollapsed"
-              class="brick-config"
-              :class="{'forced-1opacity': configuredBricks.indexOf(brick.id) === -1}"
-              :brick="brick"
-              :fresh="fresh"
-              @start-edit="handleStartEdit"
-              @end-edit="handleEndEdit"
-              @remove-brick="handleRemoveBrick"
-            >
-            </BrickConfigHolder>
-          </div>
-        </div>
-      </transition-group>
-    </div>
-
-    <svg id="shadow" width="250" height="250" viewBox="0 0 458 261" fill="black" xmlns="http://www.w3.org/2000/svg">
-      <path d="M229 258.5L5 131L229 2.5L453 131L229 258.5Z" stroke="black" stroke-width="4"/>
+  <div class="main">
+    <svg class="pulse main-svg" viewBox="0 0 575 762" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M452 465V629L228 756.5L4 629V465L62 431V427.5C62 411.76 84.8335 399 113 399C115.03 399 117.032 399.066 119 399.195L177 366V361.5C177 345.76 199.833 333 228 333C256.167 333 279 345.76 279 361.5V366.5L336.5 399.229C338.629 399.078 340.798 399 343 399C371.167 399 394 411.76 394 427.5V431.785L452 465Z" fill="#C400FF"/>
+      <path d="M4 465L228 592.5M4 465V629L228 756.5M4 465L62 431M228 592.5V756.5M228 592.5L452 465M228 756.5L452 629V465M452 465L393.502 431.5M279 366.5L336.5 399.229M279 491.5C279 507.24 256.167 520 228 520C199.833 520 177 507.24 177 491.5M279 491.5C279 475.76 256.167 463 228 463C199.833 463 177 475.76 177 491.5M279 491.5V526.5C279 542.24 256.167 555 228 555C199.833 555 177 542.24 177 526.5V491.5M164 427.5C164 443.24 141.167 456 113 456C84.8335 456 62 443.24 62 427.5M164 427.5C164 411.76 141.167 399 113 399C84.8335 399 62 411.76 62 427.5M164 427.5V462.5C164 478.24 141.167 491 113 491C84.8335 491 62 478.24 62 462.5V427.5M394 427.5C394 443.24 371.167 456 343 456C314.833 456 292 443.24 292 427.5M394 427.5C394 411.76 371.167 399 343 399C314.833 399 292 411.76 292 427.5M394 427.5V462.5C394 478.24 371.167 491 343 491C314.833 491 292 478.24 292 462.5V427.5M279 361.5C279 377.24 256.167 390 228 390C199.833 390 177 377.24 177 361.5M279 361.5C279 345.76 256.167 333 228 333C199.833 333 177 345.76 177 361.5M279 361.5V396.5C279 412.24 256.167 425 228 425C199.833 425 177 412.24 177 396.5V361.5M119 399.195L177 366" stroke="black" stroke-width="8"/>
+      <path d="M571 233V397L347 524.5L123 397V233L181 199V195.5C181 179.76 203.833 167 232 167C234.03 167 236.032 167.066 238 167.195L296 134V129.5C296 113.76 318.833 101 347 101C375.167 101 398 113.76 398 129.5V134.5L455.5 167.229C457.629 167.078 459.798 167 462 167C490.167 167 513 179.76 513 195.5V199.785L571 233Z" fill="#0EECDD"/>
+      <path d="M123 233L347 360.5M123 233V397L347 524.5M123 233L181 199M347 360.5V524.5M347 360.5L571 233M347 524.5L571 397V233M571 233L512.502 199.5M398 134.5L455.5 167.229M398 259.5C398 275.24 375.167 288 347 288C318.833 288 296 275.24 296 259.5M398 259.5C398 243.76 375.167 231 347 231C318.833 231 296 243.76 296 259.5M398 259.5V294.5C398 310.24 375.167 323 347 323C318.833 323 296 310.24 296 294.5V259.5M283 195.5C283 211.24 260.167 224 232 224C203.833 224 181 211.24 181 195.5M283 195.5C283 179.76 260.167 167 232 167C203.833 167 181 179.76 181 195.5M283 195.5V230.5C283 246.24 260.167 259 232 259C203.833 259 181 246.24 181 230.5V195.5M513 195.5C513 211.24 490.167 224 462 224C433.833 224 411 211.24 411 195.5M513 195.5C513 179.76 490.167 167 462 167C433.833 167 411 179.76 411 195.5M513 195.5V230.5C513 246.24 490.167 259 462 259C433.833 259 411 246.24 411 230.5V195.5M398 129.5C398 145.24 375.167 158 347 158C318.833 158 296 145.24 296 129.5M398 129.5C398 113.76 375.167 101 347 101C318.833 101 296 113.76 296 129.5M398 129.5V164.5C398 180.24 375.167 193 347 193C318.833 193 296 180.24 296 164.5V129.5M238 167.195L296 134" stroke="black" stroke-width="8"/>
+      <path d="M4 465L228 592.5L452 465V629L228 756.5L4 629V465L62 431V427.5C62 411.76 84.8335 399 113 399C141.167 399 164 411.76 164 427.5V462.5C164 478.24 141.167 491 113 491C84.8335 491 62 478.24 62 462.5V431L4 465Z" fill="#C400FF"/>
+      <path d="M177 491.5C177 475.76 199.833 463 228 463C256.167 463 279 475.76 279 491.5V526.5C279 542.24 256.167 555 228 555C199.833 555 177 542.24 177 526.5V491.5Z" fill="#C400FF"/>
+      <path d="M4 465L228 592.5M4 465V629L228 756.5M4 465L62 431M228 592.5V756.5M228 592.5L452 465V629L228 756.5M279 491.5C279 507.24 256.167 520 228 520C199.833 520 177 507.24 177 491.5M279 491.5C279 475.76 256.167 463 228 463C199.833 463 177 475.76 177 491.5M279 491.5V526.5C279 542.24 256.167 555 228 555C199.833 555 177 542.24 177 526.5V491.5M164 427.5C164 443.24 141.167 456 113 456C84.8335 456 62 443.24 62 427.5M164 427.5C164 411.76 141.167 399 113 399C84.8335 399 62 411.76 62 427.5M164 427.5V462.5C164 478.24 141.167 491 113 491C84.8335 491 62 478.24 62 462.5V427.5" stroke="black" stroke-width="8"/>
+      <path d="M452 136V300L228 427.5L4 300V136L62 102V98.5C62 82.7599 84.8335 70 113 70C115.03 70 117.032 70.0663 119 70.1952L177 37V32.5C177 16.7599 199.833 4 228 4C256.167 4 279 16.7599 279 32.5V37.5L336.5 70.2293C338.629 70.078 340.798 70 343 70C371.167 70 394 82.7599 394 98.5V102.785L452 136Z" fill="#FFF339"/>
+      <path d="M4 136L228 263.5M4 136V300L228 427.5M4 136L62 102M228 263.5V427.5M228 263.5L452 136M228 427.5L452 300V136M452 136L393.502 102.5M279 37.5L336.5 70.2293M279 162.5C279 178.24 256.167 191 228 191C199.833 191 177 178.24 177 162.5M279 162.5C279 146.76 256.167 134 228 134C199.833 134 177 146.76 177 162.5M279 162.5V197.5C279 213.24 256.167 226 228 226C199.833 226 177 213.24 177 197.5V162.5M164 98.5C164 114.24 141.167 127 113 127C84.8335 127 62 114.24 62 98.5M164 98.5C164 82.7599 141.167 70 113 70C84.8335 70 62 82.7599 62 98.5M164 98.5V133.5C164 149.24 141.167 162 113 162C84.8335 162 62 149.24 62 133.5V98.5M394 98.5C394 114.24 371.167 127 343 127C314.833 127 292 114.24 292 98.5M394 98.5C394 82.7599 371.167 70 343 70C314.833 70 292 82.7599 292 98.5M394 98.5V133.5C394 149.24 371.167 162 343 162C314.833 162 292 149.24 292 133.5V98.5M279 32.5C279 48.2401 256.167 61 228 61C199.833 61 177 48.2401 177 32.5M279 32.5C279 16.7599 256.167 4 228 4C199.833 4 177 16.7599 177 32.5M279 32.5V67.5C279 83.2401 256.167 96 228 96C199.833 96 177 83.2401 177 67.5V32.5M119 70.1952L177 37" stroke="black" stroke-width="8"/>
     </svg>
-
-    <div style="width: 700px">
-      <p v-for="entry in getStatusLog" :style="{'color':entry.color}" :key="entry.content">{{ entry.content }}</p>
+    <div class="mt-10 mb-8">
+      <p class="main-title">dbricks.xyz</p>
+      <p>The ultimate Solana protocol composer.</p>
+      <p>Get ready to #buidl.</p>
     </div>
-
-    <div class="tooltip-shower" v-if="hideTooltip">
-      <GeneralIcon class="px-3" icon="right" @click="hideTooltip = false"/>
+    <div class="flex flex-col sixh:flex-row justify-center align-middle">
+      <a target="_blank" href="https://dbricks.dev/">
+        <Button size="med" class="mx-5 my-1 threeh:my-2">API Docs</Button>
+      </a>
+      <a target="_blank" href="https://www.npmjs.com/package/@dbricks/dbricks-ts">
+        <Button size="med" class="mx-5 my-1 threeh:my-2">SDK</Button>
+      </a>
+      <router-link to="/app">
+        <Button size="med" class="mx-5 my-1 threeh:my-2">Demo App</Button>
+      </router-link>
     </div>
-    <Tooltip v-else @hide-tooltip="hideTooltip = true"/>
-
-    <AddBrick v-if="stateModalActive" @cancel-modal="handleCancelModal" @new-brick="handleNewBrick"/>
-
+    <div class="fixed w-full bottom-6 flex flex-row justify-center align-middle">
+      <a href="https://github.com/dbricks-xyz" target="_blank">
+        <div class="mt-1 mx-2">
+          <GeneralIcon size="25" icon="github" color="white"></GeneralIcon>
+        </div>
+      </a>
+      <a href="mailto:team@dbricks.xyz" target="_blank">
+        <div class="mx-2">
+          <GeneralIcon size="33" icon="mail" color="white"></GeneralIcon>
+        </div>
+      </a>
+    </div>
+    <div class="h-12"></div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { IAction, Protocol } from '@dbricks/dbricks-ts';
-import SkewedButton from '@/common/components/primitive/SkewedButton.vue';
-import AddBrick from '@/common/views/AddBrick.vue';
-import BrickConfigHolder
-  from '@/common/components/brick-config/BrickConfigHolder.vue';
-import { getProtocol } from '@/common/common.protocols';
-import { buildAndLog } from '@/common/client/common.client';
+import { defineComponent } from 'vue';
 import Button from '@/common/components/primitive/Button.vue';
 import GeneralIcon from '@/common/components/icons/GeneralIcon.vue';
-import { resetStatusLog, statusLog } from '@/common/common.state';
-import SerumClient from '@/serum/client/serum.client';
-import MangoClient from '@/mango/client/mango.client';
-import Tooltip from '@/common/components/Tooltip.vue';
-
-interface IBrick {
-  id: number,
-  fill: string,
-  protocol: Protocol,
-  action: IAction,
-}
 
 export default defineComponent({
   components: {
-    Tooltip,
     GeneralIcon,
     Button,
-    BrickConfigHolder,
-    AddBrick,
-    SkewedButton,
   },
   setup() {
-    const stateCollapsed = ref(false);
-    const stateModalActive = ref(false);
-    const fresh = ref(true);
-    const hideBricks = ref(false);
-    const hideTooltip = ref(true);
-
-    const bricks = ref<IBrick[]>([]);
-    const configuredBricks = ref<number[]>([]);
-
-    const openNewBrickModal = () => {
-      if (stateCollapsed.value) {
-        return;
-      }
-      stateModalActive.value = true;
-    };
-    const sendTransaction = async () => {
-      bricks.value.forEach(() => {
-        // this makes sure all configs are closed
-        configuredBricks.value = bricks.value.map((b) => b.id);
-      });
-      stateCollapsed.value = true;
-      const ownerPubkey = await buildAndLog();
-
-      // todo temp serum + mango orders
-      // try {
-      //   await (new SerumClient()).printSerumOrdersForOwner(
-      //     '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc', ownerPubkey,
-      //   );
-      // } catch (e) {
-      //   console.log('failed to get serum orders');
-      // }
-      // try {
-      //   await (new MangoClient()).printMangoOrdersForOwner(
-      //     '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc', ownerPubkey,
-      //   );
-      // } catch (e) {
-      //   console.log('failed to get mango orders');
-      // }
-      // try {
-      //   await (new MangoClient()).printMangoPerpOrdersForOwner(
-      //     'DtEcjPLyD4YtTBB4q8xwFZ9q49W89xZCZtJyrGebi5t8', ownerPubkey,
-      //   );
-      // } catch (e) {
-      //   console.log('failed to get mango orders');
-      // }
-    };
-
-    const handleCancelModal = () => {
-      stateModalActive.value = false;
-    };
-    const handleNewBrick = (newBrick) => {
-      stateModalActive.value = false;
-      bricks.value.unshift({
-        id: bricks.value.length ? bricks.value[0].id + 1 : 0,
-        fill: getProtocol(newBrick.protocol).color,
-        protocol: newBrick.protocol,
-        action: newBrick.action,
-      });
-    };
-    const handleStartEdit = (brick) => {
-      const i = configuredBricks.value.indexOf(brick.brickId);
-      if (i >= 0) {
-        configuredBricks.value.splice(i, 1);
-      }
-    };
-    const handleEndEdit = (brick) => {
-      const i = configuredBricks.value.indexOf(brick.brickId);
-      if (i === -1) {
-        configuredBricks.value.push(brick.brickId);
-      }
-    };
-    const handleRemoveBrick = (brick) => {
-      const i = bricks.value.map((b) => b.id)
-        .indexOf(brick.brickId);
-      if (i !== -1) {
-        bricks.value.splice(i, 1);
-      }
-      handleStartEdit(brick); // this will remove from the other list too
-    };
-    const resetBricks = () => {
-      resetStatusLog();
-      hideBricks.value = true;
-      bricks.value = [];
-      configuredBricks.value = [];
-      stateCollapsed.value = false;
-      setTimeout(() => {
-        hideBricks.value = false;
-      }, 1000);
-    };
-    const reopenBricks = () => {
-      resetStatusLog();
-      fresh.value = false;
-      stateCollapsed.value = false;
-      setTimeout(() => {
-        fresh.value = true;
-      }, 1000);
-    };
-
-    return {
-      bricks,
-      configuredBricks,
-      stateCollapsed,
-      stateModalActive,
-      fresh,
-      hideBricks,
-      hideTooltip,
-      openNewBrickModal,
-      sendTransaction,
-      handleCancelModal,
-      handleNewBrick,
-      handleStartEdit,
-      handleEndEdit,
-      handleRemoveBrick,
-      resetBricks,
-      reopenBricks,
-      getStatusLog: statusLog,
-    };
+    return {};
   },
 });
 </script>
 
-<style>
-
-svg {
-  stroke: black;
-  stroke-width: 6px;
-  transition: all .2s ease-in-out;
-  position: relative;
-}
-
-.hiddenz {
-  opacity: 0;
-  transition: 0.3s;
-}
-
-#shadow {
-  filter: blur(30px);
-  opacity: 0.5;
-  z-index: 0;
-  position: relative;
-}
-
-.tooltip-shower {
-  @apply bg-black flex flex-col justify-center align-middle;
-  height: 60px;
+<style scoped>
+.main {
+  @apply h-screen w-screen mx-auto flex flex-col justify-center align-middle text-center;
   position: fixed;
-  left: 0;
-  top: 0;
+  background-color: theme('colors.db.darkgray');
 }
 
-/* ---------- bricks list ---------- */
-
-.list-enter-from {
-  max-height: 0 !important;
+.main-svg {
+  @apply h-onefifty threeh:h-twoh;
+  @apply min-h-onefifty threeh:min-h-twoh;
 }
 
-/*important to use max-height, not height*/
-.list-enter-to {
-  /*set this way higher than expected value*/
-  max-height: 999px !important;
-}
-
-.list-enter-active, .list-leave-active {
-  /*in the meantime keep this fast enough to not notice*/
-  transition: all .5s ease-in-out;
-}
-
-/*without this one the div won't collapse back to 150px after done editing*/
-.standard-height {
-  height: 150px !important;
-}
-
-.dbrick-div {
-  margin: 10px;
-}
-
-.dbrick-div:hover .hover-highlight {
-  filter: drop-shadow(0px 0px 20px ghostwhite);
-}
-
-.dbrick {
-  height: inherit;
-  max-height: 150px;
-  width: 150px;
-}
-
-.highlight {
-  filter: drop-shadow(0px 0px 20px ghostwhite);
-}
-
-.space-filler {
-  width: 400px;
-}
-
-/* ---------- config opacity ---------- */
-
-.dbrick-div:hover .brick-config {
-  opacity: 1;
-}
-
-.brick-config {
-  opacity: 0.4;
-  /*transition: all .5s ease-in-out;*/
-}
-
-.forced-1opacity {
-  opacity: 1 !important;
-}
-
-/* ---------- send button ---------- */
-
-.send-enter-from {
-  opacity: 0;
-}
-
-.send-enter-to {
-  opacity: 1;
-}
-
-.send-enter-active {
-  transition: all 1s linear;
-}
-
-.collapse {
-  margin: -48px !important;
-  transition: 1s cubic-bezier(1, -0.35, .94, -0.01);
-}
-
-/* ---------- animations ---------- */
-
-.pulse_small {
-  filter: drop-shadow(0px 0px 10px ghostwhite);
-  animation-name: pulse_small;
-  animation-duration: 1s;
-  animation-direction: alternate;
-  animation-iteration-count: infinite;
-  animation-delay: 1s;
+.main-title {
+  @apply tracking-wider;
+  @apply mb-2 threeh:mb-5;
+  @apply text-3xl fourh:text-5xl threeh:text-4xl;
+  @apply fiveh:text-6xl !important;
+  font-family: 'ubuntu', sans-serif;
 }
 
 .pulse {
+  filter: drop-shadow(0px 0px 20px ghostwhite);
   animation-name: pulse_large;
   animation-duration: 6s;
   animation-direction: alternate;
@@ -362,8 +93,8 @@ svg {
     filter: drop-shadow(0px 0px 20px ghostwhite);
   }
 
-  20% {
-    filter: drop-shadow(0px 0px 60px ghostwhite) drop-shadow(0px 0px 5px theme('colors.db.pink'));
+  0% {
+    filter: drop-shadow(0px 0px 20px theme('colors.db.pink'));
   }
 
   40% {
@@ -371,7 +102,7 @@ svg {
   }
 
   60% {
-    filter: drop-shadow(0px 0px 60px ghostwhite) drop-shadow(0px 0px 5px theme('colors.db.cyan'));
+    filter: drop-shadow(0px 0px 20px theme('colors.db.cyan'));
   }
 
   80% {
@@ -379,18 +110,7 @@ svg {
   }
 
   100% {
-    filter: drop-shadow(0px 0px 60px ghostwhite) drop-shadow(0px 0px 5px theme('colors.db.yellow'));
+    filter: drop-shadow(0px 0px 20px theme('colors.db.yellow'));
   }
 }
-
-@keyframes pulse_small {
-  0% {
-    filter: drop-shadow(0px 0px 10px ghostwhite);
-  }
-
-  100% {
-    filter: drop-shadow(0px 0px 20px ghostwhite);
-  }
-}
-
 </style>

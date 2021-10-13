@@ -34,20 +34,28 @@ export default defineComponent({
 }
 
 .large {
-  height: 60px;
+  min-height: 60px;
   padding: 10px 45px;
   font-size: 26px;
 }
 
 .med {
-  height: 45px;
+  min-height: 45px;
   padding: 6px 30px;
   font-size: 22px;
 }
 
 .small {
-  height: 35px;
+  min-height: 35px;
   padding: 4px 20px;
   font-size: 18px;
 }
+
+.round {
+  height: 50px;
+  width: 50px;
+  font-size: 26px;
+  border-radius: 50%;
+}
+
 </style>

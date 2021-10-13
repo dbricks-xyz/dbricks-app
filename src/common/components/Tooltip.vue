@@ -1,10 +1,10 @@
 <template>
   <div class="tooltip">
-    <div class="flex mb-10">
+    <div class="flex mb-10" @click="emitHide">
       <div class="flex-grow">
         <p>Useful stuff for testing (mainnet)</p>
       </div>
-      <GeneralIcon icon="left" @click="emitHide"/>
+      <GeneralIcon icon="left"/>
     </div>
     <p class="text-center mb-2">*** Mints ***</p>
     <p>USDC:</p>
@@ -35,10 +35,10 @@
     <!--<p class="mb-1">* For Mango, you need to deposit before you can trade.</p>-->
     <!--<p class="mb-10">* For Solend, don't try to do Solend brick > other bricks > another Solend brick, it won't work.</p>-->
 
-    <p class="text-center mb-2">*** Where to find us ***</p>
-    <p class="mb-1">* Visit the
-      <a class="text-db-pink" href="https://dbricks.xyz" target="_blank">homepage</a> for contact details.
-    </p>
+    <!--<p class="text-center mb-2">*** Where to find us ***</p>-->
+    <!--<p class="mb-1">* Visit the-->
+    <!--  <a class="text-db-pink" href="https://dbricks.xyz" target="_blank">homepage</a> for contact details.-->
+    <!--</p>-->
   </div>
 </template>
 
