@@ -6,8 +6,8 @@ RUN yarn global add @vue/cli
 COPY package*.json yarn.lock ./
 RUN yarn
 COPY . .
-#RUN echo "VUE_APP_NETWORK=mainnet" >> .env
-#RUN echo "VUE_APP_SERVER_BASE_URL=http://localhost:3000" >> .env
+RUN echo "VUE_APP_NETWORK=mainnet" >> .env
+RUN echo "VUE_APP_SERVER_BASE_URL=api" >> .env
 RUN yarn build
 
 ################################################################################
@@ -18,4 +18,5 @@ RUN mkdir /app
 COPY --from=build-stage /app/dist /app
 COPY nginx.conf /etc/nginx/nginx.conf
 
-#ports / expose / cmd / entrypoint - all done in docker-compose
+EXPOSE 8080
+# nginx should already be running, so no need for command

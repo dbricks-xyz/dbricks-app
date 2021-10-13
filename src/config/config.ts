@@ -37,17 +37,16 @@ if (NETWORK === 'mainnet') {
   MANGO_PROG_ID = new PublicKey('4skJ85cdxQAFVKbcGgfun8iZPL7BadVYXG3kGEGkufqA');
   CONNECTION_URL = 'https://api.devnet.solana.com';
 } else if (NETWORK === 'localnet') {
-  // if these aren't provided, using random (in this case devnet) keys
-  // this will break localnet, but is needed to avoid compilation errors
+  // if these aren't provided, using random keys to prevent compilation errors
   SERUM_PROG_ID = process.env.VUE_APP_LOCAL_SERUM_PROG_ID
     ? new PublicKey(process.env.VUE_APP_LOCAL_SERUM_PROG_ID)
-    : new PublicKey('DESVgJVGajEgKGXhb6XmqDHGz3VjdgP7rEVESBgxmroY');
+    : new PublicKey('So11111111111111111111111111111111111111112');
   SABER_PROG_ID = process.env.VUE_APP_LOCAL_SABER_PROG_ID
     ? new PublicKey(process.env.VUE_APP_LOCAL_SABER_PROG_ID)
-    : new PublicKey('Crt7UoUR6QgrFrN7j8rmSQpUTNWNSitSwWvsWGf1qZ5t');
+    : new PublicKey('So11111111111111111111111111111111111111112');
   MANGO_PROG_ID = process.env.VUE_APP_LOCAL_MANGO_PROG_ID
     ? new PublicKey(process.env.VUE_APP_LOCAL_MANGO_PROG_ID)
-    : new PublicKey('4skJ85cdxQAFVKbcGgfun8iZPL7BadVYXG3kGEGkufqA');
+    : new PublicKey('So11111111111111111111111111111111111111112');
   CONNECTION_URL = 'http://localhost:8899';
 } else {
   throw new Error(`Network unrecognized. Should be mainnet/devnet/localnet. Currently: ${NETWORK}`);
