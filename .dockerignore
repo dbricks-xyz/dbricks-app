@@ -92,9 +92,6 @@ dist
 
 # Gatsby files
 .cache/
-# Comment in the public line in if your project uses Gatsby and not Next.js
-# https://nextjs.org/blog/next-9-1#public-directory-support
-# public
 
 # vuepress build output
 .vuepress/dist
@@ -129,7 +126,6 @@ Thumbs.db
 db.json
 *.log
 node_modules/
-public/
 .deploy*/
 src/_drafts
 package-lock.json

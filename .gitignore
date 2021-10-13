@@ -132,7 +132,7 @@ Thumbs.db
 db.json
 *.log
 node_modules/
-public/
+#public/
 .deploy*/
 src/_drafts
 package-lock.json
