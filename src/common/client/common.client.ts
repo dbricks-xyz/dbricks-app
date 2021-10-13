@@ -2,7 +2,9 @@ import { PublicKey, Transaction } from '@solana/web3.js';
 import Wallet from '@project-serum/sol-wallet-adapter';
 import { Builder, builderEmitter } from '@dbricks/dbricks-ts';
 import { configuredBricks, pushToStatusLog } from '@/common/common.state';
-import { COMMITTMENT, CONNECTION_URL, WALLET_PROVIDER_URL } from '@/config/config';
+import {
+  COMMITTMENT, CONNECTION_URL, SERVER_BASE_URL, WALLET_PROVIDER_URL,
+} from '@/config/config';
 
 async function connectWallet(): Promise<Wallet> {
   const wallet = new Wallet(WALLET_PROVIDER_URL, CONNECTION_URL);
@@ -39,6 +41,7 @@ export async function buildAndLog(): Promise<PublicKey> {
     ownerPubkey: wallet.publicKey!,
     connectionUrl: CONNECTION_URL,
     committment: COMMITTMENT,
+    baseUrl: SERVER_BASE_URL,
   });
 
   // prepare rawbricks
