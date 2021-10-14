@@ -939,10 +939,10 @@
     enabled "2.0.x"
     kuler "^2.0.0"
 
-"@dbricks/dbricks-ts@^0.0.63":
-  version "0.0.63"
-  resolved "https://registry.yarnpkg.com/@dbricks/dbricks-ts/-/dbricks-ts-0.0.63.tgz#010c1dbb0b7b48e8dc832e3f3de2a728bdea137b"
-  integrity sha512-Eg4cToE0Eqg2VIlQXF9Axnz159hQxPDw8XhmxXQChDP2bDTT/Na7IsF5VcJd5gxoQdNyvlYI31djrPkxoU5qEw==
+"@dbricks/dbricks-ts@^0.0.64":
+  version "0.0.64"
+  resolved "https://registry.yarnpkg.com/@dbricks/dbricks-ts/-/dbricks-ts-0.0.64.tgz#cdf2e78176e86d6212340de223aca348ba55e159"
+  integrity sha512-lGpIYHq5vnBuV8hyX0ERnx09HMSm4is2gGNsb6dbAFcZH8B0rAu8ItYkAaBtn+b1FGbzUTxe5jCBwyppziZH8A==
   dependencies:
     "@solana/spl-token" "^0.1.8"
     "@solana/wallet-adapter-base" "^0.6.0"

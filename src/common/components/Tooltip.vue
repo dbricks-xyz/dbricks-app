@@ -19,7 +19,6 @@
     <p class="text-db-cyan mb-10">MangoCzJ36AjZyKwVj3VnYU4GTonjfVEnJmvvWaxLac</p>
 
     <p class="text-center mb-2">*** Serum/Mango Markets ***</p>
-
     <p>USDT/USDC:</p>
     <p class="text-db-cyan mb-1">77quYg4MGneUdjgXCunt9GgM1usmrxKY31twEy3WHwcS</p>
     <p>FTT/USDC:</p>
@@ -29,16 +28,22 @@
     <p>MNGO/USDC:</p>
     <p class="text-db-cyan mb-10">3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc</p>
 
-    <!--<p class="text-center mb-2">*** Tips ***</p>-->
-    <!--<p class="mb-1">* Start testing with a single brick, add gradually.</p>-->
-    <!--<p class="mb-1">* For Serum, don't forget to add a Settle brick after a Trade brick.</p>-->
-    <!--<p class="mb-1">* For Mango, you need to deposit before you can trade.</p>-->
-    <!--<p class="mb-10">* For Solend, don't try to do Solend brick > other bricks > another Solend brick, it won't work.</p>-->
-
-    <!--<p class="text-center mb-2">*** Where to find us ***</p>-->
-    <!--<p class="mb-1">* Visit the-->
-    <!--  <a class="text-db-pink" href="https://dbricks.xyz" target="_blank">homepage</a> for contact details.-->
-    <!--</p>-->
+    <p class="text-center mb-2">*** Saber Pools ***</p>
+    <p>USDT/USDC:</p>
+    <p>- Swap Account:</p>
+    <p class="text-db-cyan mb-1">YAkoNb6HKmSxQN9L8hiBE5tPJRsniSSMzND1boHmZxe</p>
+    <p>- Pool (LP) Token Mint:</p>
+    <p class="text-db-cyan mb-1">2poo1w1DL6yd2WNTCnNTzDqkC6MBXq7axo77P16yrBuf</p>
+    <p>FTT/wFTT:</p>
+    <p>- Swap Account:</p>
+    <p class="text-db-cyan mb-1">TSMUBiuZXEpnqd6X21JRskACqA6oad7MsYddvLbxwDH</p>
+    <p>- Pool (LP) Token Mint:</p>
+    <p class="text-db-cyan mb-1">FTXjwjwWqituSXEHnL5VF1mjDhZoAyJqvHiRPsRq3KWK</p>
+    <p>SRM/wSRM:</p>
+    <p>- Swap Account:</p>
+    <p class="text-db-cyan mb-1">TSMFNX73aQNb3yqszDKgyR8AVoigfbaD4cfLjjCYXZf</p>
+    <p>- Pool (LP) Token Mint:</p>
+    <p class="text-db-cyan mb-1">SRMKjSJpBHJ5gSVTrimci49SnXc1LVkBi9TGF9RNYdp</p>
   </div>
 </template>
 
@@ -67,9 +72,6 @@ export default defineComponent({
   width: 460px;
   height: 100vh;
   position: fixed;
-  /*left: 50%;*/
-  /*transform: translate(-650px);*/
-  /*top: 290px;*/
   left: 0;
   top: 0;
 }
