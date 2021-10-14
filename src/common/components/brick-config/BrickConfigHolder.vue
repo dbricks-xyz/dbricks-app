@@ -47,6 +47,26 @@
       <SerumSettleMarket :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
     </div>
 
+    <!--saber-->
+    <div v-else-if="brick.protocol===Protocol.Saber && brick.action===Action.Saber.Swap">
+      <SaberSwap :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
+    </div>
+    <div v-else-if="brick.protocol===Protocol.Saber && brick.action===Action.Saber.PoolDeposit">
+      <SaberPoolDeposit :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
+    </div>
+    <div v-else-if="brick.protocol===Protocol.Saber && brick.action===Action.Saber.PoolWithdraw">
+      <SaberPoolWithdraw :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
+    </div>
+    <div v-else-if="brick.protocol===Protocol.Saber && brick.action===Action.Saber.FarmDeposit">
+      <SaberFarmDeposit :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
+    </div>
+    <div v-else-if="brick.protocol===Protocol.Saber && brick.action===Action.Saber.FarmWithdraw">
+      <SaberFarmWithdraw :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
+    </div>
+    <div v-else-if="brick.protocol===Protocol.Saber && brick.action===Action.Saber.FarmHarvest">
+      <SaberFarmHarvest :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
+    </div>
+
     <!-- solend -->
     <div v-else-if="brick.protocol===Protocol.Solend && brick.action===Action.Solend.Deposit">
       <MangoDeposit :brick="brick" :show-full="showFull" @end-edit="emitEndEdit"/>
