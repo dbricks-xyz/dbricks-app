@@ -97,8 +97,6 @@ import { buildAndLog } from '@/common/client/common.client';
 import Button from '@/common/components/primitive/Button.vue';
 import GeneralIcon from '@/common/components/icons/GeneralIcon.vue';
 import { resetStatusLog, statusLog } from '@/common/common.state';
-import SerumClient from '@/serum/client/serum.client';
-import MangoClient from '@/mango/client/mango.client';
 import Tooltip from '@/common/components/Tooltip.vue';
 
 interface IBrick {
@@ -139,9 +137,10 @@ export default defineComponent({
         configuredBricks.value = bricks.value.map((b) => b.id);
       });
       stateCollapsed.value = true;
-      const ownerPubkey = await buildAndLog();
+      await buildAndLog();
 
-      // todo temp serum + mango orders
+      // todo temp serum + mango orders - useful for debugging
+      // const ownerPubkey = await buildAndLog();
       // try {
       //   await (new SerumClient()).printSerumOrdersForOwner(
       //     '3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc', ownerPubkey,

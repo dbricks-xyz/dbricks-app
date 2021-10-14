@@ -1,7 +1,7 @@
 <template>
   <BrickConfigLayout :show-full="showFull" @end-edit="handleEndEdit">
     <template v-slot:full>
-      <BrickConfigInput id="swapPubkey" name="Swap Pubkey">
+      <BrickConfigInput id="swapPubkey" name="Swap Account">
         <input type="text" id="swapPubkey" v-model="payload.swapPubkey">
       </BrickConfigInput>
       <BrickConfigInput id="tokenAmountA" name="Token A Amount">
@@ -53,8 +53,8 @@ export default defineComponent({
       ? existingPayload as ISaberPoolDepositArgs
       : {
         swapPubkey: 'YAkoNb6HKmSxQN9L8hiBE5tPJRsniSSMzND1boHmZxe',
-        tokenAmountA: '0',
-        tokenAmountB: '0',
+        tokenAmountA: '0.1',
+        tokenAmountB: '0.1',
       } as ISaberPoolDepositArgs);
 
     // todo factor out https://stackoverflow.com/questions/69295518/vue3-how-to-factor-out-a-watch-statement-in-composition-api
@@ -69,7 +69,7 @@ export default defineComponent({
         swapPubkey.value = m;
       });
 
-    const description = computed(() => `Deposit ${payload.tokenAmountA} Token A, ${payload.tokenAmountB} Token B`);
+    const description = computed(() => `Deposit ${payload.tokenAmountA} Token A, ${payload.tokenAmountB} Token B into ${swapPubkey.value} pool`);
 
     const handleEndEdit = () => {
       addOrModifyConfiguredBrick({

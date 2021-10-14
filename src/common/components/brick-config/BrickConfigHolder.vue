@@ -97,6 +97,12 @@ import SerumInitMarket from '@/serum/components/SerumInitMarket.vue';
 import SerumSettleMarket from '@/serum/components/SerumSettleMarket.vue';
 import MangoDeposit from '@/mango/components/MangoDeposit.vue';
 import MangoWithdraw from '@/mango/components/MangoWithdraw.vue';
+import SaberSwap from '@/saber/components/SaberSwap.vue';
+import SaberPoolDeposit from '@/saber/components/SaberPoolDeposit.vue';
+import SaberPoolWithdraw from '@/saber/components/SaberPoolWithdraw.vue';
+import SaberFarmHarvest from '@/saber/components/SaberFarmHarvest.vue';
+import SaberFarmDeposit from '@/saber/components/SaberFarmDeposit.vue';
+import SaberFarmWithdraw from '@/saber/components/SaberFarmWithdraw.vue';
 
 export default defineComponent({
   components: {
@@ -108,6 +114,12 @@ export default defineComponent({
     GeneralIcon,
     SerumPlaceSettleOrder,
     ProtocolLogo,
+    SaberSwap,
+    SaberPoolDeposit,
+    SaberPoolWithdraw,
+    SaberFarmHarvest,
+    SaberFarmDeposit,
+    SaberFarmWithdraw,
   },
   props: {
     brick: {

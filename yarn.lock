@@ -928,10 +928,10 @@
     enabled "2.0.x"
     kuler "^2.0.0"
 
-"@dbricks/dbricks-ts@^0.0.56":
-  version "0.0.56"
-  resolved "https://registry.yarnpkg.com/@dbricks/dbricks-ts/-/dbricks-ts-0.0.56.tgz#432ae27f52929799800c548e7b348917324ab421"
-  integrity sha512-x6x4p7u/5FtaEcHrTa5g3yvjlRpXZaCwj0QxcoqRJ57w+JhjXbWiCdRpdCAh1X5Hd7TbUdeaZxNB/B1Pwi0utw==
+"@dbricks/dbricks-ts@^0.0.58":
+  version "0.0.58"
+  resolved "https://registry.yarnpkg.com/@dbricks/dbricks-ts/-/dbricks-ts-0.0.58.tgz#7e3cd117c9f1a4bc322702113addb6b9b3534262"
+  integrity sha512-GFCqyc1fFcZ8xwQFeZmIeApcytPb+SZZhKLcUTIPgD8D+Gl8mnKZwMH7GI2vAPxF0zf1BPCzzVj5ZvAAKvBjPQ==
   dependencies:
     "@solana/spl-token" "^0.1.8"
     "@solana/web3.js" "^1.29.0"

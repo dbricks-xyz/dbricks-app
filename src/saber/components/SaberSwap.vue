@@ -1,10 +1,10 @@
 <template>
   <BrickConfigLayout :show-full="showFull" @end-edit="handleEndEdit">
     <template v-slot:full>
-      <BrickConfigInput id="swapPubkey" name="Swap Pubkey">
+      <BrickConfigInput id="swapPubkey" name="Swap Account">
         <input type="text" id="swapPubkey" v-model="payload.swapPubkey">
       </BrickConfigInput>
-      <BrickConfigInput id="payingMintPubkey" name="Paying Mint Pubkey">
+      <BrickConfigInput id="payingMintPubkey" name="Pay Mint">
         <input type="text" id="payingMintPubkey" v-model="payload.payingMintPubkey">
       </BrickConfigInput>
       <BrickConfigInput id="swapAmount" name="Amount">
@@ -54,7 +54,7 @@ export default defineComponent({
       : {
         swapPubkey: 'YAkoNb6HKmSxQN9L8hiBE5tPJRsniSSMzND1boHmZxe',
         payingMintPubkey: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-        swapAmount: '1',
+        swapAmount: '0.1',
       } as ISaberSwapArgs);
 
     // todo factor out https://stackoverflow.com/questions/69295518/vue3-how-to-factor-out-a-watch-statement-in-composition-api
@@ -79,7 +79,7 @@ export default defineComponent({
         payingMintPubkey.value = m;
       });
 
-    const description = computed(() => `Swap ${payingMintPubkey.value} in ${swapPubkey.value}`);
+    const description = computed(() => `Swap ${payingMintPubkey.value} in ${swapPubkey.value} pool`);
 
     const handleEndEdit = () => {
       addOrModifyConfiguredBrick({

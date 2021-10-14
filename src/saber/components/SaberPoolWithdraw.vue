@@ -1,13 +1,13 @@
 <template>
   <BrickConfigLayout :show-full="showFull" @end-edit="handleEndEdit">
     <template v-slot:full>
-      <BrickConfigInput id="swapPubkey" name="Swap Pubkey">
+      <BrickConfigInput id="swapPubkey" name="Swap Account">
         <input type="text" id="swapPubkey" v-model="payload.swapPubkey">
       </BrickConfigInput>
-      <BrickConfigInput id="poolTokenAmount" name="Pool Token Amount">
+      <BrickConfigInput id="poolTokenAmount" name="LPToken Amount">
         <input type="text" id="poolTokenAmount" v-model="payload.poolTokenAmount">
       </BrickConfigInput>
-      <BrickConfigInput id="withdrawMintPubkey" name="Withdraw Mint Pubkey">
+      <BrickConfigInput id="withdrawMintPubkey" name="Withdraw Mint">
         <input type="text" id="withdrawMintPubkey" v-model="payload.withdrawMintPubkey">
       </BrickConfigInput>
     </template>
@@ -53,7 +53,7 @@ export default defineComponent({
       ? existingPayload as ISaberPoolWithdrawArgs
       : {
         swapPubkey: 'YAkoNb6HKmSxQN9L8hiBE5tPJRsniSSMzND1boHmZxe',
-        poolTokenAmount: '0',
+        poolTokenAmount: '0.1',
         withdrawMintPubkey: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
       } as ISaberPoolWithdrawArgs);
 
@@ -79,7 +79,7 @@ export default defineComponent({
         withdrawMintPubkey.value = m;
       });
 
-    const description = computed(() => `Withdraw ${payload.withdrawMintPubkey} using ${payload.poolTokenAmount} LP tokens`);
+    const description = computed(() => `Withdraw ${payload.poolTokenAmount} ${withdrawMintPubkey.value} from ${swapPubkey.value} pool`);
 
     const handleEndEdit = () => {
       addOrModifyConfiguredBrick({
