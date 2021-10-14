@@ -10,10 +10,11 @@
   },
   "dependencies": {
     "@blockworks-foundation/mango-client": "^3.0.24",
-    "@dbricks/dbricks-ts": "^0.0.58",
+    "@dbricks/dbricks-ts": "^0.0.63",
     "@project-serum/serum": "^0.13.59",
-    "@project-serum/sol-wallet-adapter": "^0.2.5",
     "@solana/spl-token": "^0.1.8",
+    "@solana/wallet-adapter-base": "^0.6.0",
+    "@solana/wallet-adapter-wallets": "^0.10.1",
     "@solana/web3.js": "^1.27.0",
     "axios": "^0.21.4",
     "bn.js": "^5.2.0",

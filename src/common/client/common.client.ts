@@ -1,44 +1,26 @@
-import { PublicKey, Transaction } from '@solana/web3.js';
-import Wallet from '@project-serum/sol-wallet-adapter';
+import { PublicKey } from '@solana/web3.js';
 import { Builder, builderEmitter } from '@dbricks/dbricks-ts';
-import { configuredBricks, pushToStatusLog } from '@/common/common.state';
-import {
-  COMMITTMENT, CONNECTION_URL, SERVER_BASE_URL, WALLET_PROVIDER_URL,
-} from '@/config/config';
+import { configuredBricks, connectedWallet, pushToStatusLog } from '@/common/common.state';
+import { COMMITTMENT, CONNECTION_URL, SERVER_BASE_URL } from '@/config/config';
 
-async function connectWallet(): Promise<Wallet> {
-  const wallet = new Wallet(WALLET_PROVIDER_URL, CONNECTION_URL);
-  wallet.on('connect', (ownerPubkey) => {
-    pushToStatusLog({
-      content: `Wallet connected to ${ownerPubkey.toBase58()}.`,
-      color: 'white',
-    });
-  });
-  wallet.on('Disconnect', () => {
-    pushToStatusLog({
-      content: 'Wallet disconnected.',
-      color: 'white',
-    });
-  });
-  await wallet.connect();
-  return wallet;
-}
-
-async function signTransactionWithWallet(tx: Transaction, wallet: Wallet): Promise<Transaction> {
-  await wallet.signTransaction(tx);
-  return tx;
-}
-
-export async function buildAndLog(): Promise<PublicKey> {
+export async function buildAndLog(): Promise<PublicKey | undefined> {
   pushToStatusLog({
     content: 'Building new brick stack.',
     color: 'white',
   });
+  let connectedAdapter;
+  if (connectedWallet.value) {
+    connectedAdapter = connectedWallet.value.connectedAdapter;
+  } else {
+    pushToStatusLog({
+      content: 'Looks like you haven\'t connected your wallet!',
+      color: 'red',
+    });
+    return;
+  }
 
-  const wallet = await connectWallet();
   const builder = new Builder({
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    ownerPubkey: wallet.publicKey!,
+    ownerPubkey: connectedAdapter.publicKey,
     connectionUrl: CONNECTION_URL,
     committment: COMMITTMENT,
     baseUrl: SERVER_BASE_URL,
@@ -54,9 +36,9 @@ export async function buildAndLog(): Promise<PublicKey> {
   });
 
   builderEmitter.removeAllListeners();
-  builderEmitter.on('fetchBricks', () => {
+  builderEmitter.on('fetchBricks', (data) => {
     pushToStatusLog({
-      content: 'Instructions and signers fetched.',
+      content: data,
       color: 'white',
     });
   });
@@ -97,7 +79,9 @@ export async function buildAndLog(): Promise<PublicKey> {
   });
 
   try {
-    await builder.build(signTransactionWithWallet, [wallet]);
+    await builder.build({
+      connectedAdapter,
+    });
     pushToStatusLog({
       content: 'All transactions succeeded. 🎉',
       color: 'green',
@@ -109,5 +93,6 @@ export async function buildAndLog(): Promise<PublicKey> {
     });
   }
 
+  // eslint-disable-next-line consistent-return
   return builder.ownerPubkey;
 }

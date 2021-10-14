@@ -1,5 +1,10 @@
 import { computed, reactive } from 'vue';
 import { IBrickArgs, IRawBrick } from '@dbricks/dbricks-ts';
+import {
+  MessageSignerWalletAdapter,
+  SignerWalletAdapter,
+  WalletAdapter,
+} from '@solana/wallet-adapter-base';
 
 export type logEntry = {
   content: string,
@@ -11,9 +16,21 @@ interface IConfiguredBrick extends IRawBrick {
   description: string,
 }
 
-const state = reactive({
-  configuredBricks: <IConfiguredBrick[]>[],
-  statusLog: <logEntry[]>[],
+interface IConnectedWallet {
+  name: string,
+  connectedAdapter: WalletAdapter | SignerWalletAdapter | MessageSignerWalletAdapter,
+}
+
+interface IState {
+  configuredBricks: IConfiguredBrick[],
+  statusLog: logEntry[],
+  connectedWallet: IConnectedWallet | undefined,
+}
+
+const state = reactive<IState>({
+  configuredBricks: [],
+  statusLog: [],
+  connectedWallet: undefined,
 });
 
 // --------------------------------------- bricks
@@ -60,4 +77,12 @@ export const pushToStatusLog = (newStatus: logEntry): void => {
 
 export const resetStatusLog = (): void => {
   state.statusLog = [];
+};
+
+// --------------------------------------- wallet
+
+export const connectedWallet = computed(() => state.connectedWallet);
+
+export const setWallet = (newWallet: IConnectedWallet): void => {
+  state.connectedWallet = newWallet;
 };

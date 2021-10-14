@@ -6,7 +6,7 @@
       </div>
     </router-link>
   </div>
-  <!--</div>-->
+
   <div class="home flex flex-col items-center pt-40">
     <transition name="send">
       <!--<div style="height: 20px;">-->
@@ -80,13 +80,30 @@
     </div>
     <Tooltip v-else @hide-tooltip="hideTooltip = true"/>
 
-    <AddBrick v-if="stateModalActive" @cancel-modal="handleCancelModal" @new-brick="handleNewBrick"/>
+    <AddBrick v-if="stateBrickModalActive" title="Add a brick" @cancel-modal="handleCancelBrickModal" @new-brick="handleNewBrick"/>
+
+    <a class="wallet text-center" @click="openWalletModal">
+        <div v-if="connectedWallet">
+          <div class="flex flex-row justify-center align-middle">
+            <WalletLogo class="mr-2" :size="24" :name="connectedWallet.name"/>
+            <p>{{ connectedWallet.name }}</p>
+          </div>
+        </div>
+        <div v-else>
+          <p>Connect Wallet</p>
+        </div>
+    </a>
+    <ConnectWallet v-if="stateWalletModalActive" title="Connect Wallet" @cancel-modal="handleCancelWalletModal" @new-wallet="handleCancelWalletModal"/>
+
+    <NoMobile v-if="windowWidth < 900"/>
 
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import {
+  defineComponent, onMounted, onUnmounted, ref,
+} from 'vue';
 import { IAction, Protocol } from '@dbricks/dbricks-ts';
 import SkewedButton from '@/common/components/primitive/SkewedButton.vue';
 import AddBrick from '@/common/views/AddBrick.vue';
@@ -96,8 +113,15 @@ import { getProtocol } from '@/common/common.protocols';
 import { buildAndLog } from '@/common/client/common.client';
 import Button from '@/common/components/primitive/Button.vue';
 import GeneralIcon from '@/common/components/icons/GeneralIcon.vue';
-import { resetStatusLog, statusLog } from '@/common/common.state';
+import {
+  connectedWallet,
+  resetStatusLog,
+  statusLog,
+} from '@/common/common.state';
 import Tooltip from '@/common/components/Tooltip.vue';
+import ConnectWallet from '@/common/views/ConnectWallet.vue';
+import WalletLogo from '@/common/components/primitive/WalletLogo.vue';
+import NoMobile from '@/common/views/NoMobile.vue';
 
 interface IBrick {
   id: number,
@@ -108,16 +132,20 @@ interface IBrick {
 
 export default defineComponent({
   components: {
+    NoMobile,
+    ConnectWallet,
     Tooltip,
     GeneralIcon,
     Button,
     BrickConfigHolder,
     AddBrick,
     SkewedButton,
+    WalletLogo,
   },
   setup() {
     const stateCollapsed = ref(false);
-    const stateModalActive = ref(false);
+    const stateBrickModalActive = ref(false);
+    const stateWalletModalActive = ref(true);
     const fresh = ref(true);
     const hideBricks = ref(false);
     const hideTooltip = ref(true);
@@ -125,12 +153,6 @@ export default defineComponent({
     const bricks = ref<IBrick[]>([]);
     const configuredBricks = ref<number[]>([]);
 
-    const openNewBrickModal = () => {
-      if (stateCollapsed.value) {
-        return;
-      }
-      stateModalActive.value = true;
-    };
     const sendTransaction = async () => {
       bricks.value.forEach(() => {
         // this makes sure all configs are closed
@@ -164,11 +186,23 @@ export default defineComponent({
       // }
     };
 
-    const handleCancelModal = () => {
-      stateModalActive.value = false;
+    const openNewBrickModal = () => {
+      if (stateCollapsed.value) {
+        return;
+      }
+      stateBrickModalActive.value = true;
+    };
+    const openWalletModal = () => {
+      stateWalletModalActive.value = true;
+    };
+    const handleCancelBrickModal = () => {
+      stateBrickModalActive.value = false;
+    };
+    const handleCancelWalletModal = () => {
+      stateWalletModalActive.value = false;
     };
     const handleNewBrick = (newBrick) => {
-      stateModalActive.value = false;
+      stateBrickModalActive.value = false;
       bricks.value.unshift({
         id: bricks.value.length ? bricks.value[0].id + 1 : 0,
         fill: getProtocol(newBrick.protocol).color,
@@ -215,17 +249,28 @@ export default defineComponent({
       }, 1000);
     };
 
+    const windowWidth = ref(window.innerWidth);
+    const onWidthChange = () => {
+      windowWidth.value = window.innerWidth;
+      console.log(windowWidth.value);
+    };
+    onMounted(() => window.addEventListener('resize', onWidthChange));
+    onUnmounted(() => window.removeEventListener('resize', onWidthChange));
+
     return {
       bricks,
       configuredBricks,
       stateCollapsed,
-      stateModalActive,
+      stateBrickModalActive,
+      stateWalletModalActive,
       fresh,
       hideBricks,
       hideTooltip,
       openNewBrickModal,
+      openWalletModal,
       sendTransaction,
-      handleCancelModal,
+      handleCancelBrickModal,
+      handleCancelWalletModal,
       handleNewBrick,
       handleStartEdit,
       handleEndEdit,
@@ -233,12 +278,14 @@ export default defineComponent({
       resetBricks,
       reopenBricks,
       getStatusLog: statusLog,
+      connectedWallet,
+      windowWidth,
     };
   },
 });
 </script>
 
-<style>
+<style scoped>
 
 svg {
   stroke: black;
@@ -264,6 +311,14 @@ svg {
   height: 60px;
   position: fixed;
   left: 0;
+  top: 0;
+}
+
+.wallet {
+  @apply bg-black flex flex-col justify-center align-middle px-5;
+  height: 60px;
+  position: fixed;
+  right: 0;
   top: 0;
 }
 

@@ -2,7 +2,7 @@
   <div class="p-10 modal z500">
     <div class="flex flex-auto justify-between">
       <Close color="black"/>
-      <h1>Add a brick</h1>
+      <h1>{{title}}</h1>
       <Close class="cursor-pointer" color="white" @click="handleClick"/>
     </div>
     <slot/>

@@ -52,5 +52,4 @@ if (NETWORK === 'mainnet') {
   throw new Error(`Network unrecognized. Should be mainnet/devnet/localnet. Currently: ${NETWORK}`);
 }
 
-export const WALLET_PROVIDER_URL = 'https://www.sollet.io';
 export const COMMITTMENT: Commitment = 'processed';
