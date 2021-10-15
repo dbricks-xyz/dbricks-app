@@ -20,12 +20,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import {
-  getLedgerWallet,
-  getPhantomWallet,
-  getSlopeWallet,
-  getSolflareWallet,
   getSolletExtensionWallet,
-  getSolletWallet, Wallet,
+  Wallet,
 } from '@solana/wallet-adapter-wallets';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import Modal from '../components/primitive/Modal.vue';
@@ -78,7 +74,7 @@ export default defineComponent({
       color: colors[w.name],
     }));
 
-    const selectedWallet = ref<Wallet>(getPhantomWallet());
+    const selectedWallet = ref<Wallet>(getSolletExtensionWallet());
 
     const emitNewWallet = () => {
       context.emit('newWallet', selectedWallet.value.name);
