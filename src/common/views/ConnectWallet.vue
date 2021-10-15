@@ -56,11 +56,11 @@ export default defineComponent({
       getPhantomWallet(),
       getSlopeWallet(),
       getSolflareWallet(),
-      // todo getTorusWallet({
+      // getTorusWallet({
       //   options: { clientId: 'Get a client ID @ https://developer.tor.us' },
       // }),
       getLedgerWallet(),
-      getSolletWallet({ network }),
+      // getSolletWallet({ network }),
       getSolletExtensionWallet({ network }),
     ];
 
@@ -69,7 +69,7 @@ export default defineComponent({
       Slope: '#6E66FA',
       Solflare: 'orangered',
       Ledger: 'white',
-      Sollet: '#2899F3',
+      // Sollet: '#2899F3',
       'Sollet (Extension)': '#2899F3',
     };
 
