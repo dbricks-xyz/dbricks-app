@@ -42,7 +42,7 @@
           <GeneralIcon size="25" icon="github" color="white"></GeneralIcon>
         </div>
       </a>
-      <a href="mailto:team@dbricks.xyz" target="_blank">
+      <a href="mailto:team@dbricks.dev" target="_blank">
         <div class="mx-2">
           <GeneralIcon size="33" icon="mail" color="white"></GeneralIcon>
         </div>
