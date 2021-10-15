@@ -53,22 +53,22 @@ export default defineComponent({
     }
 
     const wallets = [
-      getPhantomWallet(),
-      getSlopeWallet(),
-      getSolflareWallet(),
+      // getPhantomWallet(),
+      // getSlopeWallet(),
+      // getSolflareWallet(),
       // getTorusWallet({
       //   options: { clientId: 'Get a client ID @ https://developer.tor.us' },
       // }),
-      getLedgerWallet(),
+      // getLedgerWallet(),
       // getSolletWallet({ network }),
       getSolletExtensionWallet({ network }),
     ];
 
     const colors = {
-      Phantom: '#533BC8',
-      Slope: '#6E66FA',
-      Solflare: 'orangered',
-      Ledger: 'white',
+      // Phantom: '#533BC8',
+      // Slope: '#6E66FA',
+      // Solflare: 'orangered',
+      // Ledger: 'white',
       // Sollet: '#2899F3',
       'Sollet (Extension)': '#2899F3',
     };

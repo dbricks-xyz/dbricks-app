@@ -51,6 +51,7 @@ module.exports = {
           darkpink: '#472341',
           darkpurple: '#381f3f',
           darkgray: '#23272d',
+          verydarkgray: '#111316',
 
           mango: '#F98505',
           serum: '#3FDBF0',

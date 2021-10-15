@@ -15,6 +15,15 @@
       <p class="main-title">dbricks.xyz</p>
       <p>The ultimate Solana protocol composer.</p>
       <p>Get ready to #buidl.</p>
+      <div class="mt-5 flex justify-center align-middle text-center ">
+        <a href="https://www.youtube.com/watch?v=mT5pMV-I688" target="_blank" class="bg-db-verydarkgray flex flex-row rounded-xl p-1">
+          <svg class="mr-2" height="25" viewBox="0 0 159 110" xmlns="http://www.w3.org/2000/svg">
+            <path d="M154 17.5c-1.82-6.73-7.07-12-13.8-13.8-9.04-3.49-96.6-5.2-122 .1-6.73 1.82-12 7.07-13.8 13.8C.32 35.5.01 74.2 4.5 92.5c1.82 6.73 7.07 12 13.8 13.8 17.9 4.12 103 4.7 122 0 6.73-1.82 12-7.07 13.8-13.8 4.35-19.5 4.66-55.8-.1-75z" fill="red"/>
+            <path d="M105 55 64.2 31.6v46.8z" fill="#fff"/>
+          </svg>
+          <p>What is dbricks?</p>
+        </a>
+      </div>
     </div>
     <div class="flex flex-col sixh:flex-row justify-center align-middle">
       <a target="_blank" href="https://dbricks.dev/">
@@ -67,8 +76,8 @@ export default defineComponent({
 }
 
 .main-svg {
-  @apply h-onefifty threeh:h-twoh;
-  @apply min-h-onefifty threeh:min-h-twoh;
+  @apply h-onefifty fiveh:h-twoh;
+  @apply min-h-onefifty fiveh:min-h-twoh;
 }
 
 .main-title {
