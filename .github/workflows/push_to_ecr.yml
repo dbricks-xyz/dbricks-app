@@ -24,10 +24,8 @@ jobs:
 
     - name: Insert node url
       run: |
-        touch .env
-        sed -i -- 's|#PLACEHOLDER|RUN echo ${{ secrets.VUE_APP_MAINNET_NODE_URL }} >> .env|g' Dockerfile
-        cat Dockerfile
-        cat .env
+        sed -i -- 's|https://solana-api.projectserum.com|${{ secrets.VUE_APP_MAINNET_NODE_URL }}|g' src/config/config.ts
+        cat src/config/config.ts
 
     - name: Login to Amazon ECR
       id: login-ecr
