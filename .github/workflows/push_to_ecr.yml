@@ -23,7 +23,7 @@ jobs:
         aws-region: us-east-1
 
     - name: Insert node url
-      run: sed -i -- 's/#PLACEHOLDER/RUN echo ${{ secrets.VUE_APP_MAINNET_NODE_URL }} >> .env/g' Dockerfile
+      run: sed -i -- 's|#PLACEHOLDER|RUN echo ${{ secrets.VUE_APP_MAINNET_NODE_URL }} >> .env|g' Dockerfile
 
     - name: Login to Amazon ECR
       id: login-ecr
