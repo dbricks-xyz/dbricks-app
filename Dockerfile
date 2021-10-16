@@ -6,8 +6,6 @@ RUN yarn global add @vue/cli
 COPY package*.json yarn.lock ./
 RUN yarn
 COPY . .
-RUN echo "VUE_APP_NETWORK=mainnet" >> .env
-RUN echo "VUE_APP_SERVER_BASE_URL=api" >> .env
 RUN yarn build
 
 ################################################################################
