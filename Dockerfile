@@ -6,7 +6,6 @@ RUN yarn global add @vue/cli
 COPY package*.json yarn.lock ./
 RUN yarn
 COPY . .
-#PLACEHOLDER
 RUN yarn build
 
 ################################################################################
