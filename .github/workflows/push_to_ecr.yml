@@ -33,7 +33,7 @@ jobs:
         VUE_APP_MAINNET_NODE_URL: ${{ secrets.VUE_APP_MAINNET_NODE_URL }}
         IMAGE_TAG: latest
       run: |
-        sed -i -e "s/#PLACEHOLDER/RUN echo $VUE_APP_MAINNET_NODE_URL >> .env/g" Dockerfile
+        sed -i -- "s/#PLACEHOLDER/RUN echo $VUE_APP_MAINNET_NODE_URL >> .env/g" Dockerfile
         docker build -t $ECR_URI:$IMAGE_TAG .
         echo "Pushing image to ECR..."
         docker push $ECR_URI:$IMAGE_TAG
