@@ -24,6 +24,7 @@ jobs:
 
     - name: Insert node url
       run: |
+        touch .env
         sed -i -- 's|#PLACEHOLDER|RUN echo ${{ secrets.VUE_APP_MAINNET_NODE_URL }} >> .env|g' Dockerfile
         cat Dockerfile
         cat .env
