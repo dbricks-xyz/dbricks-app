@@ -17,7 +17,7 @@ console.log('SERVER URL:', SERVER_BASE_URL);
 
 // --------------------------------------- debug config
 if (process.env.VUE_APP_DEBUG) {
-  console.log('Debug mode on.');
+  console.log('Debug mode on.  ');
 }
 
 // --------------------------------------- on-chain connection config
